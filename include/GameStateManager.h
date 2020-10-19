@@ -34,6 +34,7 @@ public:
 	void notify(LoadEvent event);
 	void notify(RestartEvent event);
 	void pushScene(SceneTypes scene);
+	void notify(SaveEvent event);
 	void popScene(int i);
 	void render();
 	void processInput(SDL_Event *e);

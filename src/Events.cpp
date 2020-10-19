@@ -247,3 +247,13 @@ SetStatusEvent::~SetStatusEvent()
 {
 
 }
+
+SaveEvent::SaveEvent()
+{
+	m_type = SAVEGAME;
+}
+
+SaveEvent::~SaveEvent()
+{
+
+}

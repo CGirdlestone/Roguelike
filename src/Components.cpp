@@ -5,7 +5,6 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <cstdio>
 
 void serialiseInt(std::ofstream& file, int x)
 {
@@ -16,10 +15,8 @@ void serialiseInt(std::ofstream& file, int x)
 	bytes[3] = ((x >> 0) & 0xFF);
 
 	for (int i = 0; i < 4; ++i) {
-		printf("%X ", bytes[i]);
 		file.write(reinterpret_cast<char*>(&bytes[i]), sizeof(reinterpret_cast<char*>(&bytes[i])));
 	}
-	printf("\n");
 }
 
 void serialiseString(std::ofstream& file, std::string stringToSerialise)

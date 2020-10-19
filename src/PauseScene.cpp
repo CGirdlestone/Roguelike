@@ -22,46 +22,47 @@ PauseScene::~PauseScene()
 
 enum KeyPressSurfaces PauseScene::getEvent(SDL_Event *e)
 {
-  while(SDL_PollEvent(e)){
-    if (e->type == SDL_QUIT){
-      return ESCAPE;
-    } else if (e->type == SDL_KEYDOWN){
-      switch(e->key.keysym.sym){
-        case SDLK_UP:
-        return MENUUP;
+    while(SDL_PollEvent(e)){
+        if (e->type == SDL_QUIT){
+            return ESCAPE;
+        } else if (e->type == SDL_KEYDOWN){
+            switch(e->key.keysym.sym){
+                case SDLK_UP:
+                return MENUUP;
 
-        case SDLK_DOWN:
-        return MENUDOWN;
+                case SDLK_DOWN:
+                return MENUDOWN;
 
-        case SDLK_RETURN:
-        return PRESS;
+                case SDLK_RETURN:
+                return PRESS;
 
-				case SDLK_ESCAPE:
-				return ESCAPE;
-      }
+			    case SDLK_ESCAPE:
+			    return ESCAPE;
+            }
+        }
     }
-  }
-  return NONE;
+    return NONE;
 }
 
 void PauseScene::handleInput(KeyPressSurfaces keyPress)
 {
-  if (keyPress == ESCAPE){
+    if (keyPress == ESCAPE){
 		m_eventManager->pushEvent(PopScene(1));
 	} else if (keyPress == MENUUP){
-    m_i = m_i - 1 < 0 ? 1 : m_i - 1;
-  } else if (keyPress == MENUDOWN){
-    m_i = m_i + 1 > 1 ? 0 : m_i + 1;
-  } else if (keyPress == PRESS and m_i == 0){
-    m_eventManager->pushEvent(PopScene(1));
-  } else if (keyPress == PRESS and m_i == 1){
-    m_eventManager->pushEvent(QuitEvent());
+        m_i = m_i - 1 < 0 ? 1 : m_i - 1;
+    } else if (keyPress == MENUDOWN){
+        m_i = m_i + 1 > 1 ? 0 : m_i + 1;
+    } else if (keyPress == PRESS and m_i == 0){
+        m_eventManager->pushEvent(PopScene(1));
+    } else if (keyPress == PRESS and m_i == 1){
+        m_eventManager->pushEvent(QuitEvent());
+        m_eventManager->pushEvent(SaveEvent());
 	}
 }
 
 void PauseScene::render()
 {
-  m_renderer->drawPauseMenu(m_i, m_camera, m_dungeon, m_entities, m_messageLog);
+    m_renderer->drawPauseMenu(m_i, m_camera, m_dungeon, m_entities, m_messageLog);
 }
 
 void PauseScene::update(Uint32)

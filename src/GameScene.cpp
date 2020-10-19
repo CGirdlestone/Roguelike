@@ -240,122 +240,122 @@ bool GameScene::checkDescend()
 
 enum KeyPressSurfaces GameScene::getEvent(SDL_Event *e)
 {
-  while(SDL_PollEvent(e)){
-      if (e->type == SDL_QUIT){
-          return EXITGAME;
-      } else if (e->type == SDL_KEYDOWN){
-          switch(e->key.keysym.sym){
-              case SDLK_UP:
-              return NORTH;
+	while(SDL_PollEvent(e)){
+		if (e->type == SDL_QUIT){
+			return EXITGAME;
+		} else if (e->type == SDL_KEYDOWN){
+			switch(e->key.keysym.sym){
+				case SDLK_UP:
+				return NORTH;
 
-              case SDLK_DOWN:
-              return SOUTH;
+				case SDLK_DOWN:
+				return SOUTH;
 
-              case SDLK_LEFT:
-              return WEST;
+				case SDLK_LEFT:
+				return WEST;
 
-              case SDLK_RIGHT:
-              return EAST;
+				case SDLK_RIGHT:
+				return EAST;
 
-              case SDLK_KP_1:
-              return SOUTHWEST;
+				case SDLK_KP_1:
+				return SOUTHWEST;
 
-              case SDLK_KP_2:
-              return SOUTH;
+				case SDLK_KP_2:
+				return SOUTH;
 
-              case SDLK_KP_3:
-              return SOUTHEAST;
+				case SDLK_KP_3:
+				return SOUTHEAST;
 
-              case SDLK_KP_4:
-              return WEST;
+				case SDLK_KP_4:
+				return WEST;
 
-              case SDLK_KP_5:
-              return WAIT;
+				case SDLK_KP_5:
+				return WAIT;
 
-              case SDLK_KP_6:
-              return EAST;
+				case SDLK_KP_6:
+				return EAST;
 
-              case SDLK_KP_7:
-              return NORTHWEST;
+				case SDLK_KP_7:
+				return NORTHWEST;
 
-              case SDLK_KP_8:
-              return NORTH;
+				case SDLK_KP_8:
+				return NORTH;
 
-              case SDLK_KP_9:
-              return NORTHEAST;
+				case SDLK_KP_9:
+				return NORTHEAST;
 
-              case SDLK_ESCAPE:
-              return ESCAPE;
+				case SDLK_ESCAPE:
+				return ESCAPE;
 
-              case SDLK_F1:
-              return F1;
+				case SDLK_F1:
+				return F1;
 
-              case SDLK_g:
-              return GRAB;
+				case SDLK_g:
+				return GRAB;
 
-							case SDLK_i:
-							return BAG;
+				case SDLK_i:
+				return BAG;
 
-							case SDLK_c:
-							return SHOWCHARSCREEN;
+				case SDLK_c:
+				return SHOWCHARSCREEN;
 
-							case SDLK_RETURN:
-							return USE;
+				case SDLK_RETURN:
+				return USE;
 							
-							case SDLK_s:
-							return SHOOT;
+				case SDLK_s:
+				return SHOOT;
 
-							case SDLK_F11:
-							return ASCII;
-          }
-      }
-  }
-  return NONE;
+				case SDLK_F11:
+				return ASCII;
+			}
+		}
+	}
+	return NONE;
 }
 
 void GameScene::handleInput(KeyPressSurfaces keyPress)
 {
-  if (keyPress == ESCAPE){
-      m_eventManager->pushEvent(PushScene(PAUSEMENU));
-  } else if (keyPress == WEST){
-    MoveEvent moveEvent = MoveEvent(-1, 0, 0);
-    m_eventManager->pushEvent(moveEvent);
-    m_playerTurn = false;
-  } else if (keyPress == EAST){
-    MoveEvent moveEvent = MoveEvent(1, 0, 0);
-    m_eventManager->pushEvent(moveEvent);
-    m_playerTurn = false;
-  } else if (keyPress == NORTH){
-    MoveEvent moveEvent = MoveEvent(0, -1, 0);
-    m_eventManager->pushEvent(moveEvent);
-    m_playerTurn = false;
-  } else if (keyPress == SOUTH){
-    MoveEvent moveEvent = MoveEvent(0, 1, 0);
-    m_eventManager->pushEvent(moveEvent);
-    m_playerTurn = false;
-  } else if (keyPress == NORTHWEST){
-    MoveEvent moveEvent = MoveEvent(-1, -1, 0);
-    m_eventManager->pushEvent(moveEvent);
-    m_playerTurn = false;
-  } else if (keyPress == NORTHEAST){
-    MoveEvent moveEvent = MoveEvent(1, -1, 0);
-    m_eventManager->pushEvent(moveEvent);
-    m_playerTurn = false;
-  } else if (keyPress == SOUTHWEST){
-    MoveEvent moveEvent = MoveEvent(-1, 1, 0);
-    m_eventManager->pushEvent(moveEvent);
-    m_playerTurn = false;
-  } else if (keyPress == SOUTHEAST){
-    MoveEvent moveEvent = MoveEvent(1, 1, 0);
-    m_eventManager->pushEvent(moveEvent);
-    m_playerTurn = false;
-  } else if (keyPress == WAIT){
-    m_playerTurn = false;
-  } else if (keyPress == GRAB){
-    TakeEvent takeEvent = TakeEvent(0, m_entities->at(0)->position->x, m_entities->at(0)->position->y);
-    m_eventManager->pushEvent(takeEvent);
-    m_playerTurn = false;
-  } else if (keyPress == BAG){
+	if (keyPress == ESCAPE){
+		m_eventManager->pushEvent(PushScene(PAUSEMENU));
+	} else if (keyPress == WEST){
+		MoveEvent moveEvent = MoveEvent(-1, 0, 0);
+		m_eventManager->pushEvent(moveEvent);
+		m_playerTurn = false;
+	} else if (keyPress == EAST){
+		MoveEvent moveEvent = MoveEvent(1, 0, 0);
+		m_eventManager->pushEvent(moveEvent);
+		m_playerTurn = false;
+	} else if (keyPress == NORTH){
+		MoveEvent moveEvent = MoveEvent(0, -1, 0);
+		m_eventManager->pushEvent(moveEvent);
+		m_playerTurn = false;
+	} else if (keyPress == SOUTH){
+		MoveEvent moveEvent = MoveEvent(0, 1, 0);
+		m_eventManager->pushEvent(moveEvent);
+		m_playerTurn = false;
+	} else if (keyPress == NORTHWEST){
+		MoveEvent moveEvent = MoveEvent(-1, -1, 0);
+		m_eventManager->pushEvent(moveEvent);
+		m_playerTurn = false;
+	} else if (keyPress == NORTHEAST){
+		MoveEvent moveEvent = MoveEvent(1, -1, 0);
+		m_eventManager->pushEvent(moveEvent);
+		m_playerTurn = false;
+	} else if (keyPress == SOUTHWEST){
+		MoveEvent moveEvent = MoveEvent(-1, 1, 0);
+		m_eventManager->pushEvent(moveEvent);
+		m_playerTurn = false;
+	} else if (keyPress == SOUTHEAST){
+		MoveEvent moveEvent = MoveEvent(1, 1, 0);
+		m_eventManager->pushEvent(moveEvent);
+		m_playerTurn = false;
+	} else if (keyPress == WAIT){
+		m_playerTurn = false;
+	} else if (keyPress == GRAB){
+		TakeEvent takeEvent = TakeEvent(0, m_entities->at(0)->position->x, m_entities->at(0)->position->y);
+		m_eventManager->pushEvent(takeEvent);
+		m_playerTurn = false;
+	} else if (keyPress == BAG){
 		m_eventManager->pushEvent(PushScene(INVENTORY));
 	} else if (keyPress == SHOWCHARSCREEN){
 		m_eventManager->pushEvent(PushScene(CHARACTER));
@@ -375,30 +375,29 @@ void GameScene::handleInput(KeyPressSurfaces keyPress)
 		}
 	}
 
-  if (!m_playerTurn){
-    processEntities();
-  }
+	if (!m_playerTurn){
+		processEntities();
+	}
 }
-
 
 void GameScene::render()
 {
-  m_renderer->drawGameScreen(m_camera, m_dungeon, m_entities, m_messageLog, m_particleSystem->particles);
+	m_renderer->drawGameScreen(m_camera, m_dungeon, m_entities, m_messageLog, m_particleSystem->particles);
 }
 
 void GameScene::update(Uint32 dt)
 {
 	m_particleSystem->ageParticles(dt);
-  m_messageLog->ageMessages(dt);
+	m_messageLog->ageMessages(dt);
 }
 
 void GameScene::onTick()
 {
-  if (m_dungeon->recomputeFOV){
-    m_dungeon->doRecomputeFOV(m_entities->at(0)->position->x, m_entities->at(0)->position->y, 10);
- 	}
+	if (m_dungeon->recomputeFOV){
+		m_dungeon->doRecomputeFOV(m_entities->at(0)->position->x, m_entities->at(0)->position->y, 10);
+	}
 
-  m_camera->updatePosition(m_entities->at(0)->position->x, m_entities->at(0)->position->y);
+	m_camera->updatePosition(m_entities->at(0)->position->x, m_entities->at(0)->position->y);
 	
 	m_combatSystem->onTick();
 }

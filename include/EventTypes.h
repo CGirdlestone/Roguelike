@@ -26,6 +26,7 @@ enum EventTypes
 	LOADGAME,
 	RESTART,
 	SETSTATUS,
+	SAVEGAME,
 };
 extern EventTypes EventType;
 

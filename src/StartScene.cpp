@@ -50,28 +50,28 @@ enum KeyPressSurfaces StartScene::getEvent(SDL_Event *e)
 
 void StartScene::handleInput(KeyPressSurfaces keyPress)
 {
-  if (keyPress == ESCAPE){
+    if (keyPress == ESCAPE){
   
 	} else if (keyPress == MENUUP){
-    m_i = m_i - 1 < 0 ? m_options - 1 : m_i - 1;
-  } else if (keyPress == MENUDOWN){
-    m_i = m_i + 1 > m_options - 1 ? 0 : m_i + 1;
-  } else if (keyPress == PRESS){
+        m_i = m_i - 1 < 0 ? m_options - 1 : m_i - 1;
+    } else if (keyPress == MENUDOWN){
+        m_i = m_i + 1 > m_options - 1 ? 0 : m_i + 1;
+    } else if (keyPress == PRESS){
 		if ((m_options == 2 && m_i == 1) || (m_options == 3 && m_i == 2)){
-    	m_eventManager->pushEvent(QuitEvent());
+    	    m_eventManager->pushEvent(QuitEvent());
 		} else if ((m_options == 2 && m_i == 0) || (m_options == 3 && m_i == 1)){
-    	PushScene transition = PushScene(GAMESCENE);
-    	m_eventManager->pushEvent(transition);
+    	    PushScene transition = PushScene(GAMESCENE);
+    	    m_eventManager->pushEvent(transition);
 		} else if (m_options == 3 && m_i == 0){
 			m_eventManager->pushEvent(LoadEvent());
 		}
-  }
+    }
 }
 
 
 void StartScene::render()
 {
-  m_renderer->drawStartMenu(m_i, m_options);
+    m_renderer->drawStartMenu(m_i, m_options);
 }
 
 void StartScene::update(Uint32)
