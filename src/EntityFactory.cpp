@@ -66,7 +66,7 @@ void EntityFactory::generateDistributions(){
 	std::map<std::string, std::vector<std::string>>::iterator it;
 	std::vector<std::string>::iterator vecIt;
 	std::string line;
-	int level, _exp;
+	int level{ 0 }, _exp{ 0 };
 
 
 	for (it = m_items.begin(); it != m_items.end(); ++it){
@@ -121,6 +121,8 @@ DamageTypes EntityFactory::getDamageTypeEnum(std::string stringEnum)
 		return LIGHTNING;
 	} else if (stringEnum == "POISON"){
 		return POISON;
+	} else if (stringEnum == "NODAMAGETYPE") {
+		return NODAMAGETYPE;
 	}
 }
 
@@ -199,8 +201,8 @@ void EntityFactory::makeWeaponComponent(std::string line, GameObject* entity)
 	
 	std::string damageString;
 	DamageTypes damageType;	
-	int die;
-	int _twoHanded;
+	int die{ 0 };
+	int _twoHanded{ 0 };
 
 	ss >> damageString >> die >> _twoHanded;
 
@@ -217,7 +219,7 @@ void EntityFactory::makeArmourComponent(std::string line, GameObject* entity)
 
 	std::string resistanceString, weaknessString;
 	DamageTypes resistanceEnum, weaknessEnum;
-	int armourBonus;
+	int armourBonus{ 0 };
 
 	ss >> resistanceString >> weaknessString >> armourBonus;
 	resistanceEnum = getDamageTypeEnum(resistanceString);
@@ -247,7 +249,7 @@ void EntityFactory::makeAIComponent(std::string line, GameObject* entity)
 {
 	std::stringstream ss(line);
 
-	int exp, level;
+	int exp{ 0 }, level{ 0 };
 
 	ss >> exp >> level;
 	
@@ -281,7 +283,7 @@ void EntityFactory::makeInventoryComponent(std::string line, GameObject* entity)
 {
 	std::stringstream ss(line);
 
-	int capacity;
+	int capacity{ 0 };
 
 	ss >> capacity;
 
@@ -301,7 +303,7 @@ void EntityFactory::makeUseableComponent(std::string line, GameObject* entity)
 {	
 	std::stringstream ss(line);
 	std::string functionString;	
-	int numUses;
+	int numUses{ 0 };
 	
 	ss >> functionString >> numUses;
 
@@ -315,7 +317,7 @@ void EntityFactory::makeUseableComponent(std::string line, GameObject* entity)
 void EntityFactory::makeHealingComponent(std::string line, GameObject* entity)
 {
 	std::stringstream ss(line);
-	int roll;
+	int roll{ 0 };
 
 	ss >> roll;
 
@@ -327,7 +329,7 @@ void EntityFactory::makeHealingComponent(std::string line, GameObject* entity)
 void EntityFactory::makeDamageComponent(std::string line, GameObject* entity)
 {
 	std::stringstream ss(line);
-	int roll, radius, chance;
+	int roll{ 0 }, radius{ 0 }, chance{ 0 };
 	std::string damageTypeString;
 	DamageTypes damageType;
 	
@@ -343,7 +345,7 @@ void EntityFactory::makeDamageComponent(std::string line, GameObject* entity)
 void EntityFactory::makeAreaDamageComponent(std::string line, GameObject* entity)
 {
 	std::stringstream ss(line);
-	int roll, radius, chance, splashRadius;
+	int roll{ 0 }, radius{ 0 }, chance{ 0 }, splashRadius{ 0 };
 	std::string damageTypeString;
 	DamageTypes damageType;
 	
@@ -382,8 +384,8 @@ int EntityFactory::simulateNormalDistribution(int level){
 }
 
 std::string EntityFactory::chooseRandomMob(int level){
-	int mobLevel;
-	int randomIndex;	
+	int mobLevel{ 0 };
+	int randomIndex{ 0 };
 	std::string entityName;
 
 	mobLevel = simulateNormalDistribution(level);
@@ -398,8 +400,8 @@ std::string EntityFactory::chooseRandomMob(int level){
 }
 
 std::string EntityFactory::chooseRandomItem(int level){
-	int itemLevel;
-	int randomIndex;
+	int itemLevel{ 0 };
+	int randomIndex{ 0 };
 	std::string entityName;
 
 	itemLevel = simulateNormalDistribution(level);

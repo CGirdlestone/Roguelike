@@ -6,7 +6,8 @@
 #include <vector>
 #include <iostream>
 
-GameObject::GameObject()
+GameObject::GameObject():
+	m_uid(-1)
 {
 	position = nullptr;
 	renderable = nullptr;
@@ -133,162 +134,150 @@ GameObject::~GameObject()
 	}
 }
 
-void GameObject::debug_object(int x)
+void GameObject::serialise(std::ofstream& file)
 {
-	std::cout << x << std::endl;
-}
+	serialiseInt(file, m_uid);
 
-void GameObject::debug_object(const std::string & word)
-{
-	std::cout << word << std::endl;
-}
-
-void GameObject::serialise(std::vector<uint8_t> &byteVector)
-{
-	serialiseInt(byteVector, m_uid);
-	debug_component(m_uid);
-
-	serialiseString(byteVector, m_name);
-	debug_component(m_name);
+	serialiseString(file, m_name);
 
 	if (position == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		position->serialise(byteVector);
+		serialiseInt(file, 1);
+		position->serialise(file);
 	}
 
 	if (renderable == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		renderable->serialise(byteVector);
+		serialiseInt(file, 1);
+		renderable->serialise(file);
 	}
 
 	if (fighter == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		fighter->serialise(byteVector);
+		serialiseInt(file, 1);
+		fighter->serialise(file);
 	}
 
 	if (actor == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		actor->serialise(byteVector);
+		serialiseInt(file, 1);
+		actor->serialise(file);
 	}
 
 	if (player == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		player->serialise(byteVector);
+		serialiseInt(file, 1);
+		player->serialise(file);
 	}
 
 	if (ai == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		ai->serialise(byteVector);
+		serialiseInt(file, 1);
+		ai->serialise(file);
 	}
 
 	if (item == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		item->serialise(byteVector);
+		serialiseInt(file, 1);
+		item->serialise(file);
 	}
 
 	if (inventory == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		inventory->serialise(byteVector);
+		serialiseInt(file, 1);
+		inventory->serialise(file);
 	}
 
 	if (weapon == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		weapon->serialise(byteVector);
+		serialiseInt(file, 1);
+		weapon->serialise(file);
 	}
 
 	if (armour == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		armour->serialise(byteVector);
+		serialiseInt(file, 1);
+		armour->serialise(file);
 	}
 
 	if (wearable == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		wearable->serialise(byteVector);
+		serialiseInt(file, 1);
+		wearable->serialise(file);
 	}
 
 	if (body == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		body->serialise(byteVector);
+		serialiseInt(file, 1);
+		body->serialise(file);
 	}
 
 	if (useable == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		useable->serialise(byteVector);
+		serialiseInt(file, 1);
+		useable->serialise(file);
 	}
 
 	if (healing == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		healing->serialise(byteVector);
+		serialiseInt(file, 1);
+		healing->serialise(file);
 	}
 
 	if (damage == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		damage->serialise(byteVector);
+		serialiseInt(file, 1);
+		damage->serialise(file);
 	}
 
 	if (areaDamage == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		areaDamage->serialise(byteVector);
+		serialiseInt(file, 1);
+		areaDamage->serialise(file);
 	}
 
 	if (status == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		status->serialise(byteVector);
+		serialiseInt(file, 1);
+		status->serialise(file);
 	}
 
 	if (consumable == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		consumable->serialise(byteVector);
+		serialiseInt(file, 1);
+		consumable->serialise(file);
 	}
 
 	if (stairs == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		stairs->serialise(byteVector);
+		serialiseInt(file, 1);
+		stairs->serialise(file);
 	}
 
 	if (statusContainer == nullptr){
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	} else {
-		serialiseInt(byteVector, 1);
-		statusContainer->serialise(byteVector);
+		serialiseInt(file, 1);
+		statusContainer->serialise(file);
 	}
 }
 
@@ -315,12 +304,10 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	}
 	m_name.assign(name, _nameLength);
 	delete[] name;
-	debug_component(m_name);
 	
 	/* Read in the entity's components. The first set of 4 bytes denotes whether the pointer is valid (1) or nullptr (0). */
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "pos: " << hasPointer << std::endl;
 
 	if (hasPointer == 1){
 		position = new Position();
@@ -330,7 +317,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "renderable: " << hasPointer << std::endl;
 
 	if (hasPointer == 1){
 		renderable = new Renderable();
@@ -340,7 +326,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "fighter: " << hasPointer << std::endl;
 
 	if (hasPointer == 1){
 		fighter = new Fighter();
@@ -350,7 +335,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "actor: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		actor = new Actor();
 		i = actor->deserialise(buffer, i);
@@ -359,7 +343,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "player: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		player = new Player();
 		i = player->deserialise(buffer, i);
@@ -368,7 +351,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "ai: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		ai = new AI();
 		i = ai->deserialise(buffer, i);
@@ -377,7 +359,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "item: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		item = new Item();
 		i = item->deserialise(buffer, i);
@@ -386,7 +367,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "inventory: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		inventory = new Inventory();
 		i = inventory->deserialise(buffer, i);
@@ -395,7 +375,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "weapon: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		weapon = new Weapon();
 		i = weapon->deserialise(buffer, i);
@@ -404,7 +383,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "armour: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		armour = new Armour();
 		i = armour->deserialise(buffer, i);
@@ -413,7 +391,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "wearable: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		wearable = new Wearable();
 		i = wearable->deserialise(buffer, i);
@@ -422,7 +399,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "body: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		body = new Body();
 		i = body->deserialise(buffer, i);
@@ -431,7 +407,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "useable: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		useable = new Useable();
 		i = useable->deserialise(buffer, i);
@@ -440,7 +415,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "healing: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		healing = new Healing();
 		i = healing->deserialise(buffer, i);
@@ -449,7 +423,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "damage: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		damage = new Damage();
 		i = damage->deserialise(buffer, i);
@@ -458,7 +431,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "area damage: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		areaDamage = new AreaDamage();
 		i = areaDamage->deserialise(buffer, i);
@@ -467,7 +439,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "status: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		status = new Status();
 		i = status->deserialise(buffer, i);
@@ -476,7 +447,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "consumable: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		consumable = new Consumable();
 		i = consumable->deserialise(buffer, i);
@@ -485,7 +455,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "stairs: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		stairs = new Stairs();
 		i = stairs->deserialise(buffer, i);
@@ -494,7 +463,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	
 	hasPointer = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	std::cout << "status: " << hasPointer << std::endl;
 	if (hasPointer == 1){
 		statusContainer = new StatusContainer();
 		i = statusContainer->deserialise(buffer, i);

@@ -1,7 +1,8 @@
 NAME:Bat, NONE:100
 NAME:Rat, NONE:100
 NAME:Goblin, Potion Of Healing:5, Sword:20, Dagger:50, NONE:60
-NAME:Orc, Scroll Of Fireball:1, Sword:20, Potion Of Healing:40, Hunting Bow: 50, Chainmail: 60, NONE: 60,
+NAME:Orc, Scroll Of Fireball:1, Sword:20, Potion Of Healing:40, Hunting Bow: 50, Chainmail: 600
+
 NAME:Kobold, NONE:100
 NAME:Ogre, NONE:100
 NAME:Spider, Potion Of Healing:10, NONE:20

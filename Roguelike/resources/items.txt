@@ -56,7 +56,7 @@ WEARABLE: BODY
 ARMOUR: ICE NODAMAGETYPE 2
 POSITION:
 
-NAME: Chainmail 
+NAME: Chainmail
 RENDERABLE: ( 0x9b 0xad 0xb7 0 8 8
 ITEM: A riveted mail hauberk.; 3
 WEARABLE: BODY

@@ -4,44 +4,44 @@
 #include "Components.h"
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <cstdio>
 
-void debug_component(int x)
+void serialiseInt(std::ofstream& file, int x)
 {
-	std::cout << x << std::endl;
+	uint8_t bytes[4];
+	bytes[0] = ((x >> 24) & 0xFF);
+	bytes[1] = ((x >> 16) & 0xFF);
+	bytes[2] = ((x >> 8) & 0xFF);
+	bytes[3] = ((x >> 0) & 0xFF);
+
+	for (int i = 0; i < 4; ++i) {
+		printf("%X ", bytes[i]);
+		file.write(reinterpret_cast<char*>(&bytes[i]), sizeof(reinterpret_cast<char*>(&bytes[i])));
+	}
+	printf("\n");
 }
 
-void debug_component(const std::string& word)
-{
-	std::cout << word << std::endl;
-}
-
-void serialiseInt(std::vector<uint8_t> &byteVector, int x)
-{
-	byteVector.push_back((x >> 24) & 0xFF);
-	byteVector.push_back((x >> 16) & 0xFF);
-	byteVector.push_back((x >> 8) & 0xFF);
-	byteVector.push_back((x >> 0) & 0xFF);
-}
-
-void serialiseString(std::vector<uint8_t> &byteVector, std::string stringToSerialise)
+void serialiseString(std::ofstream& file, std::string stringToSerialise)
 {
 	int size = static_cast<int>(stringToSerialise.length());
 	int letterCode;
 
-	serialiseInt(byteVector, size);
+	serialiseInt(file, size);
 	
 	for (int i = 0; i < size; ++i){
 		letterCode = static_cast<int>(stringToSerialise[i]);
-		serialiseInt(byteVector, letterCode);
+		serialiseInt(file, letterCode);
 	}
 }
 
 int deserialiseInt(char* buffer, int i)
 {
-	int value = int(buffer[i + 0] << 24 |
-					buffer[i + 1] << 16 |
-					buffer[i + 2] << 8 |
-					buffer[i + 3]);
+	int value = (	(unsigned char)buffer[i + 0] << 24 |
+					(unsigned char)buffer[i + 1] << 16 |
+					(unsigned char)buffer[i + 2] << 8 |
+					(unsigned char)buffer[i + 3]
+				);
 
 	return value;
 }
@@ -57,10 +57,10 @@ Position::Position(int i, int j)
   y = j;
 }
 
-Position::Position()
+Position::Position():
+	x(0), y(0)
 {
-	x = 0;
-	y = 0;
+
 }
 
 Position::~Position()
@@ -68,38 +68,31 @@ Position::~Position()
 
 }
 
-void Position::serialise(std::vector<uint8_t> &byteVector)
+void Position::serialise(std::ofstream& file)
 {
-	std::cout << "Position" << std::endl;
-	serialiseInt(byteVector, x);
-	std::cout << "x: " << x << std::endl;
-	serialiseInt(byteVector, y);
-	std::cout << "y: " << y << std::endl;
+	serialiseInt(file, x);
+	serialiseInt(file, y);
 }
 
 int Position::deserialise(char* buffer, int i)
 {
 	x = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	debug_component(x);
 
 	y = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
-	debug_component(y);
 	return i;
 }
 
 
-Renderable::Renderable(char _chr, SDL_Color _colour, int _spriteX, int _spriteY, int _sheet)
+Renderable::Renderable(char _chr, SDL_Color _colour, int _spriteX, int _spriteY, int _sheet):
+	chr(_chr), colour(_colour), spriteX(_spriteX), spriteY(_spriteY), sheet(_sheet)
 {
-	chr = _chr;
-	colour = _colour;
-	spriteX = _spriteX;
-	spriteY = _spriteY;
-	sheet = _sheet;
+
 }
 
-Renderable::Renderable()
+Renderable::Renderable():
+	chr(' '), colour({0xff, 0xff, 0xff}), sheet(0), spriteX(0), spriteY(0)
 {
 
 }
@@ -109,23 +102,15 @@ Renderable::~Renderable()
 
 }
 
-void Renderable::serialise(std::vector<uint8_t> &byteVector)
+void Renderable::serialise(std::ofstream& file)
 {
-	std::cout << "Renderable" << std::endl;
-	serialiseInt(byteVector, static_cast<int>(chr));
-	std::cout << "char: " << chr << std::endl;
-	serialiseInt(byteVector, colour.r);
-	std::cout << "red: " << colour.r << std::endl;
-	serialiseInt(byteVector, colour.g);
-	std::cout << "green: " << colour.g << std::endl;
-	serialiseInt(byteVector, colour.b);
-	std::cout << "blue: " << colour.b << std::endl;
-	serialiseInt(byteVector, spriteX);
-	std::cout << "sprite x: " << spriteX << std::endl;
-	serialiseInt(byteVector, spriteY);
-	std::cout << "sprite y: " << spriteY << std::endl;
-	serialiseInt(byteVector, sheet);
-	std::cout << "sheet: " << sheet << std::endl;
+	serialiseInt(file, static_cast<int>(chr));
+	serialiseInt(file, colour.r);
+	serialiseInt(file, colour.g);
+	serialiseInt(file, colour.b);
+	serialiseInt(file, spriteX);
+	serialiseInt(file, spriteY);
+	serialiseInt(file, sheet);
 }
 
 int Renderable::deserialise(char* buffer, int i)
@@ -162,18 +147,15 @@ int Renderable::deserialise(char* buffer, int i)
 
 
 Fighter::Fighter(int _maxHealth, int _power, int _defence):
-maxHealth(_maxHealth), health(_maxHealth), power(_power), defence(_defence), isAlive(true)
+	maxHealth(_maxHealth), health(_maxHealth), power(_power), defence(_defence), isAlive(true)
 {
 
 }
 
-Fighter::Fighter()
+Fighter::Fighter():
+	maxHealth(0), health(0), power(0), defence(0), isAlive(true)
 {
-	health = 0;
-	maxHealth = 0;
-	power = 0;
-	defence = 0;
-	isAlive = true;
+
 }
 
 Fighter::~Fighter()
@@ -181,21 +163,15 @@ Fighter::~Fighter()
 
 }
 
-void Fighter::serialise(std::vector<uint8_t> &byteVector)
+void Fighter::serialise(std::ofstream& file)
 {
-	int _isAlive = 1;
+	int _isAlive = isAlive ? 1 : 0;
 
-	std::cout << "Fighter" << std::endl;
-	serialiseInt(byteVector, health);
-	std::cout << "health: " << health << std::endl;
-	serialiseInt(byteVector, maxHealth);
-	std::cout << "max health: " << maxHealth << std::endl;
-	serialiseInt(byteVector, power);
-	std::cout << "power: " << power << std::endl;
-	serialiseInt(byteVector, defence);
-	std::cout << "defence: " << defence << std::endl;
-	serialiseInt(byteVector, _isAlive);
-	std::cout << "is alive: " << _isAlive << std::endl;
+	serialiseInt(file, health);
+	serialiseInt(file, maxHealth);
+	serialiseInt(file, power);
+	serialiseInt(file, defence);
+	serialiseInt(file, _isAlive);
 }
 
 int Fighter::deserialise(char* buffer, int i)
@@ -228,39 +204,33 @@ Actor::~Actor()
 
 }
 
-void Actor::serialise(std::vector<uint8_t> &byteVector)
+void Actor::serialise(std::ofstream& file)
 {
-	std::cout << "actor" << std::endl;
+
 }
 
 int Actor::deserialise(char* buffer, int i)
 {
-
 	return i;
 }
 
 
-Player::Player()
+Player::Player():
+	level(1), exp(0), next(100)
 {
-	level = 1;
-	exp = 0;
-	next = 100;
+
 }
 
 Player::~Player()
 {
 
 }
-#include <stdio.h>
-void Player::serialise(std::vector<uint8_t> &byteVector)
+
+void Player::serialise(std::ofstream& file)
 {
-	std::cout << "player" << std::endl;
-	serialiseInt(byteVector, level);
-	std::cout << "level" << level << std::endl;
-	serialiseInt(byteVector, exp);
-	std::cout << "exp: " << exp << std::endl;
-	serialiseInt(byteVector, next);
-	std::cout << "next level: " << next << std::endl;
+	serialiseInt(file, level);
+	serialiseInt(file, exp);
+	serialiseInt(file, next);
 }
 
 int Player::deserialise(char* buffer, int i)
@@ -279,14 +249,15 @@ int Player::deserialise(char* buffer, int i)
 
 
 Item::Item(std::string desc, int _level):
-description(desc), level(_level)
+	description(desc), level(_level)
 {
 
 }
 
-Item::Item()
+Item::Item():
+	description(""), level(0)
 {
-	description = "";
+
 }
 
 Item::~Item()
@@ -294,18 +265,14 @@ Item::~Item()
 
 }
 
-void Item::serialise(std::vector<uint8_t> &byteVector)
+void Item::serialise(std::ofstream& file)
 {
-	std::cout << "item" << std::endl;
-	serialiseString(byteVector, description);
-	std::cout << "description: " << description << std::endl;
-	serialiseInt(byteVector, level);
-	std::cout << "level: " << level << std::endl;
+	serialiseString(file, description);
+	serialiseInt(file, level);
 }
 
 int Item::deserialise(char* buffer, int i)
 {
-	std::cout << "Index in Item: " << i << std::endl;
 	int descLength = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
 
@@ -330,9 +297,10 @@ exp(_exp), level(_level)
 
 }
 
-AI::AI()
+AI::AI():
+	exp(0), level(0)
 {
-	exp = 0;
+
 }
 
 AI::~AI()
@@ -340,13 +308,10 @@ AI::~AI()
 
 }
 
-void AI::serialise(std::vector<uint8_t> &byteVector)
+void AI::serialise(std::ofstream& file)
 {
-	std::cout << "ai" << std::endl;
-	serialiseInt(byteVector, exp);
-	std::cout << "exp: " << exp << std::endl;
-	serialiseInt(byteVector, level);
-	std::cout << "level: " << level << std::endl;
+	serialiseInt(file, exp);
+	serialiseInt(file, level);
 }
 
 int AI::deserialise(char* buffer, int i)
@@ -361,14 +326,15 @@ int AI::deserialise(char* buffer, int i)
 }
 
 Inventory::Inventory(int _capacity):
-capacity(_capacity)
+	capacity(_capacity)
 {
 
 }
 
-Inventory::Inventory()
+Inventory::Inventory():
+	capacity(0)
 {
-	capacity = 0;
+	
 }
 
 Inventory::~Inventory()
@@ -376,18 +342,14 @@ Inventory::~Inventory()
 
 }
 
-void Inventory::serialise(std::vector<uint8_t> &byteVector)
+void Inventory::serialise(std::ofstream& file)
 {
 	int inventorySize = static_cast<int>(inventory.size());
 
-	std::cout << "inventory:" << std::endl;
-	serialiseInt(byteVector, capacity);
-	std::cout << "capacity: " << capacity << std::endl;
-	serialiseInt(byteVector, inventorySize);
-	std::cout << "inventory size: " << inventorySize << std::endl;
+	serialiseInt(file, capacity);
+	serialiseInt(file, inventorySize);
 	for (int i = 0; i < inventorySize; ++i){
-		serialiseInt(byteVector, inventory.at(i)->m_uid);
-		std::cout << "item uid: " << inventory.at(i)->m_uid << std::endl;
+		serialiseInt(file, inventory.at(i)->m_uid);
 	}
 }
 
@@ -409,15 +371,15 @@ int Inventory::deserialise(char* buffer, int i)
 
 
 Weapon::Weapon(DamageTypes _damageType, int _sidedDie, bool _twoHanded):
-damageType(_damageType), sidedDie(_sidedDie), twoHanded(_twoHanded)
+	damageType(_damageType), sidedDie(_sidedDie), twoHanded(_twoHanded)
 {
 
 }
 
-Weapon::Weapon()
+Weapon::Weapon():
+	damageType(NODAMAGETYPE), sidedDie(0), twoHanded(false)
 {
-	sidedDie = 0;
-	twoHanded = false;
+
 }
 
 Weapon::~Weapon()
@@ -425,15 +387,11 @@ Weapon::~Weapon()
 
 }
 
-void Weapon::serialise(std::vector<uint8_t> &byteVector)
+void Weapon::serialise(std::ofstream& file)
 {
-	std::cout << "weapon" << std::endl;
-	serialiseInt(byteVector, static_cast<int>(damageType));
-	std::cout << "damage type: " << damageType << std::endl;
-	serialiseInt(byteVector, sidedDie);
-	std::cout << "sided die: " << sidedDie << std::endl;
-	serialiseInt(byteVector, static_cast<int>(twoHanded));
-	std::cout << "two handed: " << twoHanded << std::endl;
+	serialiseInt(file, static_cast<int>(damageType));
+	serialiseInt(file, sidedDie);
+	serialiseInt(file, static_cast<int>(twoHanded));
 }
 
 int Weapon::deserialise(char* buffer, int i)
@@ -451,12 +409,13 @@ int Weapon::deserialise(char* buffer, int i)
 }
 
 Armour::Armour(DamageTypes _resistance, DamageTypes _weakness, int _armourBonus):
-resistance(_resistance), weakness(_weakness), armourBonus(_armourBonus)
+	resistance(_resistance), weakness(_weakness), armourBonus(_armourBonus)
 {
 
 }
 
-Armour::Armour()
+Armour::Armour():
+	resistance(NODAMAGETYPE), weakness(NODAMAGETYPE), armourBonus(0)
 {
 
 }
@@ -466,15 +425,11 @@ Armour::~Armour()
 
 }
 
-void Armour::serialise(std::vector<uint8_t> &byteVector)
+void Armour::serialise(std::ofstream& file)
 {
-	std::cout << "armour" << std::endl;
-	serialiseInt(byteVector, static_cast<int>(resistance));
-	std::cout << "resistance: " << resistance << std::endl;
-	serialiseInt(byteVector, static_cast<int>(weakness));
-	std::cout << "weakness: " << weakness << std::endl;
-	serialiseInt(byteVector, armourBonus);
-	std::cout << "armour bonus: " << armourBonus << std::endl;
+	serialiseInt(file, static_cast<int>(resistance));
+	serialiseInt(file, static_cast<int>(weakness));
+	serialiseInt(file, armourBonus);
 }
 
 int Armour::deserialise(char* buffer, int i)
@@ -493,12 +448,13 @@ int Armour::deserialise(char* buffer, int i)
 
 
 Wearable::Wearable(EquipSlots _slot):
-slot(_slot)
+	slot(_slot)
 {
 
 }
 
-Wearable::Wearable()
+Wearable::Wearable():
+	slot(HEAD)
 {
 
 }
@@ -508,11 +464,9 @@ Wearable::~Wearable()
 
 }
 
-void Wearable::serialise(std::vector<uint8_t> &byteVector)
+void Wearable::serialise(std::ofstream& file)
 {
-	std::cout << "wearable: " << std::endl;
-	serialiseInt(byteVector, static_cast<int>(slot));
-	std::cout << "slot: " << slot << std::endl;
+	serialiseInt(file, static_cast<int>(slot));
 }
 
 int Wearable::deserialise(char* buffer, int i)
@@ -539,21 +493,17 @@ Body::~Body()
 
 }
 
-void Body::serialise(std::vector<uint8_t> &byteVector)
+void Body::serialise(std::ofstream& file)
 {
-	std::cout << "body" << std::endl;
 	std::map<EquipSlots, GameObject*>::iterator it;
 	int empty = 0;
 
 	for (it = slots.begin(); it != slots.end(); ++it){
-		serialiseInt(byteVector, static_cast<int>(it->first));
-		std::cout << "equipped item: " << it->first << std::endl;
+		serialiseInt(file, static_cast<int>(it->first));
 		if (it->second != nullptr){
-			serialiseInt(byteVector, it->second->m_uid);
-			std::cout << "item: " << it->second->m_uid << std::endl;
+			serialiseInt(file, it->second->m_uid);
 		} else {
-			serialiseInt(byteVector, empty);
-			std::cout << "no item: " << empty << std::endl;
+			serialiseInt(file, empty);
 		}
 	}
 }
@@ -622,12 +572,13 @@ int Body::deserialise(char* buffer, int i)
 
 
 Useable::Useable(UseableFunctionEnums func, int _numUses):
-funcToDo(func), numUses(_numUses)
+	funcToDo(func), numUses(_numUses)
 {
 
 }
 
-Useable::Useable()
+Useable::Useable():
+	funcToDo(HEALING), numUses(0)
 {
 	numUses = 0;
 }
@@ -637,13 +588,10 @@ Useable::~Useable()
 
 }
 
-void Useable::serialise(std::vector<uint8_t> &byteVector)
+void Useable::serialise(std::ofstream& file)
 {
-	std::cout << "useable" << std::endl;
-	serialiseInt(byteVector, static_cast<int>(funcToDo));
-	std::cout << "function: " << funcToDo << std::endl;
-	serialiseInt(byteVector, numUses);
-	std::cout << "number of uses: " << numUses << std::endl;
+	serialiseInt(file, static_cast<int>(funcToDo));
+	serialiseInt(file, numUses);
 }
 
 int Useable::deserialise(char* buffer, int i)
@@ -659,14 +607,15 @@ int Useable::deserialise(char* buffer, int i)
 
 
 Healing::Healing(int _roll):
-roll(_roll)
+	roll(_roll)
 {
 
 }
 
-Healing::Healing()
+Healing::Healing():
+	roll(0)
 {
-	roll = 0;
+
 }
 
 Healing::~Healing()
@@ -674,11 +623,9 @@ Healing::~Healing()
 
 }
 
-void Healing::serialise(std::vector<uint8_t> &byteVector)
+void Healing::serialise(std::ofstream& file)
 {
-	std::cout << "healing" << std::endl;
-	serialiseInt(byteVector, roll);
-	std::cout << "hit die: " << roll << std::endl;
+	serialiseInt(file, roll);
 }
 
 int Healing::deserialise(char* buffer, int i)
@@ -690,16 +637,15 @@ int Healing::deserialise(char* buffer, int i)
 }
 
 Damage::Damage(int _radius, int _roll, DamageTypes _type, int _chance):
-radius(_radius), roll(_roll), type(_type), chance(_chance)
+	radius(_radius), roll(_roll), type(_type), chance(_chance)
 {
 
 }
 
-Damage::Damage()
+Damage::Damage():
+	radius(0), roll(0), type(NODAMAGETYPE), chance(0)
 {
-	radius = 0;
-	roll = 0;
-	chance = 0;
+
 }
 
 Damage::~Damage()
@@ -707,17 +653,12 @@ Damage::~Damage()
 
 }
 
-void Damage::serialise(std::vector<uint8_t> &byteVector)
+void Damage::serialise(std::ofstream& file)
 {
-	std::cout << "damage" << std::endl;
-	serialiseInt(byteVector, radius);
-	std::cout << "radius: " << radius << std::endl;
-	serialiseInt(byteVector, roll);
-	std::cout << "dice: " << roll << std::endl;
-	serialiseInt(byteVector, static_cast<int>(type));
-	std::cout << "type: " << type << std::endl;
-	serialiseInt(byteVector, chance);
-	std::cout << "chance: " << chance << std::endl;
+	serialiseInt(file, radius);
+	serialiseInt(file, roll);
+	serialiseInt(file, static_cast<int>(type));
+	serialiseInt(file, chance);
 }
 
 int Damage::deserialise(char* buffer, int i)
@@ -744,7 +685,8 @@ radius(_radius), roll(_roll), splashRadius(_splashRadius), type(_type), chance(_
 
 }
 
-AreaDamage::AreaDamage()
+AreaDamage::AreaDamage() :
+	radius(0), roll(0), splashRadius(0), type(NODAMAGETYPE), chance(0)
 {
 
 }
@@ -754,19 +696,13 @@ AreaDamage::~AreaDamage()
 
 }
 
-void AreaDamage::serialise(std::vector<uint8_t> &byteVector)
+void AreaDamage::serialise(std::ofstream& file)
 {
-	std::cout << "AOE" << std::endl;
-	serialiseInt(byteVector, radius);
-	std::cout << "radius: " << radius << std::endl;
-	serialiseInt(byteVector, roll);
-	std::cout << "roll: " << roll << std::endl;
-	serialiseInt(byteVector, splashRadius);
-	std::cout << "splashRadius: " << splashRadius << std::endl;
-	serialiseInt(byteVector, static_cast<int>(type));
-	std::cout << "type: " << type << std::endl;
-	serialiseInt(byteVector, chance);
-	std::cout << "chance: " << chance << std::endl;
+	serialiseInt(file, radius);
+	serialiseInt(file, roll);
+	serialiseInt(file, splashRadius);
+	serialiseInt(file, static_cast<int>(type));
+	serialiseInt(file, chance);
 }
 
 int AreaDamage::deserialise(char* buffer, int i)
@@ -796,10 +732,10 @@ radius(_radius), statusType(_status), splashRadius(_splashRadius)
 
 }
 
-Status::Status()
+Status::Status() :
+	radius(0), statusType(BURNED), splashRadius(0)
 {
-	radius = 0;
-	splashRadius = 0;
+
 }
 
 Status::~Status()
@@ -807,15 +743,11 @@ Status::~Status()
 
 }
 
-void Status::serialise(std::vector<uint8_t> &byteVector)
+void Status::serialise(std::ofstream& file)
 {
-	std::cout << "status" << std::endl;
-	serialiseInt(byteVector, radius);
-	std::cout << "radius: " << radius << std::endl;
-	serialiseInt(byteVector, static_cast<int>(statusType));
-	std::cout << "status type: " << statusType << std::endl;
-	serialiseInt(byteVector, splashRadius);
-	std::cout << "splash radius: " << splashRadius << std::endl;
+	serialiseInt(file, radius);
+	serialiseInt(file, static_cast<int>(statusType));
+	serialiseInt(file, splashRadius);
 }
 
 int Status::deserialise(char* buffer, int i)
@@ -843,9 +775,9 @@ Consumable::~Consumable()
 
 }
 
-void Consumable::serialise(std::vector<uint8_t> &byteVector)
+void Consumable::serialise(std::ofstream& file)
 {
-	std::cout << "consumable" << std::endl;
+
 }
 
 int Consumable::deserialise(char* buffer, int i)
@@ -863,9 +795,9 @@ Stairs::~Stairs()
 
 }
 
-void Stairs::serialise(std::vector<uint8_t> &byteVector)
+void Stairs::serialise(std::ofstream& file)
 {
-	std::cout << "stairs" << std::endl;
+
 }
 
 int Stairs::deserialise(char* buffer, int i)
@@ -884,14 +816,12 @@ StatusContainer::~StatusContainer()
 {
 }
 
-void StatusContainer::serialise(std::vector<uint8_t> &byteVector)
+void StatusContainer::serialise(std::ofstream& file)
 {
-	std::cout << "status container" << std::endl;
 	for (int i = 0; i <= static_cast<int>(BLEEDING); ++i){
-		serialiseInt(byteVector, std::get<0>(statuses.at(static_cast<StatusTypes>(i))));
-		std::cout << "type" << std::get<0>(statuses.at(static_cast<StatusTypes>(i))) << std::endl;
-		serialiseInt(byteVector, std::get<1>(statuses.at(static_cast<StatusTypes>(i))));
-		std::cout << "duration: " << std::get<1>(statuses.at(static_cast<StatusTypes>(i))) << std::endl;
+		serialiseInt(file, std::get<0>(statuses.at(static_cast<StatusTypes>(i))));
+
+		serialiseInt(file, std::get<1>(statuses.at(static_cast<StatusTypes>(i))));
 	}
 }
 

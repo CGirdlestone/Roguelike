@@ -31,10 +31,8 @@ public:
 	GameObject();
 	~GameObject();
 
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i, int length);
-	void debug_object(int x);
-	void debug_object(const std::string& word);
 
 	std::string m_name;
 	int m_uid;

@@ -46,9 +46,9 @@ void GameScene::nextLevel()
 	saveGame();
 }
 
-int GameScene::parseGameObjects(int i, char* buffer, int length)
+int GameScene::parseGameObjects(int i, char* buffer, std::fstream::pos_type length)
 {
-	while(i < length){
+	while((long)i < length){
 		GameObject* g = new GameObject();
 
 		i = g->deserialise(buffer, i, length);
@@ -59,23 +59,18 @@ int GameScene::parseGameObjects(int i, char* buffer, int length)
 			if (deserialiseInt(buffer, i + j * 32) == 0) {
 				count += 1;
 			}
-			std::cout << deserialiseInt(buffer, i + j * 32) << std::endl;
-			std::cout << count << std::endl;
 		}
 
 		if (count == 4) {
 			return i + 4 * 32;
 		}
-		std::cout << std::endl;
 	}
 	return i;
 }
 
-int GameScene::parseMap(int i, char* buffer, int length)
+int GameScene::parseMap(int i, char* buffer, std::fstream::pos_type length)
 {
-	int numBytes = 4;
 	int num_tiles = m_dungeon->Getm_width() * m_dungeon->Getm_height();
-	char* level = new char[num_tiles];
 	
 	int letter;
 
@@ -83,23 +78,15 @@ int GameScene::parseMap(int i, char* buffer, int length)
 		letter = deserialiseInt(buffer, i);
 		i = advanceFourBytes(i);
 
-		level[j] = static_cast<char>(letter);
+		m_dungeon->m_level[j] = static_cast<char>(letter);
 	}
-	
-	for (int l = 0; l < m_dungeon->Getm_width() * m_dungeon->Getm_height(); ++l){
-		m_dungeon->m_level[l] = level[l];
-	}
-
-	delete[] level;
 
 	return i;
 }
 
-int GameScene::parseExploredMap(int i, char* buffer, int length)
+int GameScene::parseExploredMap(int i, char* buffer, std::fstream::pos_type length)
 {
-	int numBytes = 4;
 	int num_tiles = m_dungeon->Getm_width() * m_dungeon->Getm_height();
-	char* exploredLevel = new char[num_tiles];
 	
 	int flag;
 
@@ -107,63 +94,48 @@ int GameScene::parseExploredMap(int i, char* buffer, int length)
 		flag = deserialiseInt(buffer, i);
 		i = advanceFourBytes(i);
 
-		exploredLevel[j] = flag;
+		m_dungeon->m_exploredMap[j] = flag;
 	}
 	
-	for (int j = 0; j < m_dungeon->Getm_width() * m_dungeon->Getm_height(); ++j){
-		m_dungeon->m_exploredMap[j] = exploredLevel[j];
-	}
-
-	delete[] exploredLevel;
-
 	return i;
 }
 
-int GameScene::parseDungeonDepth(int i, char* buffer, int length)
+int GameScene::parseDungeonDepth(int i, char* buffer, std::fstream::pos_type length)
 {
-	int numBytes = 4;
-
 	m_dungeon->m_uid = deserialiseInt(buffer, i);
 	i = advanceFourBytes(i);
 
 	return i;
 }
 
-void GameScene::serialiseGameState(std::vector<uint8_t> &byteVector)
+void GameScene::serialiseGameState(std::ofstream& file)
 {
-	serialiseInt(byteVector, m_dungeon->m_uid);
+	serialiseInt(file, m_dungeon->m_uid);
 
 	for (int i = 0; i < m_dungeon->Getm_width() * m_dungeon->Getm_height(); ++i){
-		serialiseInt(byteVector, static_cast<int>(m_dungeon->m_level[i]));
+		serialiseInt(file, static_cast<int>(m_dungeon->m_level[i]));
 	}
 
 	for (int i = 0; i < m_dungeon->Getm_width() * m_dungeon->Getm_height(); ++i){
-		serialiseInt(byteVector, static_cast<int>(m_dungeon->m_exploredMap[i]));
+		serialiseInt(file, static_cast<int>(m_dungeon->m_exploredMap[i]));
 	}
 
 	std::map<int, GameObject*>::iterator it;
-
 	for (it = m_entities->begin(); it != m_entities->end(); ++it) {
-		it->second->serialise(byteVector);
+		it->second->serialise(file);
 	}
 
 	for (int i = 0; i < 4; ++i) {
-		serialiseInt(byteVector, 0);
+		serialiseInt(file, 0);
 	}
 
 }
 
 void GameScene::saveGame()
 {
-	std::vector<uint8_t> byteVector;
+	std::ofstream file("save.txt", std::ios::binary);
 
-	serialiseGameState(byteVector);
-
-	std::ofstream file("save.txt");
-
-	for (int i = 0; i < static_cast<int>(byteVector.size()); ++i){
-		file.write(reinterpret_cast<char*>(&byteVector.at(i)), sizeof(reinterpret_cast<char*>(&byteVector.at(i))));
-	}
+	serialiseGameState(file);
 
 	file.close();
 }
@@ -186,11 +158,11 @@ void GameScene::mapUIDsToGameObjects()
 
 void GameScene::loadGame()
 {
-	std::ifstream file("save.txt");
+	std::ifstream file("save.txt", std::ios::binary | std::ios::ate);
 
-	file.seekg(0, file.end);
-	int length = file.tellg();
-	file.seekg(0, file.beg);
+	file.seekg(0, std::ios::end);
+	std::fstream::pos_type length = file.tellg();
+	file.seekg(0, std::ios::beg);
 
 	char* buffer = new char[length];
 
@@ -201,6 +173,7 @@ void GameScene::loadGame()
 	int byteIndex = 0;
 
 	m_dungeon->initialiseMap(60);
+
 	byteIndex = parseDungeonDepth(byteIndex, buffer, length);
 	byteIndex = parseMap(byteIndex, buffer, length);
 	byteIndex = parseExploredMap(byteIndex, buffer, length);
@@ -212,8 +185,8 @@ void GameScene::loadGame()
 
 void GameScene::processEntities()
 {
-  int j;
-  int x, y;
+	int j{ 0 };
+	int x{ 0 }, y{ 0 };
 
 	std::map<int, GameObject*>::iterator it;
   for (it = m_entities->begin(); it != m_entities->end(); ++it){

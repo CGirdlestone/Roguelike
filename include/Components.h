@@ -12,12 +12,10 @@
 #include "StatusTypes.h"
 #include "GameObject.h"
 
-void serialiseInt(std::vector<uint8_t> &byteVector, int x);
-void serialiseString(std::vector<uint8_t> &byteVector, std::string stringToSerialise);
+void serialiseInt(std::ofstream& file, int x);
+void serialiseString(std::ofstream& file, std::string stringToSerialise);
 int deserialiseInt(char* buffer, int i); 
 int advanceFourBytes(int i);
-void debug_component(int x);
-void debug_component(const std::string & word);
 
 struct Position
 {
@@ -26,7 +24,7 @@ struct Position
 	Position(int i, int j);
 	Position();
 	~Position();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -40,7 +38,7 @@ struct Renderable
 	Renderable(char _chr, SDL_Color _colour, int _spriteX, int _spriteY, int _sheet);
 	Renderable();
 	~Renderable();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -54,7 +52,7 @@ struct Fighter
 	Fighter(int _maxHealth, int _power, int _defence);
 	Fighter();
 	~Fighter();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -62,7 +60,7 @@ struct Actor
 {
 	Actor();
 	~Actor();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -73,7 +71,7 @@ struct Player
 	int level;
 	int exp;
 	int next;
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -85,7 +83,7 @@ struct AI
 	int exp;
 	int level;
 	std::vector<int> path;
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -96,7 +94,7 @@ struct Item
 	Item(std::string desc, int _level);
 	Item();
 	~Item();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -108,7 +106,7 @@ struct Inventory
 	Inventory(int _capacity);
 	Inventory();
 	~Inventory();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -120,7 +118,7 @@ struct Weapon
 	Weapon(DamageTypes _damageType, int _sidedDie, bool _twoHanded);
 	Weapon();
 	~Weapon();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -132,7 +130,7 @@ struct Armour
 	Armour(DamageTypes _resistance, DamageTypes _weakness, int _armourBonus);
 	Armour();
 	~Armour();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -142,7 +140,7 @@ struct Wearable
 	Wearable();
 	~Wearable();
 	EquipSlots slot;
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -152,7 +150,7 @@ struct Body
 	std::map<int, int> slotsMirror;
 	Body();
 	~Body();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -163,7 +161,7 @@ struct Useable
 	~Useable();	
 	UseableFunctionEnums funcToDo;
 	int numUses;
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -173,7 +171,7 @@ struct Healing
 	Healing();
 	~Healing();
 	int roll;
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -186,7 +184,7 @@ struct Damage
 	int roll;
 	DamageTypes type;
 	int chance;
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -200,7 +198,7 @@ struct AreaDamage
 	int splashRadius;
 	DamageTypes type;
 	int chance;
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -212,7 +210,7 @@ struct Status
 	int radius;
 	StatusTypes statusType;
 	int splashRadius;
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -220,7 +218,7 @@ struct Consumable
 {
 	Consumable();
 	~Consumable();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -228,7 +226,7 @@ struct Stairs
 {
 	Stairs();
 	~Stairs();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };
 
@@ -236,7 +234,7 @@ struct StatusContainer
 {
 	StatusContainer();
 	~StatusContainer();
-	void serialise(std::vector<uint8_t> &byteVector);
+	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 	std::map<StatusTypes, std::pair<int, int>> statuses;
 };

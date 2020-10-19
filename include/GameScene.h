@@ -37,11 +37,11 @@ public:
 	void nextLevel();
 	void startOver();
 	void finishPlayerTurn(){m_playerTurn = false; };
-	void serialiseGameState(std::vector<uint8_t> &byteVector);
-	int parseGameObjects(int i, char* buffer, int length);
-	int parseMap(int i, char* buffer, int length);
-	int parseExploredMap(int i, char* buffer, int length);
-	int parseDungeonDepth(int i, char* buffer, int length);
+	void serialiseGameState(std::ofstream & file);
+	int parseGameObjects(int i, char* buffer, std::fstream::pos_type length);
+	int parseMap(int i, char* buffer, std::fstream::pos_type length);
+	int parseExploredMap(int i, char* buffer, std::fstream::pos_type length);
+	int parseDungeonDepth(int i, char* buffer, std::fstream::pos_type length);
 	void mapUIDsToGameObjects();
 	void saveGame();
 	void loadGame();
