@@ -374,13 +374,16 @@ void Renderer::drawCharacterScene(std::map<int, GameObject*> *actors, int index)
 {
 	m_console->flush();
 
-	std::string character = "Character Screen";
+	GameObject* player = actors->at(0);
+	std::string character = "Equipped Items";
 	std::string slot;
 
 	drawBox(0, 0, m_console->Getm_width() + m_console->getXBuffer(), m_console->Getm_height() + m_console->getYBuffer());
 	drawBox(0, 0, m_console->Getm_width() / 2, m_console->Getm_height() + m_console->getYBuffer());
 
 	drawText(character, 3, 2, false);
+
+	int armour_bonus = 0;
 
 	for (std::map<EquipSlots, GameObject*>::iterator iter = actors->at(0)->body->slots.begin(); iter != actors->at(0)->body->slots.end(); ++iter){
 
@@ -395,10 +398,40 @@ void Renderer::drawCharacterScene(std::map<int, GameObject*> *actors, int index)
 
 		if (iter->second != nullptr){
 			drawEquippedItem(slot, iter->second->m_name, static_cast<int>(iter->first) + 1, index);
+			if (iter->second->armour != nullptr) {
+				armour_bonus += iter->second->armour->armourBonus;
+			}
 		} else {
 			drawEquippedItem(slot, static_cast<int>(iter->first) + 1, index);
 		}
-	} 
+	}
+
+	int yPosition = 2;
+	int x = m_console->Getm_width() / 2 + 1;
+
+	std::string level = "Level: " + std::to_string(player->player->level);
+	drawText(level, x, yPosition, false);
+	yPosition += 2;
+
+	std::string exp = "Exp: " + std::to_string(player->player->exp) + " / " + std::to_string(player->player->next);
+	drawText(exp, x, yPosition, false);
+	yPosition += 2;
+
+	std::string health = "Health: " + std::to_string(player->fighter->health) + " / " + std::to_string(player->fighter->maxHealth);
+	drawText(health, x, yPosition, false);
+	yPosition += 2;
+
+	std::string power = "Power: " + std::to_string(player->fighter->power);
+	drawText(power, x, yPosition, false);
+	yPosition += 2;
+
+	std::string defence = "Defence: " + std::to_string(player->fighter->defence);
+	drawText(defence, x, yPosition, false);
+	yPosition += 2;
+
+	std::string armour_bonus_str = "Armour Bonus: " + std::to_string(armour_bonus);
+	drawText(armour_bonus_str, x, yPosition, false);
+	yPosition += 2;
 	
 	m_console->update();
 }
@@ -421,7 +454,7 @@ void Renderer::drawPauseMenu(int index, Camera* camera, DungeonGenerator* dungeo
 
 	int xOrigin = width/2 - 5;
 	int yOrigin = height/2 - 2;
-	int boxWidth = startText.size() < exitText.size() ? static_cast<int>(exitText.size())+4 : static_cast<int>(startText.size())+4;
+	int boxWidth = startText.size() < exitText.size() ? static_cast<int>(exitText.size()) + 4 : static_cast<int>(startText.size()) + 4;
 	int boxHeight = 7;
 
 	int block = 13*16 + 11;

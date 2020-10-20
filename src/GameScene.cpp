@@ -196,6 +196,8 @@ void GameScene::processEntities()
           it->second->ai->path.clear();
           aStar(m_dungeon->m_level, &it->second->ai->path, m_dungeon->Getm_width(), m_dungeon->Getm_height(), it->second->position->x, it->second->position->y, m_entities->at(0)->position->x, m_entities->at(0)->position->y);
 
+		  if (it->second->ai->path.empty()) { continue; }
+
           j = it->second->ai->path.back();
           it->second->ai->path.pop_back();
 
