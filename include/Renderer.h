@@ -19,7 +19,6 @@ public:
 	~Renderer();
 	void drawActors(Camera* camera, DungeonGenerator* dungeon, std::map<int, GameObject*> *actors);
 	void drawMap(Camera* camera, DungeonGenerator* dungeon, std::map<int, GameObject*> *actors);
-	void drawGameMapBorder(int xBuffer, int yBuffer, int width, int height);
 	void drawLog(MessageLog* messageLog, int height);
 	void drawUI();
 	void drawMenuOutline();
@@ -40,6 +39,9 @@ public:
 	void drawObject(GameObject* entity, int x, int y);
 	void drawTile(char* c, int x, int y, bool inView);
 
+	void drawBox(int x, int y, int width, int height);
+	void drawText(std::string& text, int x, int y, bool highlighted);
+		
 	void toggleAsciiMode();
 	
 private:
