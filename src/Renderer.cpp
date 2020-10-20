@@ -9,10 +9,10 @@ Renderer::Renderer(Console* console)
 {
 	m_console = console;
 	m_defaultColour = {0x3a, 0x4b, 0x6d};
-	m_inViewColour = {0xb4, 0xc3, 0xa8}; // 0xde, 0xed, 0xd6
+	m_inViewColour = {0xb4, 0xc3, 0xa8};
 	m_borderColour = {0x99, 0xb4, 0xdd};
 	m_highlightColour = {0xd3, 0xea, 0xd8};
-	m_backgroundColour = {0x0d, 0x0e, 0x1e};
+	m_backgroundColour = {0x07, 0x1b, 0x2c};
 	m_textColour = {0x94, 0xa5, 0xaa};
 }
 
@@ -91,6 +91,7 @@ void Renderer::drawMap(Camera* camera, DungeonGenerator* dungeon, std::map<int, 
 			continue;
 		}
 
+		offsetI = camera->calculateOffset(x, y);
 		occupied = false;
 		if (dungeon->m_fovMap[i] == 1){
 			
@@ -104,19 +105,15 @@ void Renderer::drawMap(Camera* camera, DungeonGenerator* dungeon, std::map<int, 
 			}
 
 			if(!occupied){
-				offsetI = camera->calculateOffset(x, y);
 				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), true);
 			}
 
 			if (!m_console->getDisplayAscii()){
-				offsetI = camera->calculateOffset(x, y);
 				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), true);
 			}
 
 		} else if (dungeon->m_fovMap[i] == 0){
 			if (dungeon->m_exploredMap[i] == 1){
-
-				offsetI = camera->calculateOffset(x, y);
 				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), false);
 			}
 		}
@@ -218,7 +215,7 @@ void Renderer::drawPlayerInfo(GameObject* player, DungeonGenerator* dungeon)
 {
 	int width = m_console->Getm_width();
 	int buffer = m_console->getXBuffer()-2;
-	int healthBarChar = 13 * 16 + 11; // solid block
+	int healthBarChar = 219; // solid block
 	SDL_Color colour = {0xd0, 0x46, 0x48};
 	
 	std::string health = "Health: " + std::to_string(player->fighter->health) + " / " + std::to_string(player->fighter->maxHealth);
@@ -323,6 +320,7 @@ void Renderer::drawInventory(std::map<int, GameObject*> *actors, int i)
 	drawBox(0, 0, width + xBuffer, height + yBuffer);
 	drawBox(0, 0, width / 2, height + yBuffer);
 	drawBox(width / 2 - 1, 0, width / 2 + xBuffer + 1, 8);
+	drawBox(width / 2 - 1, 7, width / 2 + xBuffer + 1, height + yBuffer - 7);
 
 	std::string inventoryHeader = "Inventory";
 	std::string selectedItem;
@@ -335,7 +333,11 @@ void Renderer::drawInventory(std::map<int, GameObject*> *actors, int i)
 			if (k == i){
 				selectedItem = ">" + item->m_name;
 				drawText(selectedItem, 2, 2 * k + 4, true);
-				drawText(item->item->description, width / 2 + 1, 2, false);
+				std::vector<std::string> lines = wrapText(item->item->description, width / 2 + xBuffer);
+				int j = 0;
+				for (auto& line : lines) {
+					drawText(line, width / 2, 2 + 2*j++, false);
+				}
 			} else {
 				drawText(item->m_name, 3, 2 * k + 4, false);
 			}
@@ -406,32 +408,26 @@ void Renderer::drawCharacterScene(std::map<int, GameObject*> *actors, int index)
 		}
 	}
 
-	int yPosition = 2;
+	int yPosition = 1;
 	int x = m_console->Getm_width() / 2 + 1;
 
 	std::string level = "Level: " + std::to_string(player->player->level);
-	drawText(level, x, yPosition, false);
-	yPosition += 2;
+	drawText(level, x, 2 * yPosition++, false);
 
 	std::string exp = "Exp: " + std::to_string(player->player->exp) + " / " + std::to_string(player->player->next);
-	drawText(exp, x, yPosition, false);
-	yPosition += 2;
+	drawText(exp, x, 2 * yPosition++, false);
 
 	std::string health = "Health: " + std::to_string(player->fighter->health) + " / " + std::to_string(player->fighter->maxHealth);
-	drawText(health, x, yPosition, false);
-	yPosition += 2;
+	drawText(health, x, 2 * yPosition++, false);
 
 	std::string power = "Power: " + std::to_string(player->fighter->power);
-	drawText(power, x, yPosition, false);
-	yPosition += 2;
+	drawText(power, x, 2 * yPosition++, false);
 
 	std::string defence = "Defence: " + std::to_string(player->fighter->defence);
-	drawText(defence, x, yPosition, false);
-	yPosition += 2;
+	drawText(defence, x, 2 * yPosition++, false);
 
 	std::string armour_bonus_str = "Armour Bonus: " + std::to_string(armour_bonus);
-	drawText(armour_bonus_str, x, yPosition, false);
-	yPosition += 2;
+	drawText(armour_bonus_str, x, 2 * yPosition++, false);
 	
 	m_console->update();
 }
@@ -594,20 +590,20 @@ void Renderer::drawGameOver(int i, std::vector<std::string> &deathMessages, int 
 
 	m_console->flush();
 
-	for (std::string line : deathMessages){
-  		for (int j = 0; j < static_cast<int>(line.length()); ++j){
+	for (auto & line : deathMessages){
+  		for (uint32_t j = 0; j < line.length(); ++j){
     		m_console->render(&line[j], xPosition + j, yPosition, m_textColour);
   		}
 		yPosition += 2;
 	}
 
-	for (int i = 0; i < static_cast<int>(totalLines - deathMessages.size()); ++i){
+	for (uint32_t i = 0; i < totalLines - deathMessages.size(); ++i){
 		yPosition += 2;
 	}
 
 	yPosition += 1;
 	
-	for (int j = 0; j < static_cast<int>(restart.length()); ++j){
+	for (uint32_t j = 0; j < restart.length(); ++j){
 		if (i == 0){
 			m_console->render(&restart[j], xPosition - 1 + j + 10, yPosition, m_highlightColour);
 		} else {
@@ -616,7 +612,7 @@ void Renderer::drawGameOver(int i, std::vector<std::string> &deathMessages, int 
 	}
 	yPosition += 2;
 	
-	for (int j = 0; j < static_cast<int>(exitGame.length()); ++j){
+	for (uint32_t j = 0; j < exitGame.length(); ++j){
 		if (i == 1){
 			m_console->render(&exitGame[j], xPosition - 1 + j + 10, yPosition, m_highlightColour);
 		} else {
@@ -630,27 +626,33 @@ void Renderer::drawGameOver(int i, std::vector<std::string> &deathMessages, int 
 
 void Renderer::drawBox(int x, int y, int width, int height)
 {
-	int block = 13 * 16 + 11;
+	int top_left = 218;
+	int top_right = 191;
+	int bot_left = 192;
+	int bot_right = 217;
+	int horizontal = 196;
+	int vertical = 179;
+	int block = 219;
 
 	for (int h = 0; h < height; ++h) {
 		for (int j = 0; j < width; ++j) {
 			if (j == 0 && h == 0) {
-				m_console->render(block, x + j, y + h, m_borderColour);
+				m_console->render(top_left, x + j, y + h, m_borderColour);
 			}
 			else if (j == 0 && h == height - 1) {
-				m_console->render(block, x + j, y + h, m_borderColour);
+				m_console->render(bot_left, x + j, y + h, m_borderColour);
 			}
 			else if (j == width - 1 && h == 0) {
-				m_console->render(block, x + j, y + h, m_borderColour);
+				m_console->render(top_right, x + j, y + h, m_borderColour);
 			}
 			else if (j == width - 1 && h == height - 1) {
-				m_console->render(block, x + j, y + h, m_borderColour);
+				m_console->render(bot_right, x + j, y + h, m_borderColour);
 			}
 			else if (j == 0 || j == width - 1) {
-				m_console->render(block, x + j, y + h, m_borderColour);
+				m_console->render(vertical, x + j, y + h, m_borderColour);
 			}
 			else if (h == 0 || h == height - 1) {
-				m_console->render(block, x + j, y + h, m_borderColour);
+				m_console->render(horizontal, x + j, y + h, m_borderColour);
 			}
 		}
 	}
@@ -662,7 +664,33 @@ void Renderer::drawText(std::string& text, int x, int y, bool highlighted)
 	if (highlighted) {
 		colour = m_highlightColour;
 	}
-	for (unsigned int i = 0; i < text.length(); ++i) {
+	for (uint32_t i = 0; i < text.length(); ++i) {
 		m_console->render(&text[i], x + i, y, colour);
 	}
+}
+
+
+std::vector<std::string> Renderer::wrapText(std::string& text, int width)
+{
+	std::vector<std::string> lines;
+	int last_space{ 0 };
+	int line_start{ 0 };
+
+	for (uint32_t i = 0; i < text.length(); ++i) {
+		if (text[i] == ' ') {
+			last_space = i;
+		}
+		
+		if (i == text.length() - 1) {
+			lines.push_back(text.substr(line_start, i + 1 - line_start));
+			break;
+		}
+
+		if (i % width == 0 && i != 0) {
+			lines.push_back(text.substr(line_start, last_space - line_start));
+			line_start = last_space;
+		}
+	}
+	
+	return lines;
 }

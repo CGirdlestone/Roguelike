@@ -41,6 +41,7 @@ public:
 
 	void drawBox(int x, int y, int width, int height);
 	void drawText(std::string& text, int x, int y, bool highlighted);
+	std::vector<std::string> wrapText(std::string& text, int width);
 		
 	void toggleAsciiMode();
 	
