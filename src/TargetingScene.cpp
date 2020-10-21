@@ -14,7 +14,7 @@
 #include "Pathfind.h"
 
 TargetingScene::TargetingScene(EventManager *eventManager, Renderer *renderer, std::map<int, GameObject*> *entities, Camera *camera, DungeonGenerator *dungeon, MessageLog* messageLog):
-m_eventManager(eventManager), m_renderer(renderer), m_entities(entities), m_camera(camera), m_dungeon(dungeon), m_messageLog(messageLog)
+m_eventManager(eventManager), m_renderer(renderer), m_entities(entities), m_camera(camera), m_dungeon(dungeon), m_messageLog(messageLog), m_item_uid(0), m_user_uid(0), m_x(0), m_y(0)
 {
 
 }
@@ -26,16 +26,16 @@ TargetingScene::~TargetingScene()
 
 enum KeyPressSurfaces TargetingScene::getEvent(SDL_Event *e)
 {
-  while(SDL_PollEvent(e)){
-  	if (e->type == SDL_QUIT){
-    	return ESCAPE;
-    } else if (e->type == SDL_KEYDOWN){
-      switch(e->key.keysym.sym){
-        case SDLK_UP:
-        return NORTH;
+	while(SDL_PollEvent(e)){
+  		if (e->type == SDL_QUIT){
+    		return ESCAPE;
+		} else if (e->type == SDL_KEYDOWN){
+			switch(e->key.keysym.sym){
+				case SDLK_UP:
+				return NORTH;
 
-        case SDLK_DOWN:
-        return SOUTH;
+				case SDLK_DOWN:
+				return SOUTH;
 
 				case SDLK_LEFT:
 				return WEST;
@@ -46,8 +46,8 @@ enum KeyPressSurfaces TargetingScene::getEvent(SDL_Event *e)
 				case SDLK_KP_1:
 				return SOUTHWEST;
 
-        case SDLK_KP_2:
-        return SOUTH;
+				case SDLK_KP_2:
+				return SOUTH;
 
 				case SDLK_KP_3:
 				return SOUTHEAST;
@@ -72,10 +72,10 @@ enum KeyPressSurfaces TargetingScene::getEvent(SDL_Event *e)
 		  
 				case SDLK_RETURN:
 				return USE;
-      }
-  	}
-  }
-  return NONE;
+			}
+  		}
+	}
+	return NONE;
 }
 
 void TargetingScene::handleInput(KeyPressSurfaces keyPress)
@@ -83,9 +83,9 @@ void TargetingScene::handleInput(KeyPressSurfaces keyPress)
 	int targetUID;
   
 	if (keyPress == ESCAPE){
-    m_eventManager->pushEvent(PopScene(1));
+		m_eventManager->pushEvent(PopScene(1));
 		bresenhamLine.clear();
-  }else if (keyPress == NORTH){
+	}else if (keyPress == NORTH){
 		m_y -= 1;
 		onTick();
 	} else if (keyPress == SOUTH){
@@ -120,6 +120,7 @@ void TargetingScene::handleInput(KeyPressSurfaces keyPress)
 				if (m_entities->at(targetUID)->fighter->isAlive){
 					m_eventManager->pushEvent(UseItemEvent(m_user_uid, m_item_uid, targetUID));
 					m_eventManager->pushEvent(PopScene(1));
+					bresenhamLine.clear();
 				}
 			}
 		}
@@ -128,7 +129,8 @@ void TargetingScene::handleInput(KeyPressSurfaces keyPress)
 
 int TargetingScene::getTargetUID()
 {
-	int radius;
+	int radius{ 0 };
+
 	if (m_entities->at(m_item_uid)->useable->funcToDo == DIRECTDAMAGE){
 		radius = m_entities->at(m_item_uid)->damage->radius;
 	} else if (m_entities->at(m_item_uid)->useable->funcToDo == AOE){
@@ -152,8 +154,8 @@ int TargetingScene::getTargetUID()
 
 void TargetingScene::render()
 {
-	int radius;
-	int splashRadius = 0;
+	int radius{ 0 };
+	int splashRadius{ 0 };
 
 	if (m_entities->at(m_item_uid)->useable->funcToDo == DIRECTDAMAGE){
 		radius = m_entities->at(m_item_uid)->damage->radius;

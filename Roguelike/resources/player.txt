@@ -6,5 +6,5 @@ ACTOR:
 INVENTORY: 10
 BODY:
 PLAYER:
-STARTING ITEMS: Potion Of Healing
+STARTING ITEMS: Potion Of Healing; Hunting Bow; Leather Armour
 STATUS CONTAINER:

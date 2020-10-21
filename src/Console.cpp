@@ -19,7 +19,7 @@ Console::Console(int width, int height, const char* title, const char* path, int
     m_renderer = nullptr;
     m_tileSize = tileSize;
     m_xBuffer = 20;
-    m_yBuffer = 10;
+    m_yBuffer = 12;
 		displayAscii = true; // default mode is traditional ascii graphics
     init(path);
 }

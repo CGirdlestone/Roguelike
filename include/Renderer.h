@@ -27,7 +27,6 @@ public:
 	void drawStartMenu(int i, int options);
 	void drawInventory(std::map<int, GameObject*> *actors, int i);
 	void drawEquippedItem(std::string slot, std::string item, int y, int index);
-	void drawEquippedItem(std::string slot, int y, int index);
 	void drawCharacterScene(std::map<int, GameObject*> *actors, int index);
 	void drawTargetingScene(Camera* camera, DungeonGenerator* dungeon, std::map<int, GameObject*> *actors, MessageLog* messageLog, int radius, std::vector<int> *path, int splashRadius, int _x, int _y);
 	bool checkInRange(int x, int y, int i, int j, int radius){ return (x-i)*(x-i) + (y-j)*(y-j) <= radius*radius;};
@@ -41,6 +40,7 @@ public:
 
 	void drawBox(int x, int y, int width, int height);
 	void drawText(std::string& text, int x, int y, bool highlighted);
+	void drawBar(int x, int y, int width, int current, int max, SDL_Color colour);
 	std::vector<std::string> wrapText(std::string& text, int width);
 		
 	void toggleAsciiMode();
