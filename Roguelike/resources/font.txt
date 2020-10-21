@@ -1,3 +1,5 @@
+GuybrushASCII-curses-square-16x16.png
+SFE-Curses-square-16x16.png
 Cheepicus_16x16.png
 Talryth_square_15x15.png
 Cheepicus_15x15.png
@@ -6,4 +8,3 @@ Kren_13x13.png
 Runeset_16x16.png
 Terminus.png
 Msgothic.png
-Bisasam_20x20_ascii.png

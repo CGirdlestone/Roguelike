@@ -8,12 +8,11 @@
 Renderer::Renderer(Console* console)
 {
 	m_console = console;
-	m_defaultColour = {0x3a, 0x4b, 0x6d};
-	m_inViewColour = {0xb4, 0xc3, 0xa8};
-	m_borderColour = {0x99, 0xb4, 0xdd};
-	m_highlightColour = {0xd3, 0xea, 0xd8};
-	m_backgroundColour = {0x07, 0x1b, 0x2c};
-	m_textColour = {0x94, 0xa5, 0xaa};
+	m_defaultColour = { 0x35, 0x36, 0x58 };
+	m_inViewColour = { 0x8b, 0x97, 0xb6 };
+	m_borderColour = { 0x28, 0x90, 0xdc };
+	m_highlightColour = { 0xff, 0xff, 0xff };
+	m_textColour = { 0xc5, 0xcd, 0xdb };
 }
 
 Renderer::~Renderer()
@@ -412,7 +411,7 @@ void Renderer::drawPauseMenu(int index, Camera* camera, DungeonGenerator* dungeo
 
 	for (int h = 0; h < boxHeight; ++h){
 		for (int j = 0; j < boxWidth; ++j){
-			m_console->fillBackgroundTile(xOrigin+j, yOrigin+h, m_backgroundColour, 255, m_console->getTileSize(), 0, 0);
+			m_console->fillBackgroundTile(xOrigin+j, yOrigin+h, m_console->getDrawColour(), 255, m_console->getTileSize(), 0, 0);
 		}
 	}
 
@@ -534,26 +533,20 @@ void Renderer::drawBox(int x, int y, int width, int height)
 	int bot_right = 217;
 	int horizontal = 196;
 	int vertical = 179;
-	int block = 219;
 
 	for (int h = 0; h < height; ++h) {
 		for (int j = 0; j < width; ++j) {
 			if (j == 0 && h == 0) {
 				m_console->render(top_left, x + j, y + h, m_borderColour);
-			}
-			else if (j == 0 && h == height - 1) {
+			} else if (j == 0 && h == height - 1) {
 				m_console->render(bot_left, x + j, y + h, m_borderColour);
-			}
-			else if (j == width - 1 && h == 0) {
+			} else if (j == width - 1 && h == 0) {
 				m_console->render(top_right, x + j, y + h, m_borderColour);
-			}
-			else if (j == width - 1 && h == height - 1) {
+			} else if (j == width - 1 && h == height - 1) {
 				m_console->render(bot_right, x + j, y + h, m_borderColour);
-			}
-			else if (j == 0 || j == width - 1) {
+			} else if (j == 0 || j == width - 1) {
 				m_console->render(vertical, x + j, y + h, m_borderColour);
-			}
-			else if (h == 0 || h == height - 1) {
+			} else if (h == 0 || h == height - 1) {
 				m_console->render(horizontal, x + j, y + h, m_borderColour);
 			}
 		}
@@ -605,8 +598,7 @@ void Renderer::drawBar(int x, int y, int width , int current, int max, SDL_Color
 	for (int i = 0; i < width; ++i) {
 		if (i <= barWidth && barWidth != 0) {
 			m_console->render(barChar, x + i, y, colour);
-		}
-		else {
+		} else {
 			m_console->render(barChar, x + i, y, m_defaultColour);
 		}
 	}

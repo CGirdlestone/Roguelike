@@ -51,7 +51,6 @@ private:
 	SDL_Color m_inViewColour;
 	SDL_Color m_borderColour;
 	SDL_Color m_highlightColour;
-	SDL_Color m_backgroundColour;
 	SDL_Color m_textColour;
 };
 

@@ -40,11 +40,13 @@ class Console
 
 		void renderSprite(int x, int y, int spriteX, int spriteY, int spriteSheet);
 
+        void resetDrawColour();
+        const SDL_Color getDrawColour() const { return m_background; };
+
     protected:
 
     private:
         SDL_Window *m_root;
-        SDL_Surface *m_rootSurface;
         SDL_Renderer *m_renderer;
         int m_width;
         int m_height;
@@ -56,6 +58,7 @@ class Console
         std::vector<Tile> m_glyphs;
 		bool displayAscii;
 		std::vector<SDL_Texture*> m_spriteSheets;
+        SDL_Color m_background;
 };
 
 #endif // CONSOLE_H

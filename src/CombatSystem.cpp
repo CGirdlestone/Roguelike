@@ -185,9 +185,9 @@ int CombatSystem::getDefenderDamageModifiers(GameObject* defender)
 
 void CombatSystem::onDead(DeadEvent event)
 {
-  SDL_Color c = {0x55, 0x0f, 0x0a};
-  m_entities->at(event.m_uid)->renderable->colour = c;
-  m_entities->at(event.m_uid)->renderable->chr = '%';
+	SDL_Color c = {0xda, 0x24, 0x24};
+	m_entities->at(event.m_uid)->renderable->colour = c;
+	m_entities->at(event.m_uid)->renderable->chr = '%';
 
 	m_entities->at(event.m_uid)->renderable->spriteX = 6;
 	m_entities->at(event.m_uid)->renderable->spriteY = 5;
