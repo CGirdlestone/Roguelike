@@ -28,7 +28,7 @@ void GameScene::startOver()
 
 void GameScene::newGame()
 {
-	m_dungeon->createMap(60, 6, 2, 5);
+	m_dungeon->createMap(75, 5, 2, 6);
 	m_dungeon->createPlayer(m_entities);
 	m_dungeon->createMobs(m_entities);
 	m_dungeon->createItems(m_entities);
@@ -172,7 +172,7 @@ void GameScene::loadGame()
 	
 	int byteIndex = 0;
 
-	m_dungeon->initialiseMap(60);
+	m_dungeon->initialiseMap();
 
 	byteIndex = parseDungeonDepth(byteIndex, buffer, length);
 	byteIndex = parseMap(byteIndex, buffer, length);

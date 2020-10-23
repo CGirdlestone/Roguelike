@@ -40,6 +40,7 @@
     <ClInclude Include="..\include\InventorySystem.h" />
     <ClInclude Include="..\include\KeyPressSurfaces.h" />
     <ClInclude Include="..\include\LootManager.h" />
+    <ClInclude Include="..\include\MapGenerator.h" />
     <ClInclude Include="..\include\Message.h" />
     <ClInclude Include="..\include\MessageLog.h" />
     <ClInclude Include="..\include\MoveSystem.h" />
@@ -79,6 +80,7 @@
     <ClCompile Include="..\src\KeyPressSurfaces.cpp" />
     <ClCompile Include="..\src\LootManager.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\MapGenerator.cpp" />
     <ClCompile Include="..\src\Message.cpp" />
     <ClCompile Include="..\src\MessageLog.cpp" />
     <ClCompile Include="..\src\MoveSystem.cpp" />
