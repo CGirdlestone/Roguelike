@@ -1,6 +1,7 @@
 
 #include "MapGenerator.h"
 #include <algorithm>
+#include <cmath>
 
 MapGenerator::MapGenerator(int width, int height): mapWidth(width), mapHeight(height)
 {
@@ -250,5 +251,136 @@ int MapGenerator::getNeighbourWallCount(int i)
 
 char* MapGenerator::generateRoomMap(const int minRooms, const int maxRooms, const int minRoomWidth, const int maxRoomWidth)
 {
+	initialiseRoomMap();
+
+	std::vector<Rectangle> rooms;
+
+	// first room will never fail so create and add it
+	Rectangle room = generateRoom(minRoomWidth, maxRoomWidth);
+	rooms.push_back(room);
+
+	int numRooms = std::rand() % (maxRooms - minRooms) + minRooms - 1; // -1 because we've added the first room already
+
+	while (numRooms > 0) {
+		room = generateRoom(minRoomWidth, maxRoomWidth);
+		if (placeRoom(room, rooms)) {
+			rooms.push_back(room);
+			numRooms--;
+		}
+	}
+
+	writeRooms(rooms);
+
+	connectRooms(rooms);
+
 	return level;
+}
+
+void MapGenerator::initialiseRoomMap()
+{
+	if (level == nullptr) {
+		level = new char[mapWidth * mapHeight];
+	}
+
+	for (int i = 0; i < mapWidth * mapHeight; ++i) {
+		level[i] = '#';
+	}
+}
+
+Rectangle MapGenerator::generateRoom(const int minRoomWidth, const int maxRoomWidth)
+{
+	int x{ std::rand() % mapWidth };
+	int y{ std::rand() % mapHeight };
+	int w{ std::rand() % (maxRoomWidth - minRoomWidth) + minRoomWidth };
+	int h{ std::rand() % (maxRoomWidth - minRoomWidth) + minRoomWidth };
+
+	return Rectangle(x, y, w, h);
+}
+
+bool MapGenerator::placeRoom(Rectangle& rect, std::vector<Rectangle>& rooms)
+{
+	for (const auto& room : rooms) {
+		bool overlap{ (rect.x < room.x + room.w && rect.x + rect.w > room.x && rect.y < room.y + room.h && rect.y + rect.h > room.y) };
+
+		if (overlap) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void MapGenerator::writeRooms(std::vector<Rectangle>& rooms)
+{
+	for (const auto& room : rooms) {
+		for (int w = 0; w < room.w; ++w) {
+			for (int h = 0; h < room.h; ++h) {
+				level[(room.x + w) + (room.y + h) * mapWidth] = '.';
+			}
+		}
+	}
+}
+
+int MapGenerator::getRoomExit(Rectangle& rect)
+{
+	int x{ std::rand() % rect.w };
+	int y{ std::rand() % rect.h };
+
+	return rect.x + x + (rect.y + y) * mapWidth;
+}
+
+void MapGenerator::tunnelHorizontally(int start_x, int start_y, int finish_x)
+{
+	int x{ start_x };
+
+	do {
+		level[x + start_y * mapWidth] = '.';
+
+		if (start_x < finish_x) {
+			x++;
+		} else if (start_x > finish_x) {
+			x--;
+		}
+	} while (!(x == finish_x));
+}
+
+void MapGenerator::tunnelVertically(int start_x, int start_y, int finish_y)
+{
+	int y{ start_y };
+
+	do {
+		level[start_x + y * mapWidth] = '.';
+
+		if (start_y < finish_y) {
+			y++;
+		}
+		else if (start_y > finish_y) {
+			y--;
+		}
+	} while (!(y == finish_y));
+}
+
+void MapGenerator::makeCorridor(int start, int finish)
+{
+	int start_x{ start % mapWidth };
+	int start_y{ start / mapWidth }; 
+	int finish_x{ finish % mapWidth };
+	int finish_y{ finish / mapWidth };
+
+	tunnelVertically(start_x, start_y, finish_y);
+	tunnelHorizontally(start_x, start_y, finish_x);
+
+}
+
+void MapGenerator::connectRooms(std::vector<Rectangle>& rooms)
+{
+	while (rooms.size() > 1) {
+		Rectangle exit_room = rooms.back();
+		rooms.pop_back();
+		Rectangle target_room = rooms.back();
+
+		int exit_point = getRoomExit(exit_room);
+		int target_point = getRoomExit(target_room);
+
+		makeCorridor(exit_point, target_point);
+	}
 }

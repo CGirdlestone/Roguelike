@@ -577,7 +577,7 @@ Useable::Useable(UseableFunctionEnums func, int _numUses):
 Useable::Useable():
 	funcToDo(HEALING), numUses(0)
 {
-	numUses = 0;
+
 }
 
 Useable::~Useable()
@@ -760,7 +760,6 @@ int Status::deserialise(char* buffer, int i)
 
 	return i;
 }
-
 
 Consumable::Consumable()
 {

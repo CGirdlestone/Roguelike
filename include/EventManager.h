@@ -6,8 +6,7 @@
 #include <vector>
 #include "EventTypes.h"
 #include "Events.h"
-
-class System;
+#include "System.h"
 
 class EventManager
 {

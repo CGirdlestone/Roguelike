@@ -77,7 +77,9 @@ void DungeonGenerator::initialiseMap()
 void DungeonGenerator::createMap(int threshold, int steps, int underPop, int overPop)
 {
 	initialiseMap();
+
 	m_level = m_mapGenerator.generateCaveMap(threshold, steps, underPop, overPop);
+
 
 }
 

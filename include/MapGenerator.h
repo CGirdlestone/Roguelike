@@ -5,6 +5,12 @@
 #include <vector>
 #include <utility>
 
+struct Rectangle
+{
+	Rectangle(int _x, int _y, int _w, int _h) : x(_x), y(_y), w(_w), h(_h) { };
+	int x, y, w, h;
+};
+
 class MapGenerator
 {
 public:
@@ -34,6 +40,15 @@ private:
 	void hollowSolidChunks();
 
 	// Room Maps - Position Rectangles
+	void initialiseRoomMap();
+	Rectangle generateRoom(const int minRoomWidth, const int maxRoomWidth);
+	bool placeRoom(Rectangle& rect, std::vector<Rectangle>& rooms);
+	void writeRooms(std::vector<Rectangle>& rooms);
+	int getRoomExit(Rectangle& rect);
+	void makeCorridor(int start, int finish);
+	void tunnelHorizontally(int start_x, int start_y, int finish_x);
+	void tunnelVertically(int start_x, int start_y, int finish_y);
+	void connectRooms(std::vector<Rectangle>& rooms);
 };
 
 #endif
