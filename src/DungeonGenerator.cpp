@@ -72,14 +72,21 @@ void DungeonGenerator::initialiseMap()
 		m_fovMap[i] = 0;
 		m_exploredMap[i] = 0;
 	}
+
+	level_type = -1;
 }
 
 void DungeonGenerator::createMap(int threshold, int steps, int underPop, int overPop)
 {
 	initialiseMap();
 
-	m_level = m_mapGenerator.generateCaveMap(threshold, steps, underPop, overPop);
-
+	if (std::rand() % 100 + 1 < 5) {
+		m_level = m_mapGenerator.generateCaveMap(threshold, steps, underPop, overPop);
+		level_type = 0;
+	} else {
+		m_level = m_mapGenerator.generateRoomMap(8, 16, 5, 15);
+		level_type = 1;
+	}
 
 }
 
@@ -208,7 +215,7 @@ void DungeonGenerator::doRecomputeFOV(int x, int y, int radius)
 
 int DungeonGenerator::getFreePosition()
 {
-	int i;
+	int i{ 0 };
 	
 	while(true){
 		i = std::rand()%(m_width * m_height);

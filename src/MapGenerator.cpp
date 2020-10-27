@@ -299,6 +299,12 @@ Rectangle MapGenerator::generateRoom(const int minRoomWidth, const int maxRoomWi
 
 bool MapGenerator::placeRoom(Rectangle& rect, std::vector<Rectangle>& rooms)
 {
+	// check the whole rect is in bounds
+	if (!(rect.x + rect.w < mapWidth && rect.y + rect.h < mapHeight && rect.x > 0 && rect.y > 0)) {
+		return false;
+	}
+
+	// check for overlap
 	for (const auto& room : rooms) {
 		bool overlap{ (rect.x < room.x + room.w && rect.x + rect.w > room.x && rect.y < room.y + room.h && rect.y + rect.h > room.y) };
 
@@ -306,6 +312,7 @@ bool MapGenerator::placeRoom(Rectangle& rect, std::vector<Rectangle>& rooms)
 			return false;
 		}
 	}
+
 	return true;
 }
 
@@ -328,35 +335,31 @@ int MapGenerator::getRoomExit(Rectangle& rect)
 	return rect.x + x + (rect.y + y) * mapWidth;
 }
 
-void MapGenerator::tunnelHorizontally(int start_x, int start_y, int finish_x)
+void MapGenerator::tunnelHorizontally(int& start_x, const int start_y, const int finish_x)
 {
-	int x{ start_x };
-
 	do {
-		level[x + start_y * mapWidth] = '.';
+		level[start_x + start_y * mapWidth] = '.';
 
 		if (start_x < finish_x) {
-			x++;
+			start_x++;
 		} else if (start_x > finish_x) {
-			x--;
+			start_x--;
 		}
-	} while (!(x == finish_x));
+	} while (!(start_x == finish_x));
 }
 
-void MapGenerator::tunnelVertically(int start_x, int start_y, int finish_y)
+void MapGenerator::tunnelVertically(const int start_x, int& start_y, const int finish_y)
 {
-	int y{ start_y };
-
 	do {
-		level[start_x + y * mapWidth] = '.';
+		level[start_x + start_y * mapWidth] = '.';
 
 		if (start_y < finish_y) {
-			y++;
+			start_y++;
 		}
 		else if (start_y > finish_y) {
-			y--;
+			start_y--;
 		}
-	} while (!(y == finish_y));
+	} while (!(start_y == finish_y));
 }
 
 void MapGenerator::makeCorridor(int start, int finish)

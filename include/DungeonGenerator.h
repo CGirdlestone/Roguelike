@@ -58,6 +58,7 @@ class DungeonGenerator
     int m_height;
 	EntityFactory* m_factory;
     MapGenerator m_mapGenerator;
+    int level_type{ -1 };
 };
 
 #endif // DUNGEONGENERATOR_H

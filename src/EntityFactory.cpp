@@ -10,7 +10,6 @@
 #include "UseableFunctionEnum.h"
 #include "StatusTypes.h"
 #include "EntityType.h"
-#include "Scripts.h"
 
 EntityFactory::EntityFactory()
 {

@@ -46,8 +46,8 @@ private:
 	void writeRooms(std::vector<Rectangle>& rooms);
 	int getRoomExit(Rectangle& rect);
 	void makeCorridor(int start, int finish);
-	void tunnelHorizontally(int start_x, int start_y, int finish_x);
-	void tunnelVertically(int start_x, int start_y, int finish_y);
+	void tunnelHorizontally(int& start_x, const int start_y, const int finish_x);
+	void tunnelVertically(const int start_x, int& start_y, const int finish_y);
 	void connectRooms(std::vector<Rectangle>& rooms);
 };
 
