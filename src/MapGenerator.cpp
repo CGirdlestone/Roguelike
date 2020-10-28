@@ -33,7 +33,7 @@ char* MapGenerator::generateCaveMap(const int threshold, const int steps, const 
 		}
 
 		smoothMap(3);
-		fillBorder();
+		fillBorder('#');
 		hollowSolidChunks();
 
 		
@@ -163,11 +163,11 @@ void MapGenerator::smoothMap(const int minWallThreshold)
 	level = new_level;
 }
 
-void MapGenerator::fillBorder()
+void MapGenerator::fillBorder(char c)
 {
 	for (int i = 0; i < mapWidth * mapHeight; i++) {
 		if (i % mapWidth == 0 || i % mapWidth == mapWidth - 1 || i < mapWidth || i > mapWidth * mapHeight - mapWidth) {
-			level[i] = '#';
+			level[i] = c;
 		}
 	}
 }
@@ -179,24 +179,10 @@ void MapGenerator::hollowSolidChunks()
 	for (int i = 0; i < mapWidth * mapHeight; i++) {
 		int walkableCount{ 0 };
 
-		if (level[i] == '.') {
-			new_level[i] = level[i];
-			continue;
-		}
-
-		std::vector<int> neighbours = getNeighbours(i);
-
-		for (auto k : neighbours) {
-
-			if (level[k] == '.') {
-				walkableCount++;
-			} 
-		}
-
-		if (walkableCount > 0) {
-			new_level[i] = level[i];
-		} else {
+		if (getNeighbourWallCount(i) == 8) {
 			new_level[i] = ' ';
+		} else {
+			new_level[i] = level[i];
 		}
 	}
 
@@ -253,6 +239,34 @@ char* MapGenerator::generateRoomMap(const int minRooms, const int maxRooms, cons
 {
 	initialiseRoomMap();
 
+	std::vector<Rectangle> rooms = generateAllRooms(minRooms, maxRooms, minRoomWidth, maxRoomWidth);
+
+	fillBorder(' ');
+
+	writeRooms(rooms);
+
+	sortRooms(rooms);
+
+	connectRooms(rooms);
+
+	hollowSolidChunks();
+
+	return level;
+}
+
+void MapGenerator::initialiseRoomMap()
+{
+	if (level == nullptr) {
+		level = new char[mapWidth * mapHeight];
+	}
+
+	for (int i = 0; i < mapWidth * mapHeight; ++i) {
+		level[i] = '#';
+	}
+}
+
+std::vector<Rectangle> MapGenerator::generateAllRooms(const int minRooms, const int maxRooms, const int minRoomWidth, const int maxRoomWidth)
+{
 	std::vector<Rectangle> rooms;
 
 	// first room will never fail so create and add it
@@ -269,22 +283,7 @@ char* MapGenerator::generateRoomMap(const int minRooms, const int maxRooms, cons
 		}
 	}
 
-	writeRooms(rooms);
-
-	connectRooms(rooms);
-
-	return level;
-}
-
-void MapGenerator::initialiseRoomMap()
-{
-	if (level == nullptr) {
-		level = new char[mapWidth * mapHeight];
-	}
-
-	for (int i = 0; i < mapWidth * mapHeight; ++i) {
-		level[i] = '#';
-	}
+	return rooms;
 }
 
 Rectangle MapGenerator::generateRoom(const int minRoomWidth, const int maxRoomWidth)
@@ -299,8 +298,9 @@ Rectangle MapGenerator::generateRoom(const int minRoomWidth, const int maxRoomWi
 
 bool MapGenerator::placeRoom(Rectangle& rect, std::vector<Rectangle>& rooms)
 {
+	int border{ 2 };
 	// check the whole rect is in bounds
-	if (!(rect.x + rect.w < mapWidth && rect.y + rect.h < mapHeight && rect.x > 0 && rect.y > 0)) {
+	if (!(rect.x + rect.w < mapWidth - border && rect.y + rect.h < mapHeight - border && rect.x > border && rect.y > border)) {
 		return false;
 	}
 
@@ -325,6 +325,12 @@ void MapGenerator::writeRooms(std::vector<Rectangle>& rooms)
 			}
 		}
 	}
+}
+
+
+void MapGenerator::sortRooms(std::vector<Rectangle>& rooms)
+{
+	std::sort(rooms.begin(), rooms.end(), [](Rectangle& room1, Rectangle& room2) { return room1.x < room2.x; });
 }
 
 int MapGenerator::getRoomExit(Rectangle& rect)
@@ -371,7 +377,6 @@ void MapGenerator::makeCorridor(int start, int finish)
 
 	tunnelVertically(start_x, start_y, finish_y);
 	tunnelHorizontally(start_x, start_y, finish_x);
-
 }
 
 void MapGenerator::connectRooms(std::vector<Rectangle>& rooms)

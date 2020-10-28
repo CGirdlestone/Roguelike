@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <time.h>
 #include <iostream>
+#include <cmath>
 
 #include "SDL.h"
 
@@ -33,6 +34,15 @@ m_width(width), m_height(height), m_factory(factory), m_mapGenerator(MapGenerato
 	for (int i = 0; i < width * height; ++i){
 		std::vector<GameObject*> tileList;
 		m_grid.insert({i, tileList});
+	}
+
+	double pi = 3.141592;
+
+	int interval{ 720 };
+
+	for (int i = 0; i < interval; ++i) {
+		sin.push_back(std::sin(static_cast<double>(i) * pi / static_cast<double>(interval / 2)));
+		cos.push_back(std::cos(static_cast<double>(i) * pi / static_cast<double>(interval / 2)));
 	}
 
 	std::srand(time(0));
@@ -84,7 +94,7 @@ void DungeonGenerator::createMap(int threshold, int steps, int underPop, int ove
 		m_level = m_mapGenerator.generateCaveMap(threshold, steps, underPop, overPop);
 		level_type = 0;
 	} else {
-		m_level = m_mapGenerator.generateRoomMap(8, 16, 5, 15);
+		m_level = m_mapGenerator.generateRoomMap(16, 30, 5, 13);
 		level_type = 1;
 	}
 
@@ -210,7 +220,59 @@ void DungeonGenerator::doRecomputeFOV(int x, int y, int radius)
 		m_fovMap[i] = 0;
 	}
 
-	shadowCast(x, y, radius);
+	//shadowCast(x, y, radius);
+	RayCast(x, y, radius);
+}
+
+void DungeonGenerator::RayCast(int x, int y, int radius)
+{
+	m_fovMap[x + y * m_width] = 1;
+	m_exploredMap[x + y * m_width] = 1;
+
+	for (uint32_t i = 0; i < sin.size(); ++i) {
+
+		bool hit{ false };
+
+		double	ray_dir_x{ cos[i] };
+		double	ray_dir_y{ sin[i] };
+
+		int		ray_pos_x{ x };
+		int		ray_pos_y{ y };
+
+		double	delta_x{ 1 / std::abs(ray_dir_x) };
+		double	delta_y{ 1 / std::abs(ray_dir_y) };
+
+		int		step_x{ ray_dir_x < 0 ? -1 : 1 };
+		int		step_y{ ray_dir_y < 0 ? -1 : 1 };
+
+		double	dist_x{ delta_x };
+		double	dist_y{ delta_y };
+
+		bool	in_range{ true };
+
+		int dx{ 0 };
+		int dy{ 0 };
+
+		while (!hit && (dx * dx + dy * dy <= radius * radius)) {
+
+			if (dist_x <= dist_y) {
+				dist_x += delta_x;
+				ray_pos_x += step_x;
+				dx++;
+			} else {
+				dist_y += delta_y;
+				ray_pos_y += step_y;
+				dy++;
+			}
+
+			m_fovMap[ray_pos_x + ray_pos_y * m_width] = 1;
+			m_exploredMap[ray_pos_x + ray_pos_y * m_width] = 1;
+
+			if (m_level[ray_pos_x + ray_pos_y * m_width] == '#') {
+				hit = true;
+			}
+		}
+	}
 }
 
 int DungeonGenerator::getFreePosition()
@@ -219,7 +281,7 @@ int DungeonGenerator::getFreePosition()
 	
 	while(true){
 		i = std::rand()%(m_width * m_height);
-		if (m_level[i] == '.'){
+		if (m_level[i] == '.' && m_level[i-1] == '.' && m_level[i + 1] == '.' && m_level[i - m_width] == '.' && m_level[i + m_width] == '.'){
 			break;
 		}
 	}

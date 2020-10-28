@@ -30,6 +30,8 @@ class DungeonGenerator
     bool checkInMap(int x, int y);
     void doRecomputeFOV(int x, int y, int radius);
 
+    void RayCast(int x, int y, int radius);
+
 	int getFreePosition();
     void createPlayer(std::map<int, GameObject*> *actors);
     void createMobs(std::map<int, GameObject*> *actors);
@@ -59,6 +61,8 @@ class DungeonGenerator
 	EntityFactory* m_factory;
     MapGenerator m_mapGenerator;
     int level_type{ -1 };
+    std::vector<double> sin;
+    std::vector<double> cos;
 };
 
 #endif // DUNGEONGENERATOR_H
