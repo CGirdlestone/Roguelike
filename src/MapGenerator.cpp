@@ -302,7 +302,7 @@ bool MapGenerator::placeRoom(Rectangle& rect, std::vector<Rectangle>& rooms)
 
 	// check for overlap
 	for (const auto& room : rooms) {
-		bool overlap{ (rect.x < room.x + room.w && rect.x + rect.w > room.x && rect.y < room.y + room.h && rect.y + rect.h > room.y) };
+		bool overlap{ (rect.x < room.x + room.w + border && rect.x + rect.w + border > room.x && rect.y < room.y + room.h + border && rect.y + rect.h + border > room.y) };
 
 		if (overlap) {
 			return false;

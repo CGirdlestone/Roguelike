@@ -309,17 +309,17 @@ void Renderer::drawPlayerInfo(GameObject* player, DungeonGenerator* dungeon)
 	int buffer = m_console->getXBuffer()-2;
 	int yPosition{ 1 };
 	
+	SDL_Color colour = { 0xd0, 0x46, 0x48 };
+	drawBar(width + 1, 2 * yPosition, buffer, player->fighter->health, player->fighter->maxHealth, colour);
+
 	std::string health = "Health: " + std::to_string(player->fighter->health) + " / " + std::to_string(player->fighter->maxHealth);
 	drawText(health, width + 1, 2 * yPosition++, false);
 
-	SDL_Color colour = { 0xd0, 0x46, 0x48 };
-	drawBar(width + 1, 2 * yPosition++, buffer, player->fighter->health, player->fighter->maxHealth, colour);
+	colour = { 0x59, 0x7d, 0xce };
+	drawBar(width + 1, 2 * yPosition, buffer, player->player->exp, player->player->next, colour);
 
 	std::string exp = "Exp: " + std::to_string(player->player->exp) + " / " + std::to_string(player->player->next);
 	drawText(exp, width + 1, 2 * yPosition++, false);
-
-	colour = { 0x59, 0x7d, 0xce };
-	drawBar(width + 1, 2 * yPosition++, buffer, player->player->exp, player->player->next, colour);
 	
 	std::string level = "Level: " + std::to_string(player->player->level);
 	drawText(level, width + 1, 2 * yPosition++, false);
