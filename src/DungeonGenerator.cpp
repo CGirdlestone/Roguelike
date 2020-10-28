@@ -100,115 +100,12 @@ void DungeonGenerator::createMap(int threshold, int steps, int underPop, int ove
 
 }
 
-float DungeonGenerator::getGradient(float x1, float y1, float x2, float y2)
-{
-	return (y1 - y2) / (x1 - x2);
-}
-
-int DungeonGenerator::transformX(int x, int y, int octant)
-{
-	if (octant == 2){
-		return x;
-	} else if (octant == 3){
-		return -y;
-	} else if (octant == 4){
-		return -y;
-	} else if (octant == 5){
-		return -x;
-	} else if (octant == 6){
-		return -x;
-	} else if (octant == 7){
-		return y;
-	} else if (octant == 8){
-		return y;
-	} else {
-		return x;
-	}
-}
-
-int DungeonGenerator::transformY(int x, int y, int octant)
-{
-	if (octant == 2){
-		return -y;
-	} else if (octant == 3){
-		return x;
-	} else if (octant == 4){
-		return -x;
-	} else if (octant == 5){
-		return -y;
-	} else if (octant == 6){
-		return y;
-	} else if (octant == 7){
-		return -x;
-	} else if (octant == 8){
-		return x;
-	} else {
-		return y;
-	}
-}
-
 bool DungeonGenerator::checkInMap(int x, int y)
 {
 	if(x >= 0 && x < m_width && y >= 0 && y < m_height){
 		return true;
 	} else {
 		return false;
-	}
-}
-
-void DungeonGenerator::castOctant(int x, int y, int radius, float bottomSlope, float topSlope, int step, int octant)
-{
-	int l, k; // offsets in the octant
-	int a, b; // transformed offsets for octants 2 - 8
-	float gradient, newBottomSlope;
-
-
-	for(int i = 0; i < radius - step; i++){
-		l = i + step;
-
-		for (int j = 0; j < l + 1; j++){
-			if (i==0 && j == 0){
-				m_fovMap[y*m_width+x] = 1;
-				m_exploredMap[y*m_width+x] = 1;
-				continue;
-			}
-
-			k = j;
-
-			a = transformX(l, k, octant);
-			b = transformY(l, k, octant);
-
-			if(!checkInMap(x+a, y+b)){
-				continue;
-			}
-
-			gradient = getGradient(static_cast<float>(x+l), static_cast<float>(y+k), static_cast<float>(x), static_cast<float>(y));
-
-			if (gradient < bottomSlope){
-				continue;
-			}
-
-			if (gradient >= bottomSlope && gradient <= topSlope){
-				if (m_level[(y+b)*m_width+x+a] != '.'){
-					newBottomSlope = getGradient(static_cast<float>(x+l-0.5), static_cast<float>(y+k+0.5), static_cast<float>(x), static_cast<float>(y));
-					castOctant(x, y, radius, newBottomSlope, topSlope, step, octant);
-
-					topSlope = getGradient(static_cast<float>(x+l+0.5), static_cast<float>(y+k-0.5), static_cast<float>(x), static_cast<float>(y));
-				}
-
-				if (a*a + b*b <= radius*radius){
-					m_fovMap[(y+b)*m_width+x+a] = 1;
-					m_exploredMap[(y+b)*m_width+x+a] = 1;
-				}
-			}
-		}
-	}
-}
-
-void DungeonGenerator::shadowCast(int x, int y, int radius)
-{
-	for(int i = 1; i < 9; i++){
-		castOctant(x, y, radius, 0, 1, 0, i);
 	}
 }
 
@@ -220,7 +117,6 @@ void DungeonGenerator::doRecomputeFOV(int x, int y, int radius)
 		m_fovMap[i] = 0;
 	}
 
-	//shadowCast(x, y, radius);
 	RayCast(x, y, radius);
 }
 
