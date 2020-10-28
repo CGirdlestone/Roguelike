@@ -40,9 +40,15 @@ void Renderer::drawTile(char* c, int x, int y, bool inView)
 		m_console->render(c, x, y, inView ? m_inViewColour : m_defaultColour);
 	} else {
 		if ((*c) == '#'){
-			m_console->renderSprite(x, y, 1, inView ? 10 : 13, 16);
+			//m_console->renderSprite(x, y, 1, inView ? 10 : 13, 16);
+			m_console->renderSprite(x, y, 0, 0, 20);
 		} else if ((*c) == '.'){
-			m_console->renderSprite(x, y, 1, inView ? 16 : 25, 16);
+			//m_console->renderSprite(x, y, 1, inView ? 16 : 25, 16);
+			m_console->renderSprite(x, y, 0, 1, 20);
+		}
+		if (!inView) {
+			SDL_Color shadow = { 0x00, 0x00, 0x00 };
+			m_console->fillBackgroundTile(x, y, shadow);
 		}
 	}
 }
@@ -61,54 +67,114 @@ void Renderer::drawLog(MessageLog* messageLog, int height)
 	}
 }
 
-void Renderer::drawMap(Camera* camera, DungeonGenerator* dungeon, std::map<int, GameObject*> *actors)
+void Renderer::drawTileMap(Camera* camera, DungeonGenerator* dungeon)
+{
+	int x{ 0 };
+	int y{ 0 };
+	int offsetI{ 0 };
+	SDL_Color shadow = { 0x00, 0x00, 0x00 };
+
+	for (int i = 0; i < dungeon->Getm_width() * dungeon->Getm_height(); ++i) {
+		x = i % dungeon->Getm_width();
+
+		if (!(x >= camera->getX() && x < camera->getX() + camera->getWidth() && y >= camera->getY() && y < camera->getY() + camera->getHeight())) {
+			if (x == dungeon->Getm_width() - 1) {
+				y++;
+			}
+			continue;
+		}
+
+		offsetI = camera->calculateOffset(x, y);
+
+		int tile = dungeon->m_tiles[i];
+
+		if (dungeon->m_fovMap[i] == 1) {
+			//drawTile(&dungeon->m_level[i], offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), true);
+			if (dungeon->m_level[i] == '#') {
+				//m_console->renderSprite(x, y, 1, inView ? 10 : 13, 16);
+				m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 0, 20);
+			}
+			else if (dungeon->m_level[i] == '.') {
+				//m_console->renderSprite(x, y, 1, inView ? 16 : 25, 16);
+				m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 1, 20);
+			}
+		}
+		else if (dungeon->m_fovMap[i] == 0){
+			if (dungeon->m_exploredMap[i] == 1) {
+				if (dungeon->m_level[i] == '#') {
+					//m_console->renderSprite(x, y, 1, inView ? 10 : 13, 16);
+					m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 0, 20);
+				}
+				else if (dungeon->m_level[i] == '.') {
+					//m_console->renderSprite(x, y, 1, inView ? 16 : 25, 16);
+					m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 1, 20);
+				}
+				m_console->fillBackgroundTile(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), shadow);
+				//drawTile(&dungeon->m_level[i], offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), false);
+			}
+		}
+
+		if (x == dungeon->Getm_width() - 1) {
+			++y;
+		}
+	}
+}
+
+void Renderer::drawAsciiMap(Camera* camera, DungeonGenerator* dungeon, std::map<int, GameObject*>* actors)
 {
 	int x;
 	int y = 0;
 	int offsetI{ 0 };
 	bool occupied{ false };
 
-	for (int i = 0; i < dungeon->Getm_width() * dungeon->Getm_height(); ++i){
+	for (int i = 0; i < dungeon->Getm_width() * dungeon->Getm_height(); ++i) {
 		x = i % dungeon->Getm_width();
 
-		if (!(x >= camera->getX() && x < camera->getX() + camera->getWidth() && y >= camera->getY() && y < camera->getY() + camera->getHeight())){
-			if (x == dungeon->Getm_width() - 1){
-			y++;
+		if (!(x >= camera->getX() && x < camera->getX() + camera->getWidth() && y >= camera->getY() && y < camera->getY() + camera->getHeight())) {
+			if (x == dungeon->Getm_width() - 1) {
+				y++;
 			}
 			continue;
 		}
 
 		offsetI = camera->calculateOffset(x, y);
 		occupied = false;
-		if (dungeon->m_fovMap[i] == 1){
-			
-			std::map<int, GameObject*>::iterator it;
-			for(it = actors->begin(); it != actors->end(); ++it){
-				if (it->second->position == nullptr){ continue; }
+		if (dungeon->m_fovMap[i] == 1) {
 
-				if (it->second->position->x + it->second->position->y*dungeon->Getm_width() == i){
+			std::map<int, GameObject*>::iterator it;
+			for (it = actors->begin(); it != actors->end(); ++it) {
+				if (it->second->position == nullptr) { continue; }
+
+				if (it->second->position->x + it->second->position->y * dungeon->Getm_width() == i) {
 					occupied = true;
 				}
 			}
 
-			if(!occupied){
-				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), true);
+			if (!occupied) {
+				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), true);
 			}
 
-			// draw the tile behind an object if the game is in tile display mode
-			if (!m_console->getDisplayAscii()){
-				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), true);
-			}
-			
-		} else if (dungeon->m_fovMap[i] == 0){
-			if (dungeon->m_exploredMap[i] == 1){
-				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), false);
+		}
+		else if (dungeon->m_fovMap[i] == 0) {
+			if (dungeon->m_exploredMap[i] == 1) {
+				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), false);
 			}
 		}
-		if (x == dungeon->Getm_width() - 1){
+		if (x == dungeon->Getm_width() - 1) {
 			++y;
 		}
 	}
+}
+
+void Renderer::drawMap(Camera* camera, DungeonGenerator* dungeon, std::map<int, GameObject*> *actors)
+{
+	if (!m_console->getDisplayAscii()) {
+		drawTileMap(camera, dungeon);
+	}
+	else {
+		drawAsciiMap(camera, dungeon, actors);
+	}
+	
 }
 
 void Renderer::drawMiniMap(DungeonGenerator* dungeon, std::map<int, GameObject*> *actors)
