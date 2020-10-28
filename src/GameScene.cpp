@@ -179,7 +179,7 @@ void GameScene::loadGame()
 	byteIndex = parseExploredMap(byteIndex, buffer, length);
 	byteIndex = parseGameObjects(byteIndex, buffer, length);
 	mapUIDsToGameObjects();
-	m_dungeon->shadowCast(m_entities->at(0)->position->x, m_entities->at(0)->position->y, 10);
+	m_dungeon->RayCast(m_entities->at(0)->position->x, m_entities->at(0)->position->y, 10);
 	m_camera->updatePosition(m_entities->at(0)->position->x, m_entities->at(0)->position->y);
 }
 
