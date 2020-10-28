@@ -189,9 +189,9 @@ void CombatSystem::onDead(DeadEvent event)
 	m_entities->at(event.m_uid)->renderable->colour = c;
 	m_entities->at(event.m_uid)->renderable->chr = '%';
 
-	m_entities->at(event.m_uid)->renderable->spriteX = 6;
-	m_entities->at(event.m_uid)->renderable->spriteY = 5;
-	m_entities->at(event.m_uid)->renderable->sheet = 18;
+	m_entities->at(event.m_uid)->renderable->spriteX = 0;
+	m_entities->at(event.m_uid)->renderable->spriteY = 3;
+	m_entities->at(event.m_uid)->renderable->sheet = 20;
 
 	for (int i = 0; i <= static_cast<int>(BLEEDING); ++i){
 		m_entities->at(event.m_uid)->statusContainer->statuses.at(static_cast<StatusTypes>(i)).first = 0;
