@@ -241,15 +241,11 @@ char* MapGenerator::generateRoomMap(const int minRooms, const int maxRooms, cons
 
 	std::vector<Rectangle> rooms = generateAllRooms(minRooms, maxRooms, minRoomWidth, maxRoomWidth);
 
-	fillBorder(' ');
-
 	writeRooms(rooms);
 
 	sortRooms(rooms);
 
 	connectRooms(rooms);
-
-	hollowSolidChunks();
 
 	return level;
 }
