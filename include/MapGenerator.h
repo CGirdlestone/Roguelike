@@ -34,16 +34,18 @@ private:
 	std::pair<int, int> floodFill();
 	void connectCaves(std::pair<int, int> letterCodes);
 	void smoothMap(const int minWallThreshold);
-	void fillBorder();
+	void fillBorder(char c);
 	std::vector<int> getNeighbours(int i);
 	int getNeighbourWallCount(int i);
 	void hollowSolidChunks();
 
 	// Room Maps - Position Rectangles
 	void initialiseRoomMap();
+	std::vector<Rectangle> generateAllRooms(const int minRooms, const int maxRooms, const int minRoomWidth, const int maxRoomWidth);
 	Rectangle generateRoom(const int minRoomWidth, const int maxRoomWidth);
 	bool placeRoom(Rectangle& rect, std::vector<Rectangle>& rooms);
 	void writeRooms(std::vector<Rectangle>& rooms);
+	void sortRooms(std::vector<Rectangle>& rooms);
 	int getRoomExit(Rectangle& rect);
 	void makeCorridor(int start, int finish);
 	void tunnelHorizontally(int& start_x, const int start_y, const int finish_x);
