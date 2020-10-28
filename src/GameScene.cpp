@@ -180,6 +180,7 @@ void GameScene::loadGame()
 	byteIndex = parseGameObjects(byteIndex, buffer, length);
 	mapUIDsToGameObjects();
 	m_dungeon->RayCast(m_entities->at(0)->position->x, m_entities->at(0)->position->y, 10);
+	m_dungeon->populateTileMap();
 	m_camera->updatePosition(m_entities->at(0)->position->x, m_entities->at(0)->position->y);
 }
 

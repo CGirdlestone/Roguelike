@@ -89,28 +89,94 @@ void Renderer::drawTileMap(Camera* camera, DungeonGenerator* dungeon)
 		int tile = dungeon->m_tiles[i];
 
 		if (dungeon->m_fovMap[i] == 1) {
-			//drawTile(&dungeon->m_level[i], offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), true);
 			if (dungeon->m_level[i] == '#') {
-				//m_console->renderSprite(x, y, 1, inView ? 10 : 13, 16);
-				m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 0, 20);
+				//m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 0, 20);
+				if (dungeon->m_level[x + (y + 1) * dungeon->Getm_width()] == '.') {
+					if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
+						m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 6, 0, 20);
+					}
+					else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
+						m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 5, 0, 20);
+					}
+					else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
+						m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 4, 0, 20);
+					}
+					else {
+						m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 0, 20);
+					}
+				}
+				else if (dungeon->m_level[x + (y - 1) * dungeon->Getm_width()] == '.') {
+					if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
+						m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 19, 0, 20);
+					}
+					else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
+						m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 17, 0, 20);
+					}
+					else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
+						m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 16, 0, 20);
+					}
+					else {
+						m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 12 + dungeon->m_tiles[i], 0, 20);
+					}
+				}
+				else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
+					m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 18, 0, 20);
+				}
+				else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
+					m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 7, 0, 20);
+				}
+				else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
+					m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 8, 0, 20);
+				}
 			}
 			else if (dungeon->m_level[i] == '.') {
-				//m_console->renderSprite(x, y, 1, inView ? 16 : 25, 16);
 				m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 1, 20);
 			}
 		}
 		else if (dungeon->m_fovMap[i] == 0){
 			if (dungeon->m_exploredMap[i] == 1) {
 				if (dungeon->m_level[i] == '#') {
-					//m_console->renderSprite(x, y, 1, inView ? 10 : 13, 16);
-					m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 0, 20);
+					if (dungeon->m_level[x + (y + 1) * dungeon->Getm_width()] == '.') {
+						if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
+							m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 6, 0, 20);
+						}
+						else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
+							m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 5, 0, 20);
+						}
+						else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
+							m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 4, 0, 20);
+						}
+						else {
+							m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 0, 20);
+						}
+					} else if (dungeon->m_level[x + (y - 1) * dungeon->Getm_width()] == '.') {
+						if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
+							m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 19, 0, 20);
+						}
+						else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
+							m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 17, 0, 20);
+						}
+						else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
+							m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 16, 0, 20);
+						}
+						else {
+							m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 12 + dungeon->m_tiles[i], 0, 20);
+						}
+					}else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
+						m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 18, 0, 20);
+					}
+					else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
+						m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 7, 0, 20);
+					}
+					else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
+						m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 8, 0, 20);
+					}
 				}
 				else if (dungeon->m_level[i] == '.') {
-					//m_console->renderSprite(x, y, 1, inView ? 16 : 25, 16);
 					m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 1, 20);
+					m_console->fillBackgroundTile(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), shadow);
 				}
-				m_console->fillBackgroundTile(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), shadow);
-				//drawTile(&dungeon->m_level[i], offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), false);
+				
 			}
 		}
 
