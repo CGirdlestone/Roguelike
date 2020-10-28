@@ -39,6 +39,7 @@ public:
 	void drawTile(char* c, int x, int y, bool inView);
 	void drawTileMap(Camera* camera, DungeonGenerator* dungeon);
 	void drawAsciiMap(Camera* camera, DungeonGenerator* dungeon, std::map<int, GameObject*>* actors);
+	void autoTile(int x, int y, int i, int offsetI, int tile, Camera* camera, DungeonGenerator* dungeon);
 
 	void drawBox(int x, int y, int width, int height);
 	void drawText(std::string& text, int x, int y, bool highlighted);
