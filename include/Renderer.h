@@ -37,6 +37,8 @@ public:
 
 	void drawObject(GameObject* entity, int x, int y);
 	void drawTile(char* c, int x, int y, bool inView);
+	void drawTileMap(Camera* camera, DungeonGenerator* dungeon);
+	void drawAsciiMap(Camera* camera, DungeonGenerator* dungeon, std::map<int, GameObject*>* actors);
 
 	void drawBox(int x, int y, int width, int height);
 	void drawText(std::string& text, int x, int y, bool highlighted);

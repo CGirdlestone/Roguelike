@@ -22,6 +22,9 @@ class DungeonGenerator
 
     void createMap(int threshold, int steps, int underPop, int overPop);
 
+    void populateTileMap();
+
+    int checkNeighbourBitmask(int x, int y, int bit);
     bool checkInMap(int x, int y);
     void doRecomputeFOV(int x, int y, int radius);
 
@@ -47,6 +50,7 @@ class DungeonGenerator
     int *m_exploredMap;
     bool recomputeFOV;
 	int m_uid;
+    int *m_tiles;
   protected:
 
   private:

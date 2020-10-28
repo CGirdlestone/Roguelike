@@ -59,6 +59,9 @@ DungeonGenerator::~DungeonGenerator()
 	delete[] m_exploredMap;
 	m_exploredMap = nullptr;
 
+	delete[] m_tiles;
+	m_tiles = nullptr;
+
 	delete m_factory;
 	m_factory = nullptr;
 }
@@ -77,6 +80,9 @@ void DungeonGenerator::initialiseMap()
 		m_exploredMap = new int[m_width * m_height];
 	}
 
+	if (m_tiles == nullptr) {
+		m_tiles = new int[m_width * m_height];
+	}
 
 	for (int i = 0; i < m_width * m_height; i++){
 		m_fovMap[i] = 0;
@@ -98,6 +104,41 @@ void DungeonGenerator::createMap(int threshold, int steps, int underPop, int ove
 		level_type = 1;
 	}
 
+	populateTileMap();
+
+}
+
+int DungeonGenerator::checkNeighbourBitmask(int x, int y, int bit)
+{
+	if (checkInMap(x, y)) {
+		if (m_level[x + y * m_width] == '#' || m_level[x + y * m_width] == ' ') {
+			return (0x00 << bit) & 0xff;
+		}
+	}
+	return 0x00;
+}
+
+void DungeonGenerator::populateTileMap()
+{
+	for (int i = 0; i < m_width * m_height; ++i) {
+		int tile{ 0 };
+		
+		int chance{ std::rand() % 100 + 1 };
+
+		if (chance <= 85) {
+			m_level[i] == '.' ? m_tiles[i] = 0 : m_tiles[i] = 3;
+		} 
+		else if (chance <= 90) {
+			m_level[i] == '.' ? m_tiles[i] = 1 : m_tiles[i] = 2;
+		}
+		else if (chance <= 95) {
+			m_level[i] == '.' ? m_tiles[i] = 2 : m_tiles[i] = 1;
+		}
+		else  if (chance <= 100){
+			m_level[i] == '.' ? m_tiles[i] = 3 : m_tiles[i] = 0;
+		}
+
+	}
 }
 
 bool DungeonGenerator::checkInMap(int x, int y)
