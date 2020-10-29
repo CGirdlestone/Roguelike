@@ -81,6 +81,7 @@ bool Console::init(const char* path)
 	loadMedia("./resources/sprites/Ground0.png", false); // 18
 	loadMedia("./resources/sprites/Fence.png", false); // 19
     loadMedia("./resources/sprites/tilesheet.png", false);
+    loadMedia("./resources/HRAFNHEIM.png", false);
 
     m_fullscreen = 0;
 
@@ -226,6 +227,11 @@ void Console::renderSprite(int x, int y, int spriteX, int spriteY, int sheet)
 	srcrect.y = spriteY * m_tileSize;
 
 	SDL_RenderCopy(m_renderer, m_spriteSheets.at(sheet), &srcrect, &dstrect);
+}
+
+void Console::renderImage(int sheet)
+{
+    SDL_RenderCopy(m_renderer, m_spriteSheets.at(sheet), NULL, NULL);
 }
 
 void Console::update()

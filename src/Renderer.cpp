@@ -332,12 +332,11 @@ void Renderer::drawStartMenu(int i, int options)
 {
 	int width{ m_console->Getm_width() + m_console->getXBuffer() };
 	int height{ m_console->Getm_height() + m_console->getYBuffer() };
-	std::string name = "ROGUELIKE";
 	std::string startText = "START GAME";
 	std::string exitText = "EXIT GAME";
 	std::string continueText = "CONTINUE";
 
-	int yPosition{ height / 2 - 4 };
+	int yPosition{ height / 4 - 4 };
 
 	if ((options == 2 && i == 0) || (options == 3 && i == 1)){
 		startText = ">" + startText;
@@ -349,8 +348,7 @@ void Renderer::drawStartMenu(int i, int options)
 
 	m_console->flush();
 
-	drawText(name, width / 2 - 5, yPosition, false);
-	yPosition += 2;
+	m_console->renderImage(21);
 
 	if (options == 3){
 		

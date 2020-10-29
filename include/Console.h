@@ -39,6 +39,7 @@ class Console
 		void fillBackgroundTile(int x, int y, SDL_Color colour, int alpha, int tileSize, int originX, int originY);
 
 		void renderSprite(int x, int y, int spriteX, int spriteY, int spriteSheet);
+        void renderImage(int spriteSheet);
 
         void resetDrawColour();
         const SDL_Color getDrawColour() const { return m_background; };
