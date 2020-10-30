@@ -9,7 +9,7 @@
 PlayerSystem::PlayerSystem(EventManager* eventManager, std::map<int, GameObject*> *entities):
 m_eventManager(eventManager), m_entities(entities)
 {
-  m_eventManager->registerSystem(DEAD, this);
+  m_eventManager->registerSystem(EXPGAIN, this);
 }
 
 PlayerSystem::~PlayerSystem()
@@ -39,13 +39,11 @@ void PlayerSystem::checkLevelUp()
 	} 
 }
 
-void PlayerSystem::onDead(DeadEvent event)
+void PlayerSystem::onExpGain(ExpGainEvent event)
 {
-	if (event.m_uid != 0){
+	if (event.m_uid != 0){;
 
-		int xp = m_entities->at(event.m_uid)->ai->exp;
-
-		m_entities->at(0)->player->exp += xp;
+		m_entities->at(0)->player->exp += event.m_xp;
 
 		checkLevelUp();
 	}
@@ -53,7 +51,7 @@ void PlayerSystem::onDead(DeadEvent event)
 
 // notify overrides below
 
-void PlayerSystem::notify(DeadEvent event)
+void PlayerSystem::notify(ExpGainEvent event)
 {
-  onDead(event);
+  onExpGain(event);
 }

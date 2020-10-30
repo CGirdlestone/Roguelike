@@ -257,3 +257,24 @@ SaveEvent::~SaveEvent()
 {
 
 }
+
+ExpGainEvent::ExpGainEvent(int uid, int xp) :
+	m_uid(uid), m_xp(xp)
+{
+	m_type = EXPGAIN;
+}
+
+ExpGainEvent::~ExpGainEvent()
+{
+
+}
+
+LevelUpEvent::LevelUpEvent()
+{
+	m_type = LEVELUP;
+}
+
+LevelUpEvent::~LevelUpEvent()
+{
+
+}

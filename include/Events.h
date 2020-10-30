@@ -194,4 +194,18 @@ struct SaveEvent : Event
 	~SaveEvent();
 };
 
+struct ExpGainEvent : Event
+{
+	ExpGainEvent(int uid, int xp);
+	virtual ~ExpGainEvent();
+	int m_uid;
+	int m_xp;
+};
+
+struct LevelUpEvent : Event
+{
+	LevelUpEvent();
+	~LevelUpEvent();
+};
+
 #endif

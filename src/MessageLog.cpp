@@ -24,6 +24,7 @@ MessageLog::MessageLog(int x_buffer, int y_buffer, int log_size, EventManager* e
     m_eventManager->registerSystem(ONMISS, this);
     m_eventManager->registerSystem(DAMAGE, this);
     m_eventManager->registerSystem(DEAD, this);
+    m_eventManager->registerSystem(EXPGAIN, this);
     m_eventManager->registerSystem(ONPICKUP, this);
 	m_eventManager->registerSystem(DROP, this);
 	m_eventManager->registerSystem(MESSAGE, this);
@@ -178,12 +179,13 @@ void MessageLog::notify(DeadEvent event)
   std::string defenderName = m_entities->at(event.m_uid)->m_name;
   std::string msg = defenderName + " has been slain!";
   addMessage(msg);
+}
 
-	if (event.m_uid != 0){
-		std::string expGain = "+" + std::to_string(m_entities->at(event.m_uid)->ai->exp) + " xp";
-		SDL_Color colour = {0x59, 0x7d, 0xce};
-		addMessage(expGain, colour);
-	}
+void MessageLog::notify(ExpGainEvent event)
+{
+    std::string expGain = "+" + std::to_string(event.m_xp) + " xp";
+    SDL_Color colour = { 0x5e, 0xe9, 0xe9 };
+    addMessage(expGain, colour);
 }
 
 void MessageLog::notify(OnPickUpEvent event)

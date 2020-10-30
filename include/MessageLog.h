@@ -41,6 +41,7 @@ public:
     virtual void notify(OnMissEvent event);
     virtual void notify(DamageEvent event);
     virtual void notify(DeadEvent event);
+    virtual void notify(ExpGainEvent event);
     virtual void notify(OnPickUpEvent event);
 	virtual void notify(DropEvent event);
 	virtual void notify(MessageEvent event);

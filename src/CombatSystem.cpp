@@ -197,6 +197,11 @@ void CombatSystem::onDead(DeadEvent event)
 		m_entities->at(event.m_uid)->statusContainer->statuses.at(static_cast<StatusTypes>(i)).first = 0;
 		m_entities->at(event.m_uid)->statusContainer->statuses.at(static_cast<StatusTypes>(i)).second = 0;
 	}
+
+	m_eventManager->pushEvent(ExpGainEvent(0, m_entities->at(event.m_uid)->ai->exp));
+
+	m_entities->at(event.m_uid)->fighter = nullptr;
+	m_entities->at(event.m_uid)->ai = nullptr;
 }
 
 void CombatSystem::onTick()

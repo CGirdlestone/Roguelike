@@ -32,6 +32,8 @@ public:
 	virtual void notify(RestartEvent event) {};
 	virtual void notify(SetStatusEvent event) {};
 	virtual void notify(SaveEvent event) {};
+	virtual void notify(ExpGainEvent event) {};
+	virtual void notify(LevelUpEvent event) {};
 };
 
 #endif

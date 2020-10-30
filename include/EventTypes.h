@@ -27,6 +27,8 @@ enum EventTypes
 	RESTART,
 	SETSTATUS,
 	SAVEGAME,
+	EXPGAIN,
+	LEVELUP,
 };
 extern EventTypes EventType;
 

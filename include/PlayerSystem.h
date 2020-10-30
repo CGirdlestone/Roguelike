@@ -15,12 +15,12 @@ class PlayerSystem : public System
 public:
 	PlayerSystem(EventManager* eventManager, std::map<int, GameObject*> *entities);
 	virtual ~PlayerSystem();
-	void onDead(DeadEvent event);
+	void onExpGain(ExpGainEvent event);
 	void checkLevelUp();
 	void increaseThreshold();
 	void increaseLevel();
 
-	virtual void notify(DeadEvent event);
+	virtual void notify(ExpGainEvent event);
 private:
 	EventManager* m_eventManager;
 	std::map<int, GameObject*> *m_entities;
