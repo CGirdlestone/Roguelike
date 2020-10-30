@@ -69,42 +69,45 @@ void Renderer::drawLog(MessageLog* messageLog, int height)
 
 void Renderer::autoTile(int x, int y, int i, int offsetI, int tile, Camera* camera, DungeonGenerator* dungeon)
 {
+	int screenx{ offsetI % camera->getWidth() + camera->getXBuffer() };
+	int screeny{ offsetI / camera->getWidth() + camera->getYBuffer() };
+
 	if (dungeon->m_level[x + (y + 1) * dungeon->Getm_width()] == '.') {
 		if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 6, 0, 20, camera->getZoom());
+			m_console->renderSprite(screenx, screeny, 6, 0, 20, camera->getZoom());
 		}
 		else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 5, 0, 20, camera->getZoom());
+			m_console->renderSprite(screenx, screeny, 5, 0, 20, camera->getZoom());
 		}
 		else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 4, 0, 20, camera->getZoom());
+			m_console->renderSprite(screenx, screeny, 4, 0, 20, camera->getZoom());
 		}
 		else {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 0, 20, camera->getZoom());
+			m_console->renderSprite(screenx, screeny, dungeon->m_tiles[i], 0, 20, camera->getZoom());
 		}
 	}
 	else if (dungeon->m_level[x + (y - 1) * dungeon->Getm_width()] == '.') {
 		if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 19, 0, 20, camera->getZoom());
+			m_console->renderSprite(screenx, screeny, 19, 0, 20, camera->getZoom());
 		}
 		else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 17, 0, 20, camera->getZoom());
+			m_console->renderSprite(screenx, screeny, 17, 0, 20, camera->getZoom());
 		}
 		else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 16, 0, 20, camera->getZoom());
+			m_console->renderSprite(screenx, screeny, 16, 0, 20, camera->getZoom());
 		}
 		else {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 12 + dungeon->m_tiles[i], 0, 20, camera->getZoom());
+			m_console->renderSprite(screenx, screeny, 12 + dungeon->m_tiles[i], 0, 20, camera->getZoom());
 		}
 	}
 	else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
-		m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 18, 0, 20, camera->getZoom());
+		m_console->renderSprite(screenx, screeny, 18, 0, 20, camera->getZoom());
 	}
 	else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
-		m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 7, 0, 20, camera->getZoom());
+		m_console->renderSprite(screenx, screeny, 7, 0, 20, camera->getZoom());
 	}
 	else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
-		m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 8, 0, 20, camera->getZoom());
+		m_console->renderSprite(screenx, screeny, 8, 0, 20, camera->getZoom());
 	}
 }
 
@@ -278,7 +281,15 @@ void Renderer::drawActors(Camera* camera, DungeonGenerator* dungeon, std::map<in
 			mapArrayIndex = it->second->position->x + it->second->position->y*dungeon->Getm_width();
 			if (dungeon->m_fovMap[mapArrayIndex] == 1){
 				offsetI = camera->calculateOffset(it->second->position->x, it->second->position->y);
-				drawObject(it->second, offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), camera->getZoom());
+
+				int x{ it->second->position->x };
+				int y{ it->second->position->y };
+
+				if (!(x >= camera->getX() && x < camera->getX() + camera->getWidth() / camera->getZoom() && y >= camera->getY() && y < camera->getY() + camera->getHeight() / camera->getZoom())) {
+					continue;
+				}
+
+				drawObject(it->second, offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), camera->getZoom());
 			}
 		}
 	}

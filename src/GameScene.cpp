@@ -310,6 +310,12 @@ enum KeyPressSurfaces GameScene::getEvent(SDL_Event *e)
 
 				case SDLK_F11:
 				return ASCII;
+
+				case SDLK_KP_PLUS:
+					return ZOOMIN;
+
+				case SDLK_KP_MINUS:
+					return ZOOMOUT;
 			}
 		}
 	}
@@ -376,6 +382,16 @@ void GameScene::handleInput(KeyPressSurfaces keyPress)
 				m_eventManager->pushEvent(UseItemEvent(0, m_entities->at(0)->body->slots.at(LEFTHAND)->m_uid));
 			} 
 		}
+	}
+	else if (keyPress == ZOOMIN) {
+		int zoom = m_camera->getZoom();
+		m_camera->setZoom(zoom + 1);
+		m_camera->updatePosition(m_entities->at(0)->position->x, m_entities->at(0)->position->y);
+	}
+	else if (keyPress == ZOOMOUT) {
+		int zoom = m_camera->getZoom();
+		m_camera->setZoom(zoom - 1);
+		m_camera->updatePosition(m_entities->at(0)->position->x, m_entities->at(0)->position->y);
 	}
 
 	if (!m_playerTurn){

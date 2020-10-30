@@ -33,6 +33,8 @@ enum KeyPressSurfaces
 		EXITGAME,
 		SHOOT,
 		ASCII,
+        ZOOMIN,
+        ZOOMOUT,
 };
 
 extern KeyPressSurfaces Key;
