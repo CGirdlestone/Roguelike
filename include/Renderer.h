@@ -48,6 +48,9 @@ public:
 	std::vector<std::string> wrapText(std::string& text, int width);
 		
 	void toggleAsciiMode();
+
+	void serialise(std::ofstream& file);
+	int deserialise(char* buffer, int i);
 	
 private:
 	Console* m_console;

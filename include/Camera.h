@@ -18,6 +18,9 @@ public:
 	constexpr int getZoom() const { return m_zoom; };
 	void setZoom(int zoom) { m_zoom = std::min(4, std::max(1, zoom) == 3 ? (m_zoom == 4 ? 2 : 4) : std::max(1, zoom)); };
 
+	void serialise(std::ofstream& file);
+	int deserialise(char* buffer, int i);
+
 private:
 	int m_width;
 	int m_height;

@@ -1,6 +1,8 @@
 
 #include <algorithm>
+#include <fstream>
 #include "Camera.h"
+#include "Utils.h"
 
 Camera::Camera(int width, int height, int zoom, int mapWidth, int mapHeight, int _xBuffer, int _yBuffer):
 m_width(width), m_height(height), m_zoom(zoom), m_mapWidth(mapWidth), m_mapHeight(mapHeight), m_xBuffer(_xBuffer), m_yBuffer(_yBuffer), m_x(0), m_y(0)
@@ -33,4 +35,17 @@ void Camera::updatePosition(int x, int y)
 
   m_y = std::min(m_y, m_mapHeight - (m_height / m_zoom));
   m_y = std::max(m_y, 0);
+}
+
+void Camera::serialise(std::ofstream& file) 
+{
+	utils::serialiseInt(file, m_zoom);
+}
+
+int Camera::deserialise(char* buffer, int i)
+{
+	m_zoom = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	return i;
 }

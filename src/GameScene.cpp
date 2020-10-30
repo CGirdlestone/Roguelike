@@ -111,6 +111,10 @@ int GameScene::parseDungeonDepth(int i, char* buffer, std::fstream::pos_type len
 
 void GameScene::serialiseGameState(std::ofstream& file)
 {
+	m_renderer->serialise(file);
+
+	m_camera->serialise(file);
+
 	m_messageLog->serialise(file);
 
 	utils::serialiseInt(file, m_dungeon->m_uid);
@@ -177,6 +181,8 @@ void GameScene::loadGame()
 
 	m_dungeon->initialiseMap();
 
+	byteIndex = m_renderer->deserialise(buffer, byteIndex);
+	byteIndex = m_camera->deserialise(buffer, byteIndex);
 	byteIndex = m_messageLog->deserialise(buffer, byteIndex);
 	byteIndex = parseDungeonDepth(byteIndex, buffer, length);
 	byteIndex = parseMap(byteIndex, buffer, length);

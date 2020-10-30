@@ -4,6 +4,7 @@
 #include <map>
 #include "Renderer.h"
 #include "Slots.h"
+#include "Utils.h"
 
 Renderer::Renderer(Console* console)
 {
@@ -721,4 +722,21 @@ void Renderer::drawBar(int x, int y, int width , int current, int max, SDL_Color
 			m_console->render(barChar, x + i, y, m_defaultColour);
 		}
 	}
+}
+
+void Renderer::serialise(std::ofstream& file)
+{
+	utils::serialiseInt(file, m_console->getDisplayAscii() ? 1 : 0);
+}
+
+int Renderer::deserialise(char* buffer, int i)
+{
+	int ascii = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	if (ascii == 0) {
+		m_console->toggleAsciiMode();
+	}
+
+	return i;
 }
