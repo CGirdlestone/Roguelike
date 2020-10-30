@@ -259,55 +259,55 @@ enum KeyPressSurfaces GameScene::getEvent(SDL_Event *e)
 		} else if (e->type == SDL_KEYDOWN){
 			switch(e->key.keysym.sym){
 				case SDLK_KP_1:
-				return SOUTHWEST;
+					return SOUTHWEST;
 
 				case SDLK_KP_2:
-				return SOUTH;
+					return SOUTH;
 
 				case SDLK_KP_3:
-				return SOUTHEAST;
+					return SOUTHEAST;
 
 				case SDLK_KP_4:
-				return WEST;
+					return WEST;
 
 				case SDLK_KP_5:
-				return WAIT;
+					return WAIT;
 
 				case SDLK_KP_6:
-				return EAST;
+					return EAST;
 
 				case SDLK_KP_7:
-				return NORTHWEST;
+					return NORTHWEST;
 
 				case SDLK_KP_8:
-				return NORTH;
+					return NORTH;
 
 				case SDLK_KP_9:
-				return NORTHEAST;
+					return NORTHEAST;
 
 				case SDLK_ESCAPE:
-				return ESCAPE;
+					return ESCAPE;
 
 				case SDLK_F1:
-				return F1;
+					return F1;
 
 				case SDLK_g:
-				return GRAB;
+					return GRAB;
 
-				case SDLK_i:
-				return BAG;
+				case SDLK_TAB:
+					return BAG;
 
 				case SDLK_c:
-				return SHOWCHARSCREEN;
+					return SHOWCHARSCREEN;
 
 				case SDLK_RETURN:
-				return USE;
+					return USE;
 							
 				case SDLK_s:
-				return SHOOT;
+					return SHOOT;
 
 				case SDLK_F11:
-				return ASCII;
+					return ASCII;
 
 				case SDLK_KP_PLUS:
 					return ZOOMIN;

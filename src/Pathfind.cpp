@@ -5,8 +5,6 @@
 
 #include "Pathfind.h"
 
-using namespace std;
-
 Node::Node(int x, int y, int g, int h, int f, Node* parent){
   _x = x;
   _y = y;
@@ -36,7 +34,7 @@ int calculate_h(int x1, int y1, int xf, int yf)
   return (abs(x1-xf) + abs(y1-yf))*10;
 }
 
-void getNeighbours(vector<int> *neighbours, int width, int height, int x, int y){
+void getNeighbours(std::vector<int> *neighbours, int width, int height, int x, int y){
   int i = x + y * width;
 
 	for (int m = -1; m < 2; ++m){
@@ -54,71 +52,71 @@ bool compareNodes(Node* n, Node* m){
   return n->_f > m->_f;
 }
 
-void aStar(char* world, vector<int> *path, int width, int height, int x1, int y1, int xf, int yf)
+void aStar(char* world, std::vector<int> *path, int width, int height, int x1, int y1, int xf, int yf)
 {
-  int g, h;
-  int i, x, y;
-  bool addChild;
+	int g, h;
+	int i, x, y;
+	bool addChild;
 	bool inClosedList;
-  const int SIDE_STEP = 10;
-  const int DIAGONAL_STEP = 14;
-  Node *currentNode = nullptr;
-  Node *child = nullptr;
+	const int SIDE_STEP = 10;
+	const int DIAGONAL_STEP = 14;
+	Node *currentNode = nullptr;
+	Node *child = nullptr;
 
-  vector<Node*> openList;
-  vector<Node*> closedList;
-  vector<int> neighbours;
+	std::vector<Node*> openList;
+	std::vector<Node*> closedList;
+	std::vector<int> neighbours;
 
 	std::string tmp;
 
-  h = calculate_h(x1, y1, xf, yf);
+	h = calculate_h(x1, y1, xf, yf);
 
-  Node* start = new Node(x1, y1, 0, h, h, nullptr);
+	Node* start = new Node(x1, y1, 0, h, h, nullptr);
 
-  openList.push_back(start);
+	openList.push_back(start);
 
-  while (!openList.empty()){
+	while (!openList.empty()){
 
-    sort(openList.begin(), openList.end(), compareNodes);
-    currentNode = openList.back();
-    openList.pop_back();
-    closedList.push_back(currentNode);
-    if (currentNode->equals(xf, yf)){
-      while(currentNode->_parent != nullptr){
-        path->push_back(currentNode->_x + currentNode->_y * width);
-        currentNode = currentNode->_parent;
-      }
-      break;
-    }
+		sort(openList.begin(), openList.end(), compareNodes);
+		currentNode = openList.back();
+		openList.pop_back();
+		closedList.push_back(currentNode);
+		if (currentNode->equals(xf, yf)){
+			while(currentNode->_parent != nullptr){
+			path->push_back(currentNode->_x + currentNode->_y * width);
+			currentNode = currentNode->_parent;
+			}
+			break;
+		}
 
-    getNeighbours(&neighbours, width, height, currentNode->_x, currentNode->_y);
+		getNeighbours(&neighbours, width, height, currentNode->_x, currentNode->_y);
 
-    while(neighbours.size() > 0){
-    	addChild = false;
+		while(neighbours.size() > 0){
+    		addChild = false;
 			inClosedList = false;
-      i = neighbours.back();
-      neighbours.pop_back();
+			i = neighbours.back();
+			neighbours.pop_back();
 
-      if (world[i] != '.'){
-        continue;
-      }
+			if (world[i] != '.'){
+				continue;
+			}
 
-      x = i % width;
-      y = i / width;
+			x = i % width;
+			y = i / width;
 
-      if ((currentNode->_x - x) * (currentNode->_y-y) == 0){
-        // cardinal axes
-        g = currentNode->_g + SIDE_STEP;
-      } else if ((currentNode->_x - x) * (currentNode->_y-y) != 0){
-        // diagonal axes
-        g = currentNode->_g + DIAGONAL_STEP;
-      }
+			if ((currentNode->_x - x) * (currentNode->_y-y) == 0){
+				// cardinal axes
+				g = currentNode->_g + SIDE_STEP;
+			} else if ((currentNode->_x - x) * (currentNode->_y-y) != 0){
+				// diagonal axes
+				g = currentNode->_g + DIAGONAL_STEP;
+			}
 
-      h = calculate_h(x, y, xf, yf);
+			h = calculate_h(x, y, xf, yf);
 
-      child = new Node(x, y, g, h, g+h, currentNode);
+			child = new Node(x, y, g, h, g+h, currentNode);
 			
-      for(int i = 0; i < static_cast<int>(closedList.size()); ++i){
+			for(int i = 0; i < static_cast<int>(closedList.size()); ++i){
 				if (closedList.at(i)->equals(child)){
 					inClosedList = true;
 					if (child->_g < closedList.at(i)->_g){
@@ -134,22 +132,22 @@ void aStar(char* world, vector<int> *path, int width, int height, int x1, int y1
 				delete child;
 				child = nullptr;
 			}
-    }
-  }
+		}
+	}
 
-  while(!openList.empty()){
-    currentNode = openList.back();
-    delete currentNode;
-    currentNode = nullptr;
-    openList.pop_back();
-  }
+	while(!openList.empty()){
+		currentNode = openList.back();
+		delete currentNode;
+		currentNode = nullptr;
+		openList.pop_back();
+	}
 
-  while(!closedList.empty()){
-    currentNode = closedList.back();
-    delete currentNode;
-    currentNode = nullptr;
-    closedList.pop_back();
-  }
+	while(!closedList.empty()){
+		currentNode = closedList.back();
+		delete currentNode;
+		currentNode = nullptr;
+		closedList.pop_back();
+	}
 }
 
 float getGradient(int x1, int y1, int xf, int yf)

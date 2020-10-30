@@ -12,7 +12,7 @@ Renderer::Renderer(Console* console)
 	m_defaultColour = { 0x35, 0x36, 0x58 };
 	m_inViewColour = { 0x8b, 0x97, 0xb6 };
 	m_borderColour = { 0x28, 0x90, 0xdc };
-	m_highlightColour = { 0xff, 0xff, 0xff };
+	m_highlightColour = { 0x5e, 0xe9, 0xe9 };
 	m_textColour = { 0xc5, 0xcd, 0xdb };
 }
 
@@ -66,8 +66,6 @@ void Renderer::drawLog(MessageLog* messageLog, int height)
 		}
 	}
 }
-
-
 
 void Renderer::autoTile(int x, int y, int i, int offsetI, int tile, Camera* camera, DungeonGenerator* dungeon)
 {
@@ -401,24 +399,31 @@ void Renderer::drawInventory(std::map<int, GameObject*> *actors, int i)
 	drawBox(width / 2 - 1, 0, width / 2 + xBuffer + 1, 8);
 	drawBox(width / 2 - 1, 7, width / 2 + xBuffer + 1, height + yBuffer - 7);
 
-	std::string inventoryHeader = "Inventory";
+	std::string inventoryHeader = ">Inventory";
+	std::string characterHeader = "Character";
+	SDL_Colour colour = { 0x35, 0x36, 0x58 };
 
-	drawText(inventoryHeader, 3, 2, false);
+	drawBar(1, 1, width / 2 - 2, width / 2 - 2, width / 2 - 2, colour);
+	drawText(inventoryHeader, 2, 1, true);
+	drawText(characterHeader, 2 + inventoryHeader.length() + 2, 1, false);
+
+	int yPosition{ 5 };
 
 	if (actors->at(0)->inventory->inventory.size() > 0){
 		for (int k = 0; k < static_cast<int>(actors->at(0)->inventory->inventory.size());++k){
 			GameObject* item = actors->at(0)->inventory->inventory.at(k);
 			if (k == i){
 				std::string selectedItem = ">" + item->m_name;
-				drawText(selectedItem, 2, 2 * k + 4, true);
+				drawText(selectedItem, 2, yPosition, true);
 				std::vector<std::string> lines = wrapText(item->item->description, width / 2 + xBuffer);
 				int j = 0;
 				for (auto& line : lines) {
 					drawText(line, width / 2, 2 + 2*j++, false);
 				}
 			} else {
-				drawText(item->m_name, 3, 2 * k + 4, false);
+				drawText(item->m_name, 3, yPosition, false);
 			}
+			yPosition += 2;
 		}
 	}
 
@@ -435,9 +440,9 @@ void Renderer::drawEquippedItem(std::string slot, std::string item, int y, int i
 
 	for (int j = 0; j < static_cast<int>(equipmentSlot.length()); ++j){
 		if (index == y - 1){
-			m_console->render(&equipmentSlot[j], j + 2, 2 + 2 * y, m_highlightColour);
+			m_console->render(&equipmentSlot[j], j + 2, 3 + 2 * y, m_highlightColour);
 		} else {
-			m_console->render(&equipmentSlot[j], j + 3, 2 + 2 * y, m_textColour);
+			m_console->render(&equipmentSlot[j], j + 3, 3 + 2 * y, m_textColour);
 		}	
 	}
 }
@@ -446,26 +451,33 @@ void Renderer::drawCharacterScene(std::map<int, GameObject*> *actors, int index)
 {
 	m_console->flush();
 
+	int width = m_console->Getm_width();
+
+	std::string inventoryHeader = "Inventory";
+	std::string characterHeader = ">Character";
+	SDL_Colour colour = { 0x35, 0x36, 0x58 };
+
+	drawBar(1, 1, width / 2 - 2, width / 2 - 2, width / 2 - 2, colour);
+	drawText(inventoryHeader, 3, 1, false);
+	drawText(characterHeader, 2 + inventoryHeader.length() + 2, 1, true);
+
 	GameObject* player = actors->at(0);
-	std::string character = "Equipped Items";
 	std::string slot{ "" };
 
 	drawBox(0, 0, m_console->Getm_width() + m_console->getXBuffer(), m_console->Getm_height() + m_console->getYBuffer());
 	drawBox(0, 0, m_console->Getm_width() / 2, m_console->Getm_height() + m_console->getYBuffer());
-
-	drawText(character, 3, 2, false);
 
 	int armour_bonus = 0;
 
 	for (std::map<EquipSlots, GameObject*>::iterator iter = actors->at(0)->body->slots.begin(); iter != actors->at(0)->body->slots.end(); ++iter){
 
 		switch(iter->first){
-			case HEAD: slot = "Head: "; break;
-			case LEFTHAND: slot = "Left Hand: "; break;
-			case RIGHTHAND: slot = "Right Hand: "; break;
-			case BODY: slot = "Body: "; break;
-			case NECK: slot = "Amulet: "; break;
-			case BACK: slot = "Cloak: "; break;
+			case HEAD: slot =		"Head:       "; break;
+			case LEFTHAND: slot =	"Left Hand:  "; break;
+			case RIGHTHAND: slot =	"Right Hand: "; break;
+			case BODY: slot =		"Body:       "; break;
+			case NECK: slot =		"Amulet:     "; break;
+			case BACK: slot =		"Cloak:      "; break;
 		}
 
 		if (iter->second != nullptr){
@@ -683,7 +695,6 @@ void Renderer::drawText(std::string& text, int x, int y, SDL_Color colour)
 		m_console->render(&text[i], x + i, y, colour);
 	}
 }
-
 
 std::vector<std::string> Renderer::wrapText(std::string& text, int width)
 {

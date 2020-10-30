@@ -25,47 +25,44 @@ InventoryScene::~InventoryScene()
 
 enum KeyPressSurfaces InventoryScene::getEvent(SDL_Event *e)
 {
-  while(SDL_PollEvent(e)){
-  	if (e->type == SDL_QUIT){
-    	return ESCAPE;
-    } else if (e->type == SDL_KEYDOWN){
-      switch(e->key.keysym.sym){
-        case SDLK_UP:
-        return NORTH;
+	while(SDL_PollEvent(e)){
+  		if (e->type == SDL_QUIT){
+    		return ESCAPE;
+		} else if (e->type == SDL_KEYDOWN){
+			switch(e->key.keysym.sym){
+				case SDLK_UP:
+					return NORTH;
 
-        case SDLK_DOWN:
-        return SOUTH;
+				case SDLK_DOWN:
+					return SOUTH;
 
-        case SDLK_KP_2:
-        return SOUTH;
+				case SDLK_KP_2:
+					return SOUTH;
 
 				case SDLK_KP_8:
-				return NORTH;
-
-        case SDLK_i:
-        return ESCAPE;
+					return NORTH;
 
 				case SDLK_e:
-				return WEAR;
+					return WEAR;
 
 				case SDLK_d:
-				return DROPITEM;
+					return DROPITEM;
 
 				case SDLK_ESCAPE:
-				return ESCAPE;
+					return ESCAPE;
 		  
-				case SDLK_c:
-				return SHOWCHARSCREEN;
+				case SDLK_TAB:
+					return SHOWCHARSCREEN;
 
 				case SDLK_q:
-				return USE;
+					return USE;
 
 				case SDLK_RETURN:
-				return USE;
-      }
-  	}
-  }
-  return NONE;
+					return USE;
+			}
+  		}
+	}
+	return NONE;
 }
 
 void InventoryScene::handleInput(KeyPressSurfaces keyPress)

@@ -265,14 +265,10 @@ std::vector<Rectangle> MapGenerator::generateAllRooms(const int minRooms, const 
 {
 	std::vector<Rectangle> rooms;
 
-	// first room will never fail so create and add it
-	Rectangle room = generateRoom(minRoomWidth, maxRoomWidth);
-	rooms.push_back(room);
-
-	int numRooms = std::rand() % (maxRooms - minRooms) + minRooms - 1; // -1 because we've added the first room already
+	int numRooms = std::rand() % (maxRooms - minRooms) + minRooms; // -1 because we've added the first room already
 
 	while (numRooms > 0) {
-		room = generateRoom(minRoomWidth, maxRoomWidth);
+		Rectangle room = generateRoom(minRoomWidth, maxRoomWidth);
 		if (placeRoom(room, rooms)) {
 			rooms.push_back(room);
 			numRooms--;
