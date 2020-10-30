@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <iostream>
 #include "SDL.h"
 
 #include "MessageLog.h"
@@ -94,14 +95,36 @@ void MessageLog::ageMessages(Uint32 ticks)
     m_messageQueue = aliveMessages;
 }
 
-void serialise(std::ofstream& file)
+void MessageLog::serialise(std::ofstream& file)
 {
+    utils::serialiseInt(file, m_i);
 
+    utils::serialiseInt(file, static_cast<int>(m_messageQueue.size()));
+
+    if (static_cast<int>(m_messageQueue.size() > 0)){
+        for (auto& msg : m_messageQueue) {
+            msg.serialise(file);
+        }
+    }
 }
 
-void deserialise(char* buffer, int i)
+int MessageLog::deserialise(char* buffer, int i)
 {
+    m_i = utils::deserialiseInt(buffer, i);
+    i = utils::advanceFourBytes(i);
 
+    int numMessages = utils::deserialiseInt(buffer, i);
+    i = utils::advanceFourBytes(i);
+
+    if (numMessages > 0) {
+        for (int j = 0; j < numMessages; ++j) {
+            Message msg;
+            i = msg.deserialise(buffer, i);
+            m_messageQueue.push_back(msg);
+        }
+    }
+
+    return i;
 }
 
 void MessageLog::notify(AttackEvent event)

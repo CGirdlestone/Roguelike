@@ -293,10 +293,11 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	i = utils::advanceFourBytes(i);
 
 	/* Read in the bytes holding the length of the entity's name */
+	/*
 	_nameLength = utils::deserialiseInt(buffer, i);
 	i = utils::advanceFourBytes(i);
 
-	/* Read in the entity's name */
+
 	char* name = new char[_nameLength];
 	for (int k = 0; k < _nameLength; ++k){
 		int letterCode = utils::deserialiseInt(buffer, i);
@@ -305,7 +306,10 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	}
 	m_name.assign(name, _nameLength);
 	delete[] name;
-	
+	*/
+
+	i = utils::deserialiseString(buffer, i, m_name);
+
 	/* Read in the entity's components. The first set of 4 bytes denotes whether the pointer is valid (1) or nullptr (0). */
 	hasPointer = utils::deserialiseInt(buffer, i);
 	i = utils::advanceFourBytes(i);

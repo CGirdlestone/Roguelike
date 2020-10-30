@@ -38,6 +38,24 @@ int utils::deserialiseInt(char* buffer, int i)
 	return value;
 }
 
+int utils::deserialiseString(char* buffer, int i, std::string& stringToDeserialise)
+{
+	int _strLength = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	/* Read in the entity's name */
+	char* str_arr = new char[_strLength];
+	for (int k = 0; k < _strLength; ++k) {
+		int letterCode = utils::deserialiseInt(buffer, i);
+		i = utils::advanceFourBytes(i);
+		str_arr[k] = static_cast<char>(letterCode);
+	}
+	stringToDeserialise.assign(str_arr, _strLength);
+	delete[] str_arr;
+
+	return i;
+}
+
 int utils::advanceFourBytes(int i)
 {
 	return i += 32;

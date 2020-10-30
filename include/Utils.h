@@ -8,6 +8,7 @@ namespace utils {
 	void serialiseInt(std::ofstream& file, int x);
 	void serialiseString(std::ofstream& file, std::string stringToSerialise);
 	int deserialiseInt(char* buffer, int i);
+	int deserialiseString(char* buffer, int i, std::string& stringToDeserialise);
 	int advanceFourBytes(int i);
 }
 

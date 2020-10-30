@@ -28,8 +28,12 @@ public:
     void scrollUp() { m_i = std::min(static_cast<int>(m_messageQueue.size()) - m_y_buffer, m_i + 1); };
     void scrollDown() { m_i = std::max(0, m_i - 1); };
 
+    int getNumMessages() { return static_cast<int>(m_messageQueue.size()); };
+    int getLogIndex() { return m_i; };
+    void setLogIndex(int i) { m_i = i; };
+
     void serialise(std::ofstream& file);
-    void deserialise(char* buffer, int i);
+    int deserialise(char* buffer, int i);
 
     virtual void notify(AttackEvent event);
     virtual void notify(OnHitEvent event);

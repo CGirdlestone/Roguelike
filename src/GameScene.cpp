@@ -111,6 +111,8 @@ int GameScene::parseDungeonDepth(int i, char* buffer, std::fstream::pos_type len
 
 void GameScene::serialiseGameState(std::ofstream& file)
 {
+	m_messageLog->serialise(file);
+
 	utils::serialiseInt(file, m_dungeon->m_uid);
 
 	for (int i = 0; i < m_dungeon->Getm_width() * m_dungeon->Getm_height(); ++i){
@@ -143,7 +145,7 @@ void GameScene::saveGame()
 
 void GameScene::mapUIDsToGameObjects()
 {
-	int item_uid;
+	int item_uid{ 0 };
 	for (int i = 0; i < static_cast<int>(m_entities->at(0)->inventory->inventoryMirror.size()); ++i){
 		item_uid = m_entities->at(0)->inventory->inventoryMirror.at(i);
 		m_entities->at(0)->inventory->inventory.push_back(m_entities->at(item_uid));
@@ -175,6 +177,7 @@ void GameScene::loadGame()
 
 	m_dungeon->initialiseMap();
 
+	byteIndex = m_messageLog->deserialise(buffer, byteIndex);
 	byteIndex = parseDungeonDepth(byteIndex, buffer, length);
 	byteIndex = parseMap(byteIndex, buffer, length);
 	byteIndex = parseExploredMap(byteIndex, buffer, length);
