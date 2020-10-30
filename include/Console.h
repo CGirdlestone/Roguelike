@@ -28,8 +28,8 @@ class Console
         bool initImage();
         bool loadMedia(const char* path, bool setColourKey);
         void createTiles();
-        void render(char* c, int x, int y, SDL_Color colour, int scale = 1);
-        void render(int i, int x, int y, SDL_Color colour, int scale = 1);
+        void render(char* c, int x, int y, SDL_Color colour, int scale = 1, bool scale_pos = true);
+        void render(int i, int x, int y, SDL_Color colour, int scale = 1, bool scale_pos = true);
         void update();
         void closeSDL();
         void flush();
@@ -38,7 +38,7 @@ class Console
 		void fillBackgroundTile(int x, int y, SDL_Color colour, int scale = 1);
 		void fillBackgroundTile(int x, int y, SDL_Color colour, int alpha, int tileSize, int originX, int originY);
 
-		void renderSprite(int x, int y, int spriteX, int spriteY, int spriteSheet, int scale = 1);
+		void renderSprite(int x, int y, int spriteX, int spriteY, int spriteSheet, int scale = 1, bool scale_pos = true);
         void renderImage(int spriteSheet);
 
         void resetDrawColour();

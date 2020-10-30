@@ -411,17 +411,26 @@ void Renderer::drawInventory(std::map<int, GameObject*> *actors, int i)
 
 	if (actors->at(0)->inventory->inventory.size() > 0){
 		for (int k = 0; k < static_cast<int>(actors->at(0)->inventory->inventory.size());++k){
-			GameObject* item = actors->at(0)->inventory->inventory.at(k);
+			GameObject* entity = actors->at(0)->inventory->inventory.at(k);
 			if (k == i){
-				std::string selectedItem = ">" + item->m_name;
+
+				std::string selectedItem = ">" + entity->m_name;
 				drawText(selectedItem, 2, yPosition, true);
-				std::vector<std::string> lines = wrapText(item->item->description, width / 2 + xBuffer);
+
+				std::vector<std::string> lines = wrapText(entity->item->description, width / 2 + xBuffer);
 				int j = 0;
 				for (auto& line : lines) {
 					drawText(line, width / 2, 2 + 2*j++, false);
 				}
+
+				if (m_console->getDisplayAscii()) {
+					m_console->render(entity->renderable->chr, width / 2, 8, entity->renderable->colour, 8, false);
+				}
+				else {
+					m_console->renderSprite(width / 2, 8, entity->renderable->spriteX, entity->renderable->spriteY, entity->renderable->sheet, 8, false);
+				}
 			} else {
-				drawText(item->m_name, 3, yPosition, false);
+				drawText(entity->m_name, 3, yPosition, false);
 			}
 			yPosition += 2;
 		}
@@ -467,6 +476,21 @@ void Renderer::drawCharacterScene(std::map<int, GameObject*> *actors, int index)
 	drawBox(0, 0, m_console->Getm_width() + m_console->getXBuffer(), m_console->Getm_height() + m_console->getYBuffer());
 	drawBox(0, 0, m_console->Getm_width() / 2, m_console->Getm_height() + m_console->getYBuffer());
 
+	int size{ 10 };
+	int row{ 17 };
+	int col{ 3 };
+
+	drawBox(col, row, size, size);
+	drawBox(col + size + 1, row, size, size);
+	drawBox(col + 2 * (size + 1), row, size, size);
+
+	drawBox(col, row + size + 1, size, size);
+	drawBox(col + size + 1, row + size + 1, size, size);
+	drawBox(col + 2 * (size + 1), row + size + 1, size, size);
+
+	int x_pos[6] = { 15, 4, 26, 15, 4, 26 };
+	int y_pos[6] = { 18, 29, 29, 29, 18, 18 };
+
 	int armour_bonus = 0;
 
 	for (std::map<EquipSlots, GameObject*>::iterator iter = actors->at(0)->body->slots.begin(); iter != actors->at(0)->body->slots.end(); ++iter){
@@ -482,6 +506,7 @@ void Renderer::drawCharacterScene(std::map<int, GameObject*> *actors, int index)
 
 		if (iter->second != nullptr){
 			drawEquippedItem(slot, iter->second->m_name, static_cast<int>(iter->first) + 1, index);
+			m_console->renderSprite(x_pos[iter->first], y_pos[iter->first], iter->second->renderable->spriteX, iter->second->renderable->spriteY, iter->second->renderable->sheet, 8, false);
 			if (iter->second->armour != nullptr) {
 				armour_bonus += iter->second->armour->armourBonus;
 			}

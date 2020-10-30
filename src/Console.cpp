@@ -185,18 +185,18 @@ void Console::createTiles()
     }
 }
 
-void Console::render(char* c, int x, int y, SDL_Color colour, int scale)
+void Console::render(char* c, int x, int y, SDL_Color colour, int scale, bool scale_pos)
 {
     int i = static_cast<int>((*c));
 
-    render(i, x, y, colour, scale);
+    render(i, x, y, colour, scale, scale_pos);
 }
 
-void Console::render(int i, int x, int y, SDL_Color colour, int scale)
+void Console::render(int i, int x, int y, SDL_Color colour, int scale, bool scale_pos)
 {
     SDL_Rect dstrect;
-    dstrect.x = x  * m_tileSize * scale;
-    dstrect.y = y * m_tileSize * scale;
+    dstrect.x = scale_pos ? x * m_tileSize * scale : x * m_tileSize;
+    dstrect.y = scale_pos ? y * m_tileSize * scale : y * m_tileSize;
     dstrect.w = m_tileSize * scale;
     dstrect.h = m_tileSize * scale;
 
@@ -211,11 +211,11 @@ void Console::render(int i, int x, int y, SDL_Color colour, int scale)
     SDL_RenderCopy(m_renderer, m_spriteSheets.at(0), &srcrect, &dstrect);
 }
 
-void Console::renderSprite(int x, int y, int spriteX, int spriteY, int sheet, int scale)
+void Console::renderSprite(int x, int y, int spriteX, int spriteY, int sheet, int scale, bool scale_pos)
 {
 	SDL_Rect dstrect; // rect to draw on the screen
-	dstrect.x = x * m_tileSize * scale;
-	dstrect.y = y * m_tileSize * scale;
+	dstrect.x = scale_pos ? x * m_tileSize * scale : x * m_tileSize;
+	dstrect.y = scale_pos ? y * m_tileSize * scale : y * m_tileSize;
 	dstrect.w = m_tileSize * scale;
 	dstrect.h = m_tileSize * scale;
 
