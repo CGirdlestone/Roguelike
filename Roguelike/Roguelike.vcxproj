@@ -59,6 +59,7 @@
     <ClInclude Include="..\include\TargetingScene.h" />
     <ClInclude Include="..\include\Tile.h" />
     <ClInclude Include="..\include\UseableFunctionEnum.h" />
+    <ClInclude Include="..\include\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Camera.cpp" />
@@ -93,6 +94,7 @@
     <ClCompile Include="..\src\StartScene.cpp" />
     <ClCompile Include="..\src\TargetingScene.cpp" />
     <ClCompile Include="..\src\Tile.cpp" />
+    <ClCompile Include="..\src\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\Bisasam_20x20_ascii.png" />

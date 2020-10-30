@@ -94,6 +94,15 @@ void MessageLog::ageMessages(Uint32 ticks)
     m_messageQueue = aliveMessages;
 }
 
+void serialise(std::ofstream& file)
+{
+
+}
+
+void deserialise(char* buffer, int i)
+{
+
+}
 
 void MessageLog::notify(AttackEvent event)
 {

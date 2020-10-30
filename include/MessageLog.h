@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <fstream>
 #include "SDL.h"
 
 #include "Message.h"
@@ -26,6 +27,9 @@ public:
     void purgeLog() { m_messageQueue.clear(); };
     void scrollUp() { m_i = std::min(static_cast<int>(m_messageQueue.size()) - m_y_buffer, m_i + 1); };
     void scrollDown() { m_i = std::max(0, m_i - 1); };
+
+    void serialise(std::ofstream& file);
+    void deserialise(char* buffer, int i);
 
     virtual void notify(AttackEvent event);
     virtual void notify(OnHitEvent event);

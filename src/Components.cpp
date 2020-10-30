@@ -1,4 +1,4 @@
-
+#include "Utils.h"
 #include "SDL.h"
 
 #include "Components.h"
@@ -6,47 +6,7 @@
 #include <iostream>
 #include <fstream>
 
-void serialiseInt(std::ofstream& file, int x)
-{
-	uint8_t bytes[4];
-	bytes[0] = ((x >> 24) & 0xFF);
-	bytes[1] = ((x >> 16) & 0xFF);
-	bytes[2] = ((x >> 8) & 0xFF);
-	bytes[3] = ((x >> 0) & 0xFF);
 
-	for (int i = 0; i < 4; ++i) {
-		file.write(reinterpret_cast<char*>(&bytes[i]), sizeof(reinterpret_cast<char*>(&bytes[i])));
-	}
-}
-
-void serialiseString(std::ofstream& file, std::string stringToSerialise)
-{
-	int size = static_cast<int>(stringToSerialise.length());
-	int letterCode;
-
-	serialiseInt(file, size);
-	
-	for (int i = 0; i < size; ++i){
-		letterCode = static_cast<int>(stringToSerialise[i]);
-		serialiseInt(file, letterCode);
-	}
-}
-
-int deserialiseInt(char* buffer, int i)
-{
-	int value = (	(unsigned char)buffer[i + 0] << 24 |
-					(unsigned char)buffer[i + 1] << 16 |
-					(unsigned char)buffer[i + 2] << 8 |
-					(unsigned char)buffer[i + 3]
-				);
-
-	return value;
-}
-
-int advanceFourBytes(int i)
-{
-	return i += 32;
-}
 
 Position::Position(int i, int j)
 {
@@ -67,17 +27,17 @@ Position::~Position()
 
 void Position::serialise(std::ofstream& file)
 {
-	serialiseInt(file, x);
-	serialiseInt(file, y);
+	utils::serialiseInt(file, x);
+	utils::serialiseInt(file, y);
 }
 
 int Position::deserialise(char* buffer, int i)
 {
-	x = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	x = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	y = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	y = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	return i;
 }
 
@@ -101,13 +61,13 @@ Renderable::~Renderable()
 
 void Renderable::serialise(std::ofstream& file)
 {
-	serialiseInt(file, static_cast<int>(chr));
-	serialiseInt(file, colour.r);
-	serialiseInt(file, colour.g);
-	serialiseInt(file, colour.b);
-	serialiseInt(file, spriteX);
-	serialiseInt(file, spriteY);
-	serialiseInt(file, sheet);
+	utils::serialiseInt(file, static_cast<int>(chr));
+	utils::serialiseInt(file, colour.r);
+	utils::serialiseInt(file, colour.g);
+	utils::serialiseInt(file, colour.b);
+	utils::serialiseInt(file, spriteX);
+	utils::serialiseInt(file, spriteY);
+	utils::serialiseInt(file, sheet);
 }
 
 int Renderable::deserialise(char* buffer, int i)
@@ -116,28 +76,28 @@ int Renderable::deserialise(char* buffer, int i)
 	uint8_t green = 0;
 	uint8_t blue = 0;
 
-	chr = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	chr = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	red = (uint8_t)deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	red = (uint8_t)utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	
-	green = (uint8_t)deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	green = (uint8_t)utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	blue = (uint8_t)deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	blue = (uint8_t)utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	colour = {red, green, blue};
 
-	spriteX = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	spriteX = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	spriteY = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	spriteY = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	sheet = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	sheet = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -164,29 +124,29 @@ void Fighter::serialise(std::ofstream& file)
 {
 	int _isAlive = isAlive ? 1 : 0;
 
-	serialiseInt(file, health);
-	serialiseInt(file, maxHealth);
-	serialiseInt(file, power);
-	serialiseInt(file, defence);
-	serialiseInt(file, _isAlive);
+	utils::serialiseInt(file, health);
+	utils::serialiseInt(file, maxHealth);
+	utils::serialiseInt(file, power);
+	utils::serialiseInt(file, defence);
+	utils::serialiseInt(file, _isAlive);
 }
 
 int Fighter::deserialise(char* buffer, int i)
 {
-	health = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	health = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	maxHealth = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	maxHealth = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	power = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	power = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	defence = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	defence = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	isAlive = deserialiseInt(buffer, i) == 1 ? true : false;
-	i = advanceFourBytes(i);
+	isAlive = utils::deserialiseInt(buffer, i) == 1 ? true : false;
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -225,21 +185,21 @@ Player::~Player()
 
 void Player::serialise(std::ofstream& file)
 {
-	serialiseInt(file, level);
-	serialiseInt(file, exp);
-	serialiseInt(file, next);
+	utils::serialiseInt(file, level);
+	utils::serialiseInt(file, exp);
+	utils::serialiseInt(file, next);
 }
 
 int Player::deserialise(char* buffer, int i)
 {
-	level = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	level = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	exp = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	exp = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	next = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	next = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -264,26 +224,26 @@ Item::~Item()
 
 void Item::serialise(std::ofstream& file)
 {
-	serialiseString(file, description);
-	serialiseInt(file, level);
+	utils::serialiseString(file, description);
+	utils::serialiseInt(file, level);
 }
 
 int Item::deserialise(char* buffer, int i)
 {
-	int descLength = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	int descLength = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	char* desc = new char[descLength];
 	for (int k = 0; k < descLength; ++k){
-		desc[k] = static_cast<char>(deserialiseInt(buffer, i));
-		i = advanceFourBytes(i);
+		desc[k] = static_cast<char>(utils::deserialiseInt(buffer, i));
+		i = utils::advanceFourBytes(i);
 	}
 	description.assign(desc, descLength);
 
 	delete[] desc;
 
-	level = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	level = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -307,17 +267,17 @@ AI::~AI()
 
 void AI::serialise(std::ofstream& file)
 {
-	serialiseInt(file, exp);
-	serialiseInt(file, level);
+	utils::serialiseInt(file, exp);
+	utils::serialiseInt(file, level);
 }
 
 int AI::deserialise(char* buffer, int i)
 {
-	exp = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	exp = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	level = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	level = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -343,24 +303,24 @@ void Inventory::serialise(std::ofstream& file)
 {
 	int inventorySize = static_cast<int>(inventory.size());
 
-	serialiseInt(file, capacity);
-	serialiseInt(file, inventorySize);
+	utils::serialiseInt(file, capacity);
+	utils::serialiseInt(file, inventorySize);
 	for (int i = 0; i < inventorySize; ++i){
-		serialiseInt(file, inventory.at(i)->m_uid);
+		utils::serialiseInt(file, inventory.at(i)->m_uid);
 	}
 }
 
 int Inventory::deserialise(char* buffer, int i)
 {
-	capacity = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	capacity = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	int inventorySize = deserialiseInt(buffer, i);	
-	i = advanceFourBytes(i);
+	int inventorySize = utils::deserialiseInt(buffer, i);	
+	i = utils::advanceFourBytes(i);
 
 	for (int k = 0; k < inventorySize; ++k){
-		inventoryMirror.push_back(deserialiseInt(buffer, i));
-		i = advanceFourBytes(i);
+		inventoryMirror.push_back(utils::deserialiseInt(buffer, i));
+		i = utils::advanceFourBytes(i);
 	}
 
 	return i;
@@ -386,21 +346,21 @@ Weapon::~Weapon()
 
 void Weapon::serialise(std::ofstream& file)
 {
-	serialiseInt(file, static_cast<int>(damageType));
-	serialiseInt(file, sidedDie);
-	serialiseInt(file, static_cast<int>(twoHanded));
+	utils::serialiseInt(file, static_cast<int>(damageType));
+	utils::serialiseInt(file, sidedDie);
+	utils::serialiseInt(file, static_cast<int>(twoHanded));
 }
 
 int Weapon::deserialise(char* buffer, int i)
 {
-	damageType = static_cast<DamageTypes>(deserialiseInt(buffer, i));
-	i = advanceFourBytes(i);
+	damageType = static_cast<DamageTypes>(utils::deserialiseInt(buffer, i));
+	i = utils::advanceFourBytes(i);
 
-	sidedDie = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	sidedDie = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	twoHanded = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	twoHanded = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -424,21 +384,21 @@ Armour::~Armour()
 
 void Armour::serialise(std::ofstream& file)
 {
-	serialiseInt(file, static_cast<int>(resistance));
-	serialiseInt(file, static_cast<int>(weakness));
-	serialiseInt(file, armourBonus);
+	utils::serialiseInt(file, static_cast<int>(resistance));
+	utils::serialiseInt(file, static_cast<int>(weakness));
+	utils::serialiseInt(file, armourBonus);
 }
 
 int Armour::deserialise(char* buffer, int i)
 {
-	resistance = static_cast<DamageTypes>(deserialiseInt(buffer, i));
-	i = advanceFourBytes(i);
+	resistance = static_cast<DamageTypes>(utils::deserialiseInt(buffer, i));
+	i = utils::advanceFourBytes(i);
 
-	weakness = static_cast<DamageTypes>(deserialiseInt(buffer, i));
-	i = advanceFourBytes(i);
+	weakness = static_cast<DamageTypes>(utils::deserialiseInt(buffer, i));
+	i = utils::advanceFourBytes(i);
 
-	armourBonus = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	armourBonus = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -463,13 +423,13 @@ Wearable::~Wearable()
 
 void Wearable::serialise(std::ofstream& file)
 {
-	serialiseInt(file, static_cast<int>(slot));
+	utils::serialiseInt(file, static_cast<int>(slot));
 }
 
 int Wearable::deserialise(char* buffer, int i)
 {
-	slot = static_cast<EquipSlots>(deserialiseInt(buffer, i));
-	i = advanceFourBytes(i);
+	slot = static_cast<EquipSlots>(utils::deserialiseInt(buffer, i));
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -496,11 +456,11 @@ void Body::serialise(std::ofstream& file)
 	int empty = 0;
 
 	for (it = slots.begin(); it != slots.end(); ++it){
-		serialiseInt(file, static_cast<int>(it->first));
+		utils::serialiseInt(file, static_cast<int>(it->first));
 		if (it->second != nullptr){
-			serialiseInt(file, it->second->m_uid);
+			utils::serialiseInt(file, it->second->m_uid);
 		} else {
-			serialiseInt(file, empty);
+			utils::serialiseInt(file, empty);
 		}
 	}
 }
@@ -521,41 +481,41 @@ int Body::deserialise(char* buffer, int i)
 	int backValue = 0;
 
 	
-	headKey = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	headKey = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	headValue = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	headValue = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	leftKey = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	leftKey = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	leftValue = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	leftValue = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	rightKey = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	rightKey = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	rightValue = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	rightValue = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	bodyKey = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	bodyKey = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	bodyValue = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	bodyValue = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	neckKey = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	neckKey = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	neckValue = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	neckValue = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	backKey = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	backKey = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	backValue = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	backValue = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	slotsMirror.insert({headKey, headValue});
 	slotsMirror.insert({leftKey, leftValue});
@@ -587,17 +547,17 @@ Useable::~Useable()
 
 void Useable::serialise(std::ofstream& file)
 {
-	serialiseInt(file, static_cast<int>(funcToDo));
-	serialiseInt(file, numUses);
+	utils::serialiseInt(file, static_cast<int>(funcToDo));
+	utils::serialiseInt(file, numUses);
 }
 
 int Useable::deserialise(char* buffer, int i)
 {
-	funcToDo = static_cast<UseableFunctionEnums>(deserialiseInt(buffer, i));
-	i = advanceFourBytes(i);
+	funcToDo = static_cast<UseableFunctionEnums>(utils::deserialiseInt(buffer, i));
+	i = utils::advanceFourBytes(i);
 
-	numUses = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	numUses = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -622,13 +582,13 @@ Healing::~Healing()
 
 void Healing::serialise(std::ofstream& file)
 {
-	serialiseInt(file, roll);
+	utils::serialiseInt(file, roll);
 }
 
 int Healing::deserialise(char* buffer, int i)
 {
-	roll = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	roll = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -652,25 +612,25 @@ Damage::~Damage()
 
 void Damage::serialise(std::ofstream& file)
 {
-	serialiseInt(file, radius);
-	serialiseInt(file, roll);
-	serialiseInt(file, static_cast<int>(type));
-	serialiseInt(file, chance);
+	utils::serialiseInt(file, radius);
+	utils::serialiseInt(file, roll);
+	utils::serialiseInt(file, static_cast<int>(type));
+	utils::serialiseInt(file, chance);
 }
 
 int Damage::deserialise(char* buffer, int i)
 {
-	radius = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	radius = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	roll = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	roll = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	type = static_cast<DamageTypes>(deserialiseInt(buffer, i));
-	i = advanceFourBytes(i);
+	type = static_cast<DamageTypes>(utils::deserialiseInt(buffer, i));
+	i = utils::advanceFourBytes(i);
 
-	chance = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	chance = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -695,29 +655,29 @@ AreaDamage::~AreaDamage()
 
 void AreaDamage::serialise(std::ofstream& file)
 {
-	serialiseInt(file, radius);
-	serialiseInt(file, roll);
-	serialiseInt(file, splashRadius);
-	serialiseInt(file, static_cast<int>(type));
-	serialiseInt(file, chance);
+	utils::serialiseInt(file, radius);
+	utils::serialiseInt(file, roll);
+	utils::serialiseInt(file, splashRadius);
+	utils::serialiseInt(file, static_cast<int>(type));
+	utils::serialiseInt(file, chance);
 }
 
 int AreaDamage::deserialise(char* buffer, int i)
 {
-	radius = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	radius = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	roll = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	roll = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	splashRadius = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	splashRadius = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	type = static_cast<DamageTypes>(deserialiseInt(buffer, i));
-	i = advanceFourBytes(i);
+	type = static_cast<DamageTypes>(utils::deserialiseInt(buffer, i));
+	i = utils::advanceFourBytes(i);
 
-	chance = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	chance = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -742,21 +702,21 @@ Status::~Status()
 
 void Status::serialise(std::ofstream& file)
 {
-	serialiseInt(file, radius);
-	serialiseInt(file, static_cast<int>(statusType));
-	serialiseInt(file, splashRadius);
+	utils::serialiseInt(file, radius);
+	utils::serialiseInt(file, static_cast<int>(statusType));
+	utils::serialiseInt(file, splashRadius);
 }
 
 int Status::deserialise(char* buffer, int i)
 {
-	radius = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	radius = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
-	statusType = static_cast<StatusTypes>(deserialiseInt(buffer, i));
-	i = advanceFourBytes(i);
+	statusType = static_cast<StatusTypes>(utils::deserialiseInt(buffer, i));
+	i = utils::advanceFourBytes(i);
 
-	splashRadius = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	splashRadius = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
@@ -815,20 +775,20 @@ StatusContainer::~StatusContainer()
 void StatusContainer::serialise(std::ofstream& file)
 {
 	for (int i = 0; i <= static_cast<int>(BLEEDING); ++i){
-		serialiseInt(file, std::get<0>(statuses.at(static_cast<StatusTypes>(i))));
+		utils::serialiseInt(file, std::get<0>(statuses.at(static_cast<StatusTypes>(i))));
 
-		serialiseInt(file, std::get<1>(statuses.at(static_cast<StatusTypes>(i))));
+		utils::serialiseInt(file, std::get<1>(statuses.at(static_cast<StatusTypes>(i))));
 	}
 }
 
 int StatusContainer::deserialise(char* buffer, int i)
 {
 	for (int k = 0; k <= static_cast<int>(BLEEDING); ++k){	
-		statuses.at(static_cast<StatusTypes>(k)).first = deserialiseInt(buffer, i);
-		i = advanceFourBytes(i);
+		statuses.at(static_cast<StatusTypes>(k)).first = utils::deserialiseInt(buffer, i);
+		i = utils::advanceFourBytes(i);
 
-		statuses.at(static_cast<StatusTypes>(k)).second = deserialiseInt(buffer, i);
-		i = advanceFourBytes(i);
+		statuses.at(static_cast<StatusTypes>(k)).second = utils::deserialiseInt(buffer, i);
+		i = utils::advanceFourBytes(i);
 	}
 
 	return i;

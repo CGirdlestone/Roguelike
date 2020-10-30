@@ -1,5 +1,6 @@
 #include <iostream>
 #include "GameScene.h"
+#include "Utils.h"
 
 
 GameScene::GameScene(EventManager *eventManager, Renderer *renderer, std::map<int, GameObject*> *entities, Camera* camera, DungeonGenerator* dungeon, MessageLog* messageLog, ParticleSystem* particleSystem, CombatSystem* combatSystem):
@@ -56,7 +57,7 @@ int GameScene::parseGameObjects(int i, char* buffer, std::fstream::pos_type leng
 
 		int count = 0;
 		for (int j = 0; j < 4; ++j) {
-			if (deserialiseInt(buffer, i + j * 32) == 0) {
+			if (utils::deserialiseInt(buffer, i + j * 32) == 0) {
 				count += 1;
 			}
 		}
@@ -75,8 +76,8 @@ int GameScene::parseMap(int i, char* buffer, std::fstream::pos_type length)
 	int letter;
 
 	for (int j = 0; j < num_tiles; ++j){
-		letter = deserialiseInt(buffer, i);
-		i = advanceFourBytes(i);
+		letter = utils::deserialiseInt(buffer, i);
+		i = utils::advanceFourBytes(i);
 
 		m_dungeon->m_level[j] = static_cast<char>(letter);
 	}
@@ -91,8 +92,8 @@ int GameScene::parseExploredMap(int i, char* buffer, std::fstream::pos_type leng
 	int flag;
 
 	for (int j = 0; j < num_tiles; ++j) {
-		flag = deserialiseInt(buffer, i);
-		i = advanceFourBytes(i);
+		flag = utils::deserialiseInt(buffer, i);
+		i = utils::advanceFourBytes(i);
 
 		m_dungeon->m_exploredMap[j] = flag;
 	}
@@ -102,22 +103,22 @@ int GameScene::parseExploredMap(int i, char* buffer, std::fstream::pos_type leng
 
 int GameScene::parseDungeonDepth(int i, char* buffer, std::fstream::pos_type length)
 {
-	m_dungeon->m_uid = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	m_dungeon->m_uid = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	return i;
 }
 
 void GameScene::serialiseGameState(std::ofstream& file)
 {
-	serialiseInt(file, m_dungeon->m_uid);
+	utils::serialiseInt(file, m_dungeon->m_uid);
 
 	for (int i = 0; i < m_dungeon->Getm_width() * m_dungeon->Getm_height(); ++i){
-		serialiseInt(file, static_cast<int>(m_dungeon->m_level[i]));
+		utils::serialiseInt(file, static_cast<int>(m_dungeon->m_level[i]));
 	}
 
 	for (int i = 0; i < m_dungeon->Getm_width() * m_dungeon->Getm_height(); ++i){
-		serialiseInt(file, static_cast<int>(m_dungeon->m_exploredMap[i]));
+		utils::serialiseInt(file, static_cast<int>(m_dungeon->m_exploredMap[i]));
 	}
 
 	std::map<int, GameObject*>::iterator it;
@@ -126,7 +127,7 @@ void GameScene::serialiseGameState(std::ofstream& file)
 	}
 
 	for (int i = 0; i < 4; ++i) {
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	}
 
 }

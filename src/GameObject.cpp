@@ -1,6 +1,7 @@
 
 #include "GameObject.h"
 #include "Components.h"
+#include "Utils.h"
 #include <cstdio>
 #include <string>
 #include <vector>
@@ -136,147 +137,147 @@ GameObject::~GameObject()
 
 void GameObject::serialise(std::ofstream& file)
 {
-	serialiseInt(file, m_uid);
+	utils::serialiseInt(file, m_uid);
 
-	serialiseString(file, m_name);
+	utils::serialiseString(file, m_name);
 
 	if (position == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		position->serialise(file);
 	}
 
 	if (renderable == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		renderable->serialise(file);
 	}
 
 	if (fighter == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		fighter->serialise(file);
 	}
 
 	if (actor == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		actor->serialise(file);
 	}
 
 	if (player == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		player->serialise(file);
 	}
 
 	if (ai == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		ai->serialise(file);
 	}
 
 	if (item == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		item->serialise(file);
 	}
 
 	if (inventory == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		inventory->serialise(file);
 	}
 
 	if (weapon == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		weapon->serialise(file);
 	}
 
 	if (armour == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		armour->serialise(file);
 	}
 
 	if (wearable == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		wearable->serialise(file);
 	}
 
 	if (body == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		body->serialise(file);
 	}
 
 	if (useable == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		useable->serialise(file);
 	}
 
 	if (healing == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		healing->serialise(file);
 	}
 
 	if (damage == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		damage->serialise(file);
 	}
 
 	if (areaDamage == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		areaDamage->serialise(file);
 	}
 
 	if (status == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		status->serialise(file);
 	}
 
 	if (consumable == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		consumable->serialise(file);
 	}
 
 	if (stairs == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		stairs->serialise(file);
 	}
 
 	if (statusContainer == nullptr){
-		serialiseInt(file, 0);
+		utils::serialiseInt(file, 0);
 	} else {
-		serialiseInt(file, 1);
+		utils::serialiseInt(file, 1);
 		statusContainer->serialise(file);
 	}
 }
@@ -288,26 +289,26 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	int _nameLength = 0;
 
 	/* Read in the entity's uid */
-	m_uid = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	m_uid = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	/* Read in the bytes holding the length of the entity's name */
-	_nameLength = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	_nameLength = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	/* Read in the entity's name */
 	char* name = new char[_nameLength];
 	for (int k = 0; k < _nameLength; ++k){
-		int letterCode = deserialiseInt(buffer, i);
-		i = advanceFourBytes(i);
+		int letterCode = utils::deserialiseInt(buffer, i);
+		i = utils::advanceFourBytes(i);
 		name[k] = static_cast<char>(letterCode);
 	}
 	m_name.assign(name, _nameLength);
 	delete[] name;
 	
 	/* Read in the entity's components. The first set of 4 bytes denotes whether the pointer is valid (1) or nullptr (0). */
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	if (hasPointer == 1){
 		position = new Position();
@@ -315,8 +316,8 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	if (hasPointer == 1){
 		renderable = new Renderable();
@@ -324,8 +325,8 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	}
 	hasPointer = 0;
 
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 
 	if (hasPointer == 1){
 		fighter = new Fighter();
@@ -333,136 +334,136 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	}
 	hasPointer = 0;
 
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		actor = new Actor();
 		i = actor->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		player = new Player();
 		i = player->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		ai = new AI();
 		i = ai->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		item = new Item();
 		i = item->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		inventory = new Inventory();
 		i = inventory->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		weapon = new Weapon();
 		i = weapon->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		armour = new Armour();
 		i = armour->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		wearable = new Wearable();
 		i = wearable->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		body = new Body();
 		i = body->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		useable = new Useable();
 		i = useable->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		healing = new Healing();
 		i = healing->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		damage = new Damage();
 		i = damage->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		areaDamage = new AreaDamage();
 		i = areaDamage->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		status = new Status();
 		i = status->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		consumable = new Consumable();
 		i = consumable->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		stairs = new Stairs();
 		i = stairs->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	
-	hasPointer = deserialiseInt(buffer, i);
-	i = advanceFourBytes(i);
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
 	if (hasPointer == 1){
 		statusContainer = new StatusContainer();
 		i = statusContainer->deserialise(buffer, i);
