@@ -35,14 +35,15 @@ public:
 	void drawGameOver(int i, std::vector<std::string> &deathMessages, int totalLines);
 	void drawParticles(Camera* camera, DungeonGenerator* dungeon, std::vector<Particle> &particles);
 
-	void drawObject(GameObject* entity, int x, int y);
-	void drawTile(char* c, int x, int y, bool inView);
+	void drawObject(GameObject* entity, int x, int y, int scale = 1);
+	void drawTile(char* c, int x, int y, bool inView, int scale = 1);
 	void drawTileMap(Camera* camera, DungeonGenerator* dungeon);
 	void drawAsciiMap(Camera* camera, DungeonGenerator* dungeon, std::map<int, GameObject*>* actors);
 	void autoTile(int x, int y, int i, int offsetI, int tile, Camera* camera, DungeonGenerator* dungeon);
 
 	void drawBox(int x, int y, int width, int height);
 	void drawText(std::string& text, int x, int y, bool highlighted);
+	void drawText(std::string& text, int x, int y, SDL_Color colour);
 	void drawBar(int x, int y, int width, int current, int max, SDL_Color colour);
 	std::vector<std::string> wrapText(std::string& text, int width);
 		

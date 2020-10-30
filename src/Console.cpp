@@ -19,7 +19,7 @@ Console::Console(int width, int height, const char* title, const char* path, int
     m_tileSize = tileSize;
     m_xBuffer = 20;
     m_yBuffer = 12;
-    m_background = { 0x18, 0x0d, 0x2f }; //0x20, 0x28, 0x4e
+    m_background = { 0x18, 0x0d, 0x2f };
 	displayAscii = true; // default mode is traditional ascii graphics
     init(path);
 }
@@ -141,13 +141,13 @@ bool Console::loadMedia(const char* path, bool setColourKey)
     }
 }
 
-void Console::fillBackgroundTile(int x, int y, SDL_Color colour)
+void Console::fillBackgroundTile(int x, int y, SDL_Color colour, int scale)
 {
 	SDL_Rect rect;
-	rect.x = x * m_tileSize;
-	rect.y = y * m_tileSize;
-	rect.w = m_tileSize;
-	rect.h = m_tileSize;
+	rect.x = x * m_tileSize * scale;
+	rect.y = y * m_tileSize * scale;
+	rect.w = m_tileSize * scale;
+	rect.h = m_tileSize * scale;
 
 	SDL_SetRenderDrawColor(m_renderer, colour.r, colour.g, colour.b, 128);
 	SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
@@ -185,20 +185,20 @@ void Console::createTiles()
     }
 }
 
-void Console::render(char* c, int x, int y, SDL_Color colour)
+void Console::render(char* c, int x, int y, SDL_Color colour, int scale)
 {
     int i = static_cast<int>((*c));
 
-    render(i, x, y, colour);
+    render(i, x, y, colour, scale);
 }
 
-void Console::render(int i, int x, int y, SDL_Color colour)
+void Console::render(int i, int x, int y, SDL_Color colour, int scale)
 {
     SDL_Rect dstrect;
-    dstrect.x = x  * m_tileSize;
-    dstrect.y = y * m_tileSize;
-    dstrect.w = m_tileSize;
-    dstrect.h = m_tileSize;
+    dstrect.x = x  * m_tileSize * scale;
+    dstrect.y = y * m_tileSize * scale;
+    dstrect.w = m_tileSize * scale;
+    dstrect.h = m_tileSize * scale;
 
     SDL_Rect srcrect;
     srcrect.w = m_tileSize;
@@ -211,13 +211,13 @@ void Console::render(int i, int x, int y, SDL_Color colour)
     SDL_RenderCopy(m_renderer, m_spriteSheets.at(0), &srcrect, &dstrect);
 }
 
-void Console::renderSprite(int x, int y, int spriteX, int spriteY, int sheet)
+void Console::renderSprite(int x, int y, int spriteX, int spriteY, int sheet, int scale)
 {
 	SDL_Rect dstrect; // rect to draw on the screen
-	dstrect.x = x * m_tileSize;
-	dstrect.y = y * m_tileSize;
-	dstrect.w = m_tileSize;
-	dstrect.h = m_tileSize;
+	dstrect.x = x * m_tileSize * scale;
+	dstrect.y = y * m_tileSize * scale;
+	dstrect.w = m_tileSize * scale;
+	dstrect.h = m_tileSize * scale;
 
 	SDL_Rect srcrect; // rect to copy from texture
 	srcrect.w = m_tileSize;

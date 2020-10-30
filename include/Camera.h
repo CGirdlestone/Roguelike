@@ -4,27 +4,29 @@
 class Camera
 {
 public:
-  Camera(int width, int height, int mapWidth, int mapHeight, int _xBuffer, int _yBuffer);
-  ~Camera();
-  int calculateOffset(int x, int y);
-  void updatePosition(int x, int y);
-  int getWidth(){return m_width;};
-  int getHeight(){return m_height;};
-  int getX(){return m_x;};
-  int getY(){return m_y;};
-  int getPos(){return m_x + m_y * m_mapWidth;};
-	int getXBuffer(){ return m_xBuffer; };
-	int getYBuffer(){ return m_yBuffer; };
+	Camera(int width, int height, int zoom, int mapWidth, int mapHeight, int _xBuffer, int _yBuffer);
+	~Camera();
+	int calculateOffset(int x, int y);
+	void updatePosition(int x, int y);
+	constexpr int getWidth() const {return m_width;};
+	constexpr int getHeight() const {return m_height;};
+	constexpr int getX() const {return m_x;};
+	constexpr int getY() const {return m_y;};
+	constexpr int getPos() const {return m_x + m_y * m_mapWidth;};
+	constexpr int getXBuffer() const { return m_xBuffer; };
+	constexpr int getYBuffer() const { return m_yBuffer; };
+	constexpr int getZoom() const { return m_zoom; };
 
 private:
-  int m_width;
-  int m_height;
-  int m_mapWidth;
-  int m_mapHeight;
+	int m_width;
+	int m_height;
+	int m_zoom;
+	int m_mapWidth;
+	int m_mapHeight;
 	int m_xBuffer;
 	int m_yBuffer;
-  int m_x;
-  int m_y;
+	int m_x;
+	int m_y;
 };
 
 #endif

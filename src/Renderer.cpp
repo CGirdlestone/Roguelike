@@ -25,30 +25,30 @@ void Renderer::toggleAsciiMode()
 	m_console->toggleAsciiMode();
 }
 
-void Renderer::drawObject(GameObject* entity, int x, int y)
+void Renderer::drawObject(GameObject* entity, int x, int y, int scale)
 {
 	if (m_console->getDisplayAscii()){	
-  		m_console->render(&entity->renderable->chr, x, y, entity->renderable->colour);
+  		m_console->render(&entity->renderable->chr, x, y, entity->renderable->colour, scale);
 	} else {
-		m_console->renderSprite(x, y, entity->renderable->spriteX, entity->renderable->spriteY, entity->renderable->sheet);
+		m_console->renderSprite(x, y, entity->renderable->spriteX, entity->renderable->spriteY, entity->renderable->sheet, scale);
 	}
 }
 
-void Renderer::drawTile(char* c, int x, int y, bool inView)
+void Renderer::drawTile(char* c, int x, int y, bool inView, int scale)
 {
 	if (m_console->getDisplayAscii()){
-		m_console->render(c, x, y, inView ? m_inViewColour : m_defaultColour);
+		m_console->render(c, x, y, inView ? m_inViewColour : m_defaultColour, scale);
 	} else {
 		if ((*c) == '#'){
 			//m_console->renderSprite(x, y, 1, inView ? 10 : 13, 16);
-			m_console->renderSprite(x, y, 0, 0, 20);
+			m_console->renderSprite(x, y, 0, 0, 20, scale);
 		} else if ((*c) == '.'){
 			//m_console->renderSprite(x, y, 1, inView ? 16 : 25, 16);
-			m_console->renderSprite(x, y, 0, 1, 20);
+			m_console->renderSprite(x, y, 0, 1, 20, scale);
 		}
 		if (!inView) {
 			SDL_Color shadow = { 0x00, 0x00, 0x00 };
-			m_console->fillBackgroundTile(x, y, shadow);
+			m_console->fillBackgroundTile(x, y, shadow, scale);
 		}
 	}
 }
@@ -60,9 +60,7 @@ void Renderer::drawLog(MessageLog* messageLog, int height)
 	if (messages.size() > 0){
 		for(int j = 0; j < static_cast<int>(messages.size()); j++){
 			Message msg = messages.at(j);
-			for(int i = 0; i < static_cast<int>(msg.m_msg.length()); i++){
-				m_console->render(&msg.m_msg[i], i + 1, j + height+1, msg.m_colour);
-			}
+			drawText(msg.m_msg, 1, j + height + 1, msg.m_colour);
 		}
 	}
 }
@@ -73,40 +71,40 @@ void Renderer::autoTile(int x, int y, int i, int offsetI, int tile, Camera* came
 {
 	if (dungeon->m_level[x + (y + 1) * dungeon->Getm_width()] == '.') {
 		if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 6, 0, 20);
+			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 6, 0, 20, camera->getZoom());
 		}
 		else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 5, 0, 20);
+			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 5, 0, 20, camera->getZoom());
 		}
 		else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 4, 0, 20);
+			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 4, 0, 20, camera->getZoom());
 		}
 		else {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 0, 20);
+			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 0, 20, camera->getZoom());
 		}
 	}
 	else if (dungeon->m_level[x + (y - 1) * dungeon->Getm_width()] == '.') {
 		if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 19, 0, 20);
+			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 19, 0, 20, camera->getZoom());
 		}
 		else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 17, 0, 20);
+			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 17, 0, 20, camera->getZoom());
 		}
 		else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 16, 0, 20);
+			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 16, 0, 20, camera->getZoom());
 		}
 		else {
-			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 12 + dungeon->m_tiles[i], 0, 20);
+			m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 12 + dungeon->m_tiles[i], 0, 20, camera->getZoom());
 		}
 	}
 	else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.' && (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()]) == '.') {
-		m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 18, 0, 20);
+		m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 18, 0, 20, camera->getZoom());
 	}
 	else if (dungeon->m_level[x + 1 + (y)*dungeon->Getm_width()] == '.') {
-		m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 7, 0, 20);
+		m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 7, 0, 20, camera->getZoom());
 	}
 	else if (dungeon->m_level[x - 1 + (y)*dungeon->Getm_width()] == '.') {
-		m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 8, 0, 20);
+		m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), 8, 0, 20, camera->getZoom());
 	}
 }
 
@@ -120,7 +118,7 @@ void Renderer::drawTileMap(Camera* camera, DungeonGenerator* dungeon)
 	for (int i = 0; i < dungeon->Getm_width() * dungeon->Getm_height(); ++i) {
 		x = i % dungeon->Getm_width();
 
-		if (!(x >= camera->getX() && x < camera->getX() + camera->getWidth() && y >= camera->getY() && y < camera->getY() + camera->getHeight())) {
+		if (!(x >= camera->getX() && x < camera->getX() + camera->getWidth() / camera->getZoom() && y >= camera->getY() && y < camera->getY() + camera->getHeight() / camera->getZoom())) {
 			if (x == dungeon->Getm_width() - 1) {
 				y++;
 			}
@@ -136,7 +134,7 @@ void Renderer::drawTileMap(Camera* camera, DungeonGenerator* dungeon)
 				autoTile(x, y, i, offsetI, tile, camera, dungeon);
 			}
 			else if (dungeon->m_level[i] == '.') {
-				m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 1, 20);
+				m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 1, 20, camera->getZoom());
 			}
 		}
 		else if (dungeon->m_fovMap[i] == 0){
@@ -145,8 +143,8 @@ void Renderer::drawTileMap(Camera* camera, DungeonGenerator* dungeon)
 					autoTile(x, y, i, offsetI, tile, camera, dungeon);
 				}
 				else if (dungeon->m_level[i] == '.') {
-					m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 1, 20);
-					m_console->fillBackgroundTile(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), shadow);
+					m_console->renderSprite(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), dungeon->m_tiles[i], 1, 20, camera->getZoom());
+					m_console->fillBackgroundTile(offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), shadow, camera->getZoom());
 				}
 				
 			}
@@ -168,7 +166,7 @@ void Renderer::drawAsciiMap(Camera* camera, DungeonGenerator* dungeon, std::map<
 	for (int i = 0; i < dungeon->Getm_width() * dungeon->Getm_height(); ++i) {
 		x = i % dungeon->Getm_width();
 
-		if (!(x >= camera->getX() && x < camera->getX() + camera->getWidth() && y >= camera->getY() && y < camera->getY() + camera->getHeight())) {
+		if (!(x >= camera->getX() && x < camera->getX() + camera->getWidth() / camera->getZoom() && y >= camera->getY() && y < camera->getY() + camera->getHeight() / camera->getZoom())) {
 			if (x == dungeon->Getm_width() - 1) {
 				y++;
 			}
@@ -189,13 +187,13 @@ void Renderer::drawAsciiMap(Camera* camera, DungeonGenerator* dungeon, std::map<
 			}
 
 			if (!occupied) {
-				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), true);
+				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), true, camera->getZoom());
 			}
 
 		}
 		else if (dungeon->m_fovMap[i] == 0) {
 			if (dungeon->m_exploredMap[i] == 1) {
-				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), false);
+				drawTile(&dungeon->m_level[i], offsetI % camera->getWidth() + camera->getXBuffer(), offsetI / camera->getWidth() + camera->getYBuffer(), false, camera->getZoom());
 			}
 		}
 		if (x == dungeon->Getm_width() - 1) {
@@ -280,7 +278,7 @@ void Renderer::drawActors(Camera* camera, DungeonGenerator* dungeon, std::map<in
 			mapArrayIndex = it->second->position->x + it->second->position->y*dungeon->Getm_width();
 			if (dungeon->m_fovMap[mapArrayIndex] == 1){
 				offsetI = camera->calculateOffset(it->second->position->x, it->second->position->y);
-				drawObject(it->second, offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer());
+				drawObject(it->second, offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), camera->getZoom());
 			}
 		}
 	}
@@ -544,10 +542,10 @@ void Renderer::drawTargetingScene(Camera* camera, DungeonGenerator* dungeon, std
 
 		if (checkInRange(x, y, actors->at(0)->position->x, actors->at(0)->position->y, radius)){
 			SDL_Color colour = {0x6d, 0xaa, 0x2c};
- 			m_console->fillBackgroundTile(offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), colour);
+ 			m_console->fillBackgroundTile(offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), colour, camera->getZoom());
   		} else {
 			SDL_Color colour = {0xd0, 0x46, 0x48};
- 			m_console->fillBackgroundTile(offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), colour);
+ 			m_console->fillBackgroundTile(offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), colour, camera->getZoom());
 		}
 	}
 
@@ -559,10 +557,10 @@ void Renderer::drawTargetingScene(Camera* camera, DungeonGenerator* dungeon, std
 							
 				if (checkInRange(_x, _y, actors->at(0)->position->x, actors->at(0)->position->y, radius)){
 					SDL_Color colour = {0x6d, 0xaa, 0x2b};
- 					m_console->fillBackgroundTile(offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), colour);
+ 					m_console->fillBackgroundTile(offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), colour, camera->getZoom());
   				} else {
 					SDL_Color colour = {0xd0, 0x46, 0x48};
- 					m_console->fillBackgroundTile(offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), colour);
+ 					m_console->fillBackgroundTile(offsetI % camera->getWidth()+camera->getXBuffer(), offsetI / camera->getWidth()+camera->getYBuffer(), colour, camera->getZoom());
 				}
 			}
 		} 
@@ -661,6 +659,13 @@ void Renderer::drawText(std::string& text, int x, int y, bool highlighted)
 	if (highlighted) {
 		colour = m_highlightColour;
 	}
+	for (uint32_t i = 0; i < text.length(); ++i) {
+		m_console->render(&text[i], x + i, y, colour);
+	}
+}
+
+void Renderer::drawText(std::string& text, int x, int y, SDL_Color colour)
+{
 	for (uint32_t i = 0; i < text.length(); ++i) {
 		m_console->render(&text[i], x + i, y, colour);
 	}
