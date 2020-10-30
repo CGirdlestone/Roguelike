@@ -11,7 +11,8 @@
 
 
 
-MessageLog::MessageLog(int x_buffer, int y_buffer, EventManager* eventManager, std::map<int, GameObject*> *entities)
+MessageLog::MessageLog(int x_buffer, int y_buffer, int log_size, EventManager* eventManager, std::map<int, GameObject*> *entities):
+    m_x_buffer(x_buffer), m_y_buffer(y_buffer), m_log_size(log_size), m_eventManager(eventManager), m_entities(entities), m_i(0)
 {
     m_x_buffer = x_buffer;
     m_y_buffer = y_buffer;
@@ -39,8 +40,13 @@ void MessageLog::addMessage(std::string msg, SDL_Color colour)
 
     m_messageQueue.push_back(_msg);
 
-    if(static_cast<int>(m_messageQueue.size()) >= m_y_buffer){
+    if (static_cast<int>(m_messageQueue.size()) > m_y_buffer) {
+        m_i++;
+    }
+
+    if(static_cast<int>(m_messageQueue.size()) >= m_log_size){
        m_messageQueue.erase(m_messageQueue.begin());
+       m_i--;
     }
 }
 
@@ -48,18 +54,23 @@ void MessageLog::addMessage(std::string msg)
 {
     SDL_Color colour = {0xFF, 0xFF, 0xFF};
 
-    Message _msg = Message(msg, colour);
-
-    m_messageQueue.push_back(_msg);
-
-    if(!(static_cast<int>(m_messageQueue.size()) <= m_y_buffer)){
-       m_messageQueue.erase(m_messageQueue.begin());
-    }
+    addMessage(msg, colour);
 }
 
-const std::vector<Message>& MessageLog::getMessages()
+std::vector<Message> MessageLog::getMessages()
 {
-    return m_messageQueue;
+    std::vector<Message> messages;
+
+    if (static_cast<int>(m_messageQueue.size()) < m_y_buffer) {
+
+        return m_messageQueue;
+    }
+
+    for (int n = m_i; n < m_i + m_y_buffer; ++n) {
+        messages.push_back(m_messageQueue[n]);
+    }
+
+    return messages;
 }
 
 void MessageLog::ageMessages(Uint32 ticks)

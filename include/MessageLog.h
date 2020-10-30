@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <algorithm>
 #include "SDL.h"
 
 #include "Message.h"
@@ -15,14 +16,16 @@
 class MessageLog : System
 {
 public:
-    MessageLog(int x_buffer, int y_buffer, EventManager* eventManager, std::map<int, GameObject*> *entities);
+    MessageLog(int x_buffer, int y_buffer, int log_size, EventManager* eventManager, std::map<int, GameObject*> *entities);
     virtual ~MessageLog();
     void addMessage(std::string msg, SDL_Color colour);
     void addMessage(std::string msg);
-    const std::vector<Message>& getMessages();
+    std::vector<Message> getMessages();
     int getm_y_buffer(){return m_y_buffer;};
     void ageMessages(Uint32 ticks);
     void purgeLog() { m_messageQueue.clear(); };
+    void scrollUp() { m_i = std::min(static_cast<int>(m_messageQueue.size()) - m_y_buffer, m_i + 1); };
+    void scrollDown() { m_i = std::max(0, m_i - 1); };
 
     virtual void notify(AttackEvent event);
     virtual void notify(OnHitEvent event);
@@ -41,8 +44,10 @@ private:
     std::vector<Message> m_messageQueue;
     int m_x_buffer;
     int m_y_buffer;
+    int m_log_size;
     EventManager* m_eventManager;
     std::map<int, GameObject*> *m_entities;
+    int m_i;
 };
 
 #endif

@@ -248,18 +248,6 @@ enum KeyPressSurfaces GameScene::getEvent(SDL_Event *e)
 			return EXITGAME;
 		} else if (e->type == SDL_KEYDOWN){
 			switch(e->key.keysym.sym){
-				case SDLK_UP:
-				return NORTH;
-
-				case SDLK_DOWN:
-				return SOUTH;
-
-				case SDLK_LEFT:
-				return WEST;
-
-				case SDLK_RIGHT:
-				return EAST;
-
 				case SDLK_KP_1:
 				return SOUTHWEST;
 
@@ -316,6 +304,12 @@ enum KeyPressSurfaces GameScene::getEvent(SDL_Event *e)
 
 				case SDLK_KP_MINUS:
 					return ZOOMOUT;
+
+				case SDLK_UP:
+					return SCROLLUP;
+
+				case SDLK_DOWN:
+					return SCROLLDOWN;
 			}
 		}
 	}
@@ -393,6 +387,12 @@ void GameScene::handleInput(KeyPressSurfaces keyPress)
 		m_camera->setZoom(zoom - 1);
 		m_camera->updatePosition(m_entities->at(0)->position->x, m_entities->at(0)->position->y);
 	}
+	else if (keyPress == SCROLLUP) {
+		m_messageLog->scrollUp();
+	}
+	else if (keyPress == SCROLLDOWN) {
+		m_messageLog->scrollDown();
+	}
 
 	if (!m_playerTurn){
 		processEntities();
@@ -407,7 +407,7 @@ void GameScene::render()
 void GameScene::update(Uint32 dt)
 {
 	m_particleSystem->ageParticles(dt);
-	m_messageLog->ageMessages(dt);
+	//m_messageLog->ageMessages(dt);
 }
 
 void GameScene::onTick()

@@ -55,12 +55,13 @@ void Renderer::drawTile(char* c, int x, int y, bool inView, int scale)
 
 void Renderer::drawLog(MessageLog* messageLog, int height)
 {
-	const std::vector<Message>& messages = messageLog->getMessages();
+	const std::vector<Message> messages = messageLog->getMessages();
+	const int log_size = static_cast<int>(messages.size());
 
 	if (messages.size() > 0){
-		for(int j = 0; j < static_cast<int>(messages.size()); j++){
+		for(int j = log_size - 1; j >= 0; j--){
 			Message msg = messages.at(j);
-			drawText(msg.m_msg, 1, j + height + 1, msg.m_colour);
+			drawText(msg.m_msg, 1, (log_size - j) + height, msg.m_colour);
 		}
 	}
 }

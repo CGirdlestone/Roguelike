@@ -35,6 +35,8 @@ enum KeyPressSurfaces
 		ASCII,
         ZOOMIN,
         ZOOMOUT,
+        SCROLLUP,
+        SCROLLDOWN,
 };
 
 extern KeyPressSurfaces Key;

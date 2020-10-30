@@ -120,7 +120,7 @@ bool Game::init(int mapWidth, int mapHeight, int width, int height, int tileSize
 	m_renderer = new Renderer(m_console);
 
 	m_eventManager = new EventManager();
-	m_messageLog = new MessageLog(width, 8, m_eventManager, &m_actors);
+	m_messageLog = new MessageLog(width, 10, 50, m_eventManager, &m_actors);
 	m_lootManager = new LootManager(m_eventManager, m_dungeon, &m_actors, m_factory);
 	m_lootManager->loadLootTables("./resources/loot_table.txt");
 	m_combatSystem = new CombatSystem(m_eventManager, &m_actors);
