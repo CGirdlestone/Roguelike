@@ -189,16 +189,16 @@ void InventorySystem::useItem(UseItemEvent event)
 			}
 			else {
 				if (item->useable->AOE) {
-					used = m_scripts[item->useable->funcToDo](m_eventManager, m_entities->at(event.m_user_uid), m_entities->at(event.m_target_uid), m_dungeon);
+					used = m_scripts[item->useable->funcToDo](m_eventManager, item, m_entities->at(event.m_user_uid), m_entities->at(event.m_target_uid), m_dungeon);
 				}
 				else {
-					used = m_scripts[item->useable->funcToDo](m_eventManager, m_entities->at(event.m_user_uid), m_entities->at(event.m_target_uid), nullptr);
+					used = m_scripts[item->useable->funcToDo](m_eventManager, item, m_entities->at(event.m_user_uid), m_entities->at(event.m_target_uid), nullptr);
 				}
 				used = true;
 			}
 		}
 		else {
-			used = m_scripts[item->useable->funcToDo](m_eventManager, m_entities->at(event.m_user_uid), nullptr, nullptr);
+			used = m_scripts[item->useable->funcToDo](m_eventManager, item, m_entities->at(event.m_user_uid), nullptr, nullptr);
 
 			if (used) {
 				m_eventManager->pushEvent(PopScene(1));
@@ -241,5 +241,6 @@ void InventorySystem::loadScripts()
 {
 	m_scripts.insert({ "HEALING", &scripts::heal });
 	m_scripts.insert({ "FIREBALL", &scripts::fireball });
+	m_scripts.insert({ "LIGHTNING", &scripts::lightning });
 }
 

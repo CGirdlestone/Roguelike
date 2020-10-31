@@ -20,7 +20,7 @@ int scripts::base::damage(EventManager* event_manager, GameObject* entity,GameOb
 	return damage;
 }
 
-bool scripts::heal(EventManager* event_manager, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
+bool scripts::heal(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
 {
 	if (entity->fighter->health < entity->fighter->maxHealth) {
 		int total = base::heal(event_manager, entity, 2, 8);
@@ -31,18 +31,25 @@ bool scripts::heal(EventManager* event_manager, GameObject* entity, GameObject* 
 
 }
 
-bool scripts::fireball(EventManager* event_manager, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
+bool scripts::fireball(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
 {
-	// get entities around the target and apply damage.
+	// TO DO get entities around the target and apply damage.
 
 	int total = base::damage(event_manager, entity, target, 4, 8, FIRE);
 
 	return true;
 }
 
-bool scripts::lightning(EventManager* event_manager, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
+bool scripts::lightning(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
 {
 	int total = base::damage(event_manager, entity, target, 2, 12, LIGHTNING);
+
+	return true;
+}
+
+bool scripts::range_attack(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
+{
+	int total = base::damage(event_manager, entity, target, 1, item->weapon->sidedDie, item->weapon->damageType);
 
 	return true;
 }

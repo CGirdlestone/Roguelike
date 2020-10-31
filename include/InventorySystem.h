@@ -17,7 +17,7 @@
 
 class EventManager;
 
-typedef bool (*script)(EventManager* event_manager, GameObject* entity, GameObject* target, DungeonGenerator* dungeon);
+typedef bool (*script)(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target, DungeonGenerator* dungeon);
 
 class InventorySystem : public System
 {
