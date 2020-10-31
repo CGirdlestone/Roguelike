@@ -6,5 +6,5 @@ ACTOR:
 INVENTORY: 10
 BODY:
 PLAYER:
-STARTING ITEMS: Potion Of Healing; Sword; Shield
+STARTING ITEMS: Potion Of Healing; Sword; Shield; Scroll Of Fireball;
 STATUS CONTAINER:

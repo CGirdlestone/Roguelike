@@ -152,11 +152,14 @@ struct Body
 
 struct Useable
 {
-	Useable(UseableFunctionEnums func, int _numUses);
+	//Useable(UseableFunctionEnums func, int _numUses);
+	Useable(std::string func, int _numUses, bool _ranged, bool _AOE);
 	Useable();
 	~Useable();	
-	UseableFunctionEnums funcToDo;
+	std::string funcToDo;
 	int numUses;
+	bool ranged;
+	bool AOE;
 	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 };

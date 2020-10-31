@@ -528,14 +528,14 @@ int Body::deserialise(char* buffer, int i)
 }
 
 
-Useable::Useable(UseableFunctionEnums func, int _numUses):
-	funcToDo(func), numUses(_numUses)
+Useable::Useable(std::string func, int _numUses, bool _ranged, bool _AOE):
+	funcToDo(func), numUses(_numUses), ranged(_ranged), AOE(_AOE)
 {
 
 }
 
 Useable::Useable():
-	funcToDo(HEALING), numUses(0)
+	funcToDo("HEALING"), numUses(0), ranged(false), AOE(false)
 {
 
 }
@@ -547,16 +547,26 @@ Useable::~Useable()
 
 void Useable::serialise(std::ofstream& file)
 {
-	utils::serialiseInt(file, static_cast<int>(funcToDo));
+	utils::serialiseString(file, funcToDo);
+	//utils::serialiseInt(file, static_cast<int>(funcToDo));
 	utils::serialiseInt(file, numUses);
+	utils::serialiseInt(file, (int)ranged);
+	utils::serialiseInt(file, (int)AOE);
 }
 
 int Useable::deserialise(char* buffer, int i)
 {
-	funcToDo = static_cast<UseableFunctionEnums>(utils::deserialiseInt(buffer, i));
-	i = utils::advanceFourBytes(i);
+	i = utils::deserialiseString(buffer, i, funcToDo);
+	//funcToDo = static_cast<UseableFunctionEnums>(utils::deserialiseInt(buffer, i));
+	//i = utils::advanceFourBytes(i);
 
 	numUses = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	ranged = (bool)utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	AOE = (bool)utils::deserialiseInt(buffer, i);
 	i = utils::advanceFourBytes(i);
 
 	return i;

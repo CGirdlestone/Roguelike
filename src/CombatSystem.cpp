@@ -185,23 +185,26 @@ int CombatSystem::getDefenderDamageModifiers(GameObject* defender)
 
 void CombatSystem::onDead(DeadEvent event)
 {
-	SDL_Color c = {0xda, 0x24, 0x24};
-	m_entities->at(event.m_uid)->renderable->colour = c;
-	m_entities->at(event.m_uid)->renderable->chr = '%';
+	if (event.m_uid != 0) {
+		SDL_Color c = { 0xda, 0x24, 0x24 };
+		m_entities->at(event.m_uid)->renderable->colour = c;
+		m_entities->at(event.m_uid)->renderable->chr = '%';
 
-	m_entities->at(event.m_uid)->renderable->spriteX = 0;
-	m_entities->at(event.m_uid)->renderable->spriteY = 3;
-	m_entities->at(event.m_uid)->renderable->sheet = 20;
+		m_entities->at(event.m_uid)->renderable->spriteX = 0;
+		m_entities->at(event.m_uid)->renderable->spriteY = 3;
+		m_entities->at(event.m_uid)->renderable->sheet = 20;
 
-	for (int i = 0; i <= static_cast<int>(BLEEDING); ++i){
-		m_entities->at(event.m_uid)->statusContainer->statuses.at(static_cast<StatusTypes>(i)).first = 0;
-		m_entities->at(event.m_uid)->statusContainer->statuses.at(static_cast<StatusTypes>(i)).second = 0;
+		for (int i = 0; i <= static_cast<int>(BLEEDING); ++i) {
+			m_entities->at(event.m_uid)->statusContainer->statuses.at(static_cast<StatusTypes>(i)).first = 0;
+			m_entities->at(event.m_uid)->statusContainer->statuses.at(static_cast<StatusTypes>(i)).second = 0;
+		}
+
+		m_eventManager->pushEvent(ExpGainEvent(0, m_entities->at(event.m_uid)->ai->exp));
+
+		m_entities->at(event.m_uid)->fighter = nullptr;
+		m_entities->at(event.m_uid)->ai = nullptr;
 	}
 
-	m_eventManager->pushEvent(ExpGainEvent(0, m_entities->at(event.m_uid)->ai->exp));
-
-	m_entities->at(event.m_uid)->fighter = nullptr;
-	m_entities->at(event.m_uid)->ai = nullptr;
 }
 
 void CombatSystem::onTick()

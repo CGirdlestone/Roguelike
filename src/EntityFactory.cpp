@@ -302,14 +302,16 @@ void EntityFactory::makePlayerComponent(GameObject* entity)
 void EntityFactory::makeUseableComponent(std::string line, GameObject* entity)
 {	
 	std::stringstream ss(line);
-	std::string functionString;	
+	std::string functionString{ "" };
 	int numUses{ 0 };
+	int ranged{ 0 };
+	int AOE{ 0 };
 	
-	ss >> functionString >> numUses;
+	ss >> functionString >> numUses >> ranged >> AOE;
 
-	UseableFunctionEnums functionEnum = getFunctionEnum(functionString);
+	//UseableFunctionEnums functionEnum = getFunctionEnum(functionString);
 	
-	Useable* u = new Useable(functionEnum, numUses);
+	Useable* u = new Useable(functionString, numUses, (bool)ranged, (bool)AOE);
 
 	entity->useable = u;
 }

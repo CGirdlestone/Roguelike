@@ -129,15 +129,7 @@ void TargetingScene::handleInput(KeyPressSurfaces keyPress)
 
 int TargetingScene::getTargetUID()
 {
-	int radius{ 0 };
-
-	if (m_entities->at(m_item_uid)->useable->funcToDo == DIRECTDAMAGE){
-		radius = m_entities->at(m_item_uid)->damage->radius;
-	} else if (m_entities->at(m_item_uid)->useable->funcToDo == AOE){
-		radius = m_entities->at(m_item_uid)->areaDamage->radius;
-	} else if (m_entities->at(m_item_uid)->useable->funcToDo == STATUS){
-		radius = m_entities->at(m_item_uid)->status->radius;
-	}
+	int radius{ 10 };
 	
 	std::map<int, GameObject*>::iterator it;
 	for (it = m_entities->begin(); it != m_entities->end(); ++it){
@@ -154,18 +146,13 @@ int TargetingScene::getTargetUID()
 
 void TargetingScene::render()
 {
-	int radius{ 0 };
+	int radius{ 10 };
 	int splashRadius{ 0 };
-
-	if (m_entities->at(m_item_uid)->useable->funcToDo == DIRECTDAMAGE){
-		radius = m_entities->at(m_item_uid)->damage->radius;
-	} else if (m_entities->at(m_item_uid)->useable->funcToDo == AOE){
-		radius = m_entities->at(m_item_uid)->areaDamage->radius;
-		splashRadius = m_entities->at(m_item_uid)->areaDamage->splashRadius;
-	} else if (m_entities->at(m_item_uid)->useable->funcToDo == STATUS){
-		radius = m_entities->at(m_item_uid)->status->radius;
-		splashRadius = m_entities->at(m_item_uid)->areaDamage->splashRadius;
+	if (m_entities->at(m_item_uid)->useable->AOE)
+	{
+		splashRadius = 1;
 	}
+	
 	m_renderer->drawTargetingScene(m_camera, m_dungeon, m_entities, m_messageLog, radius, &bresenhamLine, splashRadius, m_x, m_y);
 }
 

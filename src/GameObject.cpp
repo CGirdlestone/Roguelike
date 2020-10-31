@@ -23,10 +23,6 @@ GameObject::GameObject():
 	wearable = nullptr;
 	body = nullptr;
 	useable = nullptr;
-	healing = nullptr;
-	damage = nullptr;
-	areaDamage = nullptr;
-	status = nullptr;
 	consumable = nullptr;
 	stairs = nullptr;
 	statusContainer = nullptr;
@@ -227,37 +223,10 @@ void GameObject::serialise(std::ofstream& file)
 
 	if (useable == nullptr){
 		utils::serialiseInt(file, 0);
-	} else {
+	}
+	else {
 		utils::serialiseInt(file, 1);
 		useable->serialise(file);
-	}
-
-	if (healing == nullptr){
-		utils::serialiseInt(file, 0);
-	} else {
-		utils::serialiseInt(file, 1);
-		healing->serialise(file);
-	}
-
-	if (damage == nullptr){
-		utils::serialiseInt(file, 0);
-	} else {
-		utils::serialiseInt(file, 1);
-		damage->serialise(file);
-	}
-
-	if (areaDamage == nullptr){
-		utils::serialiseInt(file, 0);
-	} else {
-		utils::serialiseInt(file, 1);
-		areaDamage->serialise(file);
-	}
-
-	if (status == nullptr){
-		utils::serialiseInt(file, 0);
-	} else {
-		utils::serialiseInt(file, 1);
-		status->serialise(file);
 	}
 
 	if (consumable == nullptr){
@@ -415,38 +384,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	if (hasPointer == 1){
 		useable = new Useable();
 		i = useable->deserialise(buffer, i);
-	}
-	hasPointer = 0;
-	
-	hasPointer = utils::deserialiseInt(buffer, i);
-	i = utils::advanceFourBytes(i);
-	if (hasPointer == 1){
-		healing = new Healing();
-		i = healing->deserialise(buffer, i);
-	}
-	hasPointer = 0;
-	
-	hasPointer = utils::deserialiseInt(buffer, i);
-	i = utils::advanceFourBytes(i);
-	if (hasPointer == 1){
-		damage = new Damage();
-		i = damage->deserialise(buffer, i);
-	}
-	hasPointer = 0;
-	
-	hasPointer = utils::deserialiseInt(buffer, i);
-	i = utils::advanceFourBytes(i);
-	if (hasPointer == 1){
-		areaDamage = new AreaDamage();
-		i = areaDamage->deserialise(buffer, i);
-	}
-	hasPointer = 0;
-	
-	hasPointer = utils::deserialiseInt(buffer, i);
-	i = utils::advanceFourBytes(i);
-	if (hasPointer == 1){
-		status = new Status();
-		i = status->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 	

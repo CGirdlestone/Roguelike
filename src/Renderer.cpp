@@ -415,6 +415,7 @@ void Renderer::drawInventory(std::map<int, GameObject*> *actors, int i)
 			if (k == i){
 
 				std::string selectedItem = ">" + entity->m_name;
+
 				drawText(selectedItem, 2, yPosition, true);
 
 				std::vector<std::string> lines = wrapText(entity->item->description, width / 2 + xBuffer);
@@ -726,6 +727,11 @@ std::vector<std::string> Renderer::wrapText(std::string& text, int width)
 	std::vector<std::string> lines;
 	int last_space{ 0 };
 	int line_start{ 0 };
+
+	if (text.length() < width) {
+		lines.push_back(text);
+		return lines;
+	}
 
 	for (uint32_t i = 0; i < text.length(); ++i) {
 		if (text[i] == ' ') {

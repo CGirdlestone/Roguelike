@@ -60,3 +60,14 @@ int utils::advanceFourBytes(int i)
 {
 	return i += 32;
 }
+
+int utils::roll(int num_dice, int num_sides)
+{
+	int total{ 0 };
+
+	for (int i = 0; i < num_dice; ++i) {
+		total += std::rand() % num_sides + 1;
+	}
+
+	return total;
+}

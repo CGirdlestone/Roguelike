@@ -2,15 +2,18 @@
 
 #include <iostream>
 #include "InventorySystem.h"
+#include "Scripts.h"
 
 InventorySystem::InventorySystem(EventManager* eventManager, std::map<int, GameObject*> *entities, DungeonGenerator *dungeon):
 m_eventManager(eventManager), m_entities(entities), m_dungeon(dungeon)
 {
-  m_eventManager->registerSystem(TAKE, this);
+	m_eventManager->registerSystem(TAKE, this);
 	m_eventManager->registerSystem(DROP, this);
 	m_eventManager->registerSystem(EQUIP, this);
 	m_eventManager->registerSystem(UNEQUIP, this);
 	m_eventManager->registerSystem(USEITEM, this);
+
+	loadScripts();
 }
 
 InventorySystem::~InventorySystem()
@@ -174,32 +177,37 @@ void InventorySystem::useItem(UseItemEvent event)
 {
 	GameObject* item = m_entities->at(event.m_item_uid);
 	
+	bool used{ false };
+
 	if (item->useable != nullptr){
-		if(item->useable->funcToDo == HEALING){
-			if (m_entities->at(event.m_user_uid)->fighter->health < m_entities->at(event.m_user_uid)->fighter->maxHealth){
-				m_eventManager->pushEvent(DamageEvent(event.m_user_uid, -1 * (std::rand()%item->healing->roll + 1)));
-				m_eventManager->pushEvent(PopScene(1));
-				decreaseUses(item, event.m_user_uid, event.m_item_uid);
-				m_eventManager->pushEvent(PlayerTurnOverEvent());
-			} 
-		} else if (item->useable->funcToDo == DIRECTDAMAGE || item->useable->funcToDo == AOE || item->useable->funcToDo == STATUS){
-			if (event.m_target_uid == -1){
+		if (item->useable->ranged) {
+			if (event.m_target_uid == -1) {
 				m_eventManager->pushEvent(PopScene(1));
 				m_eventManager->pushEvent(PassUserInfoEvent(event.m_user_uid, event.m_item_uid));
 				m_eventManager->pushEvent(PushScene(TARGETING));
 				m_eventManager->pushEvent(MessageEvent("Select a target..."));
-			} else {
-				// this branch indicates that a target has been selected and executes the relevant function.
-				if (item->useable->funcToDo == DIRECTDAMAGE){
-					m_eventManager->pushEvent(DamageEvent(event.m_target_uid, m_entities->at(event.m_item_uid)->damage->roll));
-				} else if (item->useable->funcToDo == AOE){
-					
-				} else if (item->useable->funcToDo == STATUS){
-
-				}
-				decreaseUses(item, event.m_user_uid, event.m_item_uid);
-				m_eventManager->pushEvent(PlayerTurnOverEvent());
 			}
+			else {
+				if (item->useable->AOE) {
+					used = m_scripts[item->useable->funcToDo](m_eventManager, m_entities->at(event.m_user_uid), m_entities->at(event.m_target_uid), m_dungeon);
+				}
+				else {
+					used = m_scripts[item->useable->funcToDo](m_eventManager, m_entities->at(event.m_user_uid), m_entities->at(event.m_target_uid), nullptr);
+				}
+				used = true;
+			}
+		}
+		else {
+			used = m_scripts[item->useable->funcToDo](m_eventManager, m_entities->at(event.m_user_uid), nullptr, nullptr);
+
+			if (used) {
+				m_eventManager->pushEvent(PopScene(1));
+			}
+		}
+
+		if (used) {
+			decreaseUses(item, event.m_user_uid, event.m_item_uid);
+			m_eventManager->pushEvent(PlayerTurnOverEvent());
 		}
 	}
 }
@@ -227,5 +235,11 @@ void InventorySystem::notify(UnequipEvent event)
 void InventorySystem::notify(UseItemEvent event)
 {
 	useItem(event);
+}
+
+void InventorySystem::loadScripts()
+{
+	m_scripts.insert({ "HEALING", &scripts::heal });
+	m_scripts.insert({ "FIREBALL", &scripts::fireball });
 }
 
