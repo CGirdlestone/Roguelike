@@ -34,12 +34,13 @@ bool MoveSystem::checkMove(int dx, int dy, int uid)
 					if (m_entities->at(uid)->ai != nullptr && entity->ai != nullptr){ 
 						return false; 
 					}
-					
+
 					// if the mob is a figher, it'll be bump-attacked if it's still alive
 					if (entity->fighter != nullptr) {
 						if (entity->fighter->isAlive) {
 							AttackEvent attackEvent = AttackEvent(uid, entity->m_uid);
 							m_eventManager->pushEvent(attackEvent);
+
 							return false;
 						}
 					}

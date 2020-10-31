@@ -8,6 +8,7 @@
 #include "EventTypes.h"
 #include "DamageTypes.h"
 #include "Slots.h"
+#include "Utils.h"
 
 CombatSystem::CombatSystem(EventManager* eventManager, std::map<int, GameObject*> *entities):
 m_eventManager(eventManager), m_entities(entities)
@@ -27,15 +28,37 @@ CombatSystem::~CombatSystem()
 
 void CombatSystem::doAttack(AttackEvent event)
 {
-  int roll = std::rand()%20 + 1;
+	int roll = utils::roll(1, 20);
 
-  if (roll >= 10 + m_entities->at(event.m_defender_uid)->fighter->defence){
-    OnHitEvent onHit = OnHitEvent(event.m_attacker_uid, event.m_defender_uid);
-    m_eventManager->pushEvent(onHit);
-  } else {
-    OnMissEvent onMiss = OnMissEvent(event.m_attacker_uid, event.m_defender_uid);
-    m_eventManager->pushEvent(onMiss);
-  }
+	if (roll >= 10 + m_entities->at(event.m_defender_uid)->fighter->defence){
+		OnHitEvent onHit = OnHitEvent(event.m_attacker_uid, event.m_defender_uid);
+		m_eventManager->pushEvent(onHit);
+	
+
+		if (m_entities->at(event.m_defender_uid)->fighter != nullptr) {
+			if (m_entities->at(event.m_defender_uid)->fighter->isAlive) {
+				// check if the attacking entity has a melee weapon with a useable component
+				// if it does, send a use item event.
+				if (m_entities->at(event.m_attacker_uid)->body != nullptr) {
+					if (m_entities->at(event.m_attacker_uid)->body->slots[RIGHTHAND] != nullptr) {
+						GameObject* item = m_entities->at(event.m_attacker_uid)->body->slots[RIGHTHAND];
+						if (item->useable != nullptr) {
+							if (item->useable->ranged) {
+								m_eventManager->pushEvent(UseItemEvent(event.m_attacker_uid, item->m_uid, event.m_defender_uid));
+							}
+							else {
+								m_eventManager->pushEvent(UseItemEvent(event.m_attacker_uid, item->m_uid, -1));
+							}
+						}
+					}
+				}
+			}
+			
+		}
+	} else {
+		OnMissEvent onMiss = OnMissEvent(event.m_attacker_uid, event.m_defender_uid);
+		m_eventManager->pushEvent(onMiss);
+	}
 }
 
 void CombatSystem::checkForStatusEffect(SetStatusEvent event)
