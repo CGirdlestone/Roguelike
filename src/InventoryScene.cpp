@@ -82,7 +82,12 @@ void InventoryScene::handleInput(KeyPressSurfaces keyPress)
 		m_eventManager->pushEvent(equipEvent);
 	} else if (keyPress == DROPITEM){
 		DropEvent dropEvent = DropEvent(0, m_entities->at(0)->inventory->inventory.at(m_index)->m_uid, x, y);
+		// decrease in the index if the player drops the final item in the inventory
+		if (m_index == (int)m_entities->at(0)->inventory->inventory.size() - 1) {
+			m_index--;
+		}
 		m_eventManager->pushEvent(DropEvent(dropEvent));
+
 	} else if (keyPress == SHOWCHARSCREEN){
 		m_eventManager->pushEvent(PopScene(1));
 		m_eventManager->pushEvent(PushScene(CHARACTER));

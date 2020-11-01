@@ -355,15 +355,15 @@ void EntityFactory::makeAnimationComponent(std::string line, GameObject* entity)
 
 int EntityFactory::simulateNormalDistribution(int level){
 	int score = 0;
-	int mean = 6;
-	int numRolls = 6;
-	int numSides = 3;
+	int mean = 11;
+	int numRolls = 3;
+	int numSides = 6;
 	
 	for (int i = 0; i < numRolls; ++i){
 		score += rand() % numSides + 1;
 	}
 	
-	return score + level - mean - numRolls > 0 ? score + level - mean - numRolls : 1;
+	return score + level - mean > 0 ? score + level - mean: 1;
 }
 
 std::string EntityFactory::chooseRandomMob(int level){
