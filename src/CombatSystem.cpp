@@ -116,17 +116,17 @@ void CombatSystem::calculateDamage(OnCriticalHitEvent event)
 
 void CombatSystem::applyDamage(DamageEvent event)
 {
-  if (m_entities->at(event.m_uid)->fighter != nullptr){
-    m_entities->at(event.m_uid)->fighter->health -= event.m_damage;
+	if (m_entities->at(event.m_uid)->fighter != nullptr){
+		m_entities->at(event.m_uid)->fighter->health -= event.m_damage;
 
-    if (m_entities->at(event.m_uid)->fighter->health <= 0){
+		if (m_entities->at(event.m_uid)->fighter->health <= 0){
 			m_entities->at(event.m_uid)->fighter->isAlive = false;
-      DeadEvent deadEvent = DeadEvent(event.m_uid);
-      m_eventManager->pushEvent(deadEvent);
-    } else if (m_entities->at(event.m_uid)->fighter->health > m_entities->at(event.m_uid)->fighter->maxHealth){
+			DeadEvent deadEvent = DeadEvent(event.m_uid);
+			m_eventManager->pushEvent(deadEvent);
+		} else if (m_entities->at(event.m_uid)->fighter->health > m_entities->at(event.m_uid)->fighter->maxHealth){
 			m_entities->at(event.m_uid)->fighter->health = m_entities->at(event.m_uid)->fighter->maxHealth;
 		}
-  }
+	}
 }
 
 DamageTypes CombatSystem::getDamageType(GameObject* attacker)

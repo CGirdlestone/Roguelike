@@ -41,7 +41,7 @@ void PlayerSystem::checkLevelUp()
 
 void PlayerSystem::onExpGain(ExpGainEvent event)
 {
-	if (event.m_uid != 0){;
+	if (event.m_uid == 0){;
 
 		m_entities->at(0)->player->exp += event.m_xp;
 
