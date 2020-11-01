@@ -83,6 +83,12 @@ bool Console::init(const char* path)
     loadMedia("./resources/sprites/tilesheet.png", false); // 20
     loadMedia("./resources/HRAFNHEIM.png", false); // 21
     loadMedia("./resources/sprites/Player1.png", true); // 22
+    loadMedia("./resources/sprites/Avian1.png", true); // 23
+    loadMedia("./resources/sprites/Rodent1.png", true); // 24
+    loadMedia("./resources/sprites/Humanoid1.png", true); // 25
+    loadMedia("./resources/sprites/Demon1.png", true); // 26
+    loadMedia("./resources/sprites/Elemental1.png", true); // 27
+    loadMedia("./resources/sprites/Undead1.png", true); // 28
 
     m_fullscreen = 0;
 

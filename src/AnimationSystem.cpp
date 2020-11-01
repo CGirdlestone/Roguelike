@@ -45,8 +45,9 @@ void AnimationSystem::updateEntity(Uint32 dt, GameObject* entity)
 
 void AnimationSystem::update(Uint32 dt)
 {
-	for (Uint32 i = 0; i < m_entities->size(); ++i) {
-		GameObject* entity = m_entities->at(i);
+	std::map<int, GameObject*>::iterator iter;
+	for (iter = m_entities->begin(); iter != m_entities->end(); ++iter) {
+		GameObject* entity = iter->second;
 		if (entity->animation != nullptr) {
 			updateEntity(dt, entity);
 		}

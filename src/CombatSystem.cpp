@@ -226,6 +226,7 @@ void CombatSystem::onDead(DeadEvent event)
 
 		m_entities->at(event.m_uid)->fighter = nullptr;
 		m_entities->at(event.m_uid)->ai = nullptr;
+		m_entities->at(event.m_uid)->animation = nullptr;
 	}
 
 }
