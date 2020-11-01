@@ -17,13 +17,10 @@ struct Armour;
 struct Wearable;
 struct Body;
 struct Useable;
-struct Healing;
-struct Damage;
-struct AreaDamage;
-struct Status;
 struct Consumable;
 struct Stairs;
 struct StatusContainer;
+struct Animation;
 
 class GameObject
 {
@@ -50,13 +47,10 @@ public:
 	Wearable *wearable;
 	Body *body;
 	Useable *useable;
-	Healing *healing;
-	Damage *damage;
-	AreaDamage *areaDamage;
-	Status *status;
 	Consumable *consumable;
 	Stairs *stairs;
 	StatusContainer *statusContainer;
+	Animation* animation;
 
 protected:
 

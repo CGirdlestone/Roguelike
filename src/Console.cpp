@@ -80,8 +80,9 @@ bool Console::init(const char* path)
 	loadMedia("./resources/sprites/Tile.png", false); // 17
 	loadMedia("./resources/sprites/Ground0.png", false); // 18
 	loadMedia("./resources/sprites/Fence.png", false); // 19
-    loadMedia("./resources/sprites/tilesheet.png", false);
-    loadMedia("./resources/HRAFNHEIM.png", false);
+    loadMedia("./resources/sprites/tilesheet.png", false); // 20
+    loadMedia("./resources/HRAFNHEIM.png", false); // 21
+    loadMedia("./resources/sprites/Player1.png", true); // 22
 
     m_fullscreen = 0;
 

@@ -26,6 +26,7 @@ GameObject::GameObject():
 	consumable = nullptr;
 	stairs = nullptr;
 	statusContainer = nullptr;
+	animation = nullptr;
 }
 
 GameObject::~GameObject()
@@ -95,26 +96,6 @@ GameObject::~GameObject()
 		useable = nullptr;
 	}
 
-	if(healing != nullptr){
-		delete healing;
-		healing = nullptr;
-	}
-
-	if(damage != nullptr){
-		delete damage;
-		damage = nullptr;
-	}
-
-	if(areaDamage != nullptr){
-		delete areaDamage;
-		areaDamage = nullptr;
-	}
-
-	if(status != nullptr){
-		delete status;
-		status = nullptr;
-	}
-
 	if(consumable != nullptr){
 		delete consumable;
 		consumable = nullptr;
@@ -128,6 +109,11 @@ GameObject::~GameObject()
 	if(statusContainer != nullptr){
 		delete statusContainer;
 		statusContainer = nullptr;
+	}
+
+	if (animation != nullptr) {
+		delete animation;
+		animation = nullptr;
 	}
 }
 
@@ -249,6 +235,14 @@ void GameObject::serialise(std::ofstream& file)
 		utils::serialiseInt(file, 1);
 		statusContainer->serialise(file);
 	}
+
+	if (animation == nullptr) {
+		utils::serialiseInt(file, 0);
+	}
+	else {
+		utils::serialiseInt(file, 1);
+		animation->serialise(file);
+	}
 }
 
 int GameObject::deserialise(char* buffer, int i, int length)
@@ -260,22 +254,6 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	/* Read in the entity's uid */
 	m_uid = utils::deserialiseInt(buffer, i);
 	i = utils::advanceFourBytes(i);
-
-	/* Read in the bytes holding the length of the entity's name */
-	/*
-	_nameLength = utils::deserialiseInt(buffer, i);
-	i = utils::advanceFourBytes(i);
-
-
-	char* name = new char[_nameLength];
-	for (int k = 0; k < _nameLength; ++k){
-		int letterCode = utils::deserialiseInt(buffer, i);
-		i = utils::advanceFourBytes(i);
-		name[k] = static_cast<char>(letterCode);
-	}
-	m_name.assign(name, _nameLength);
-	delete[] name;
-	*/
 
 	i = utils::deserialiseString(buffer, i, m_name);
 
@@ -408,6 +386,14 @@ int GameObject::deserialise(char* buffer, int i, int length)
 	if (hasPointer == 1){
 		statusContainer = new StatusContainer();
 		i = statusContainer->deserialise(buffer, i);
+	}
+	hasPointer = 0;
+
+	hasPointer = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+	if (hasPointer == 1) {
+		animation = new Animation();
+		i = animation->deserialise(buffer, i);
 	}
 	hasPointer = 0;
 

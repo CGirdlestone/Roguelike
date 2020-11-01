@@ -243,5 +243,8 @@ void InventorySystem::loadScripts()
 	m_scripts.insert({ "FIREBALL", &scripts::fireball });
 	m_scripts.insert({ "LIGHTNING", &scripts::lightning });
 	m_scripts.insert({ "RANGED", &scripts::range_attack });
+	m_scripts.insert({ "LIFELEECH", &scripts::lifeleech });
+	m_scripts.insert({ "POISON", &scripts::poison });
+
 }
 

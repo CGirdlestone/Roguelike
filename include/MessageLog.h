@@ -24,7 +24,7 @@ public:
     std::vector<Message> getMessages();
     int getm_y_buffer(){return m_y_buffer;};
     void ageMessages(Uint32 ticks);
-    void purgeLog() { m_messageQueue.clear(); };
+    void purgeLog() { m_messageQueue.clear(); m_i = 0; };
     void scrollUp() { m_i = std::min(static_cast<int>(m_messageQueue.size()) - m_y_buffer, m_i + 1); };
     void scrollDown() { m_i = std::max(0, m_i - 1); };
 

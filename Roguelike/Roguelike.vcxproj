@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\AnimationSystem.h" />
     <ClInclude Include="..\include\Camera.h" />
     <ClInclude Include="..\include\CharacterScene.h" />
     <ClInclude Include="..\include\CombatSystem.h" />
@@ -63,6 +64,7 @@
     <ClInclude Include="..\include\Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\AnimationSystem.cpp" />
     <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\CharacterScene.cpp" />
     <ClCompile Include="..\src\CombatSystem.cpp" />

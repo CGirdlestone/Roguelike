@@ -27,6 +27,20 @@ void utils::serialiseString(std::ofstream& file, std::string stringToSerialise)
 	}
 }
 
+void utils::serialiseQueueInts(std::ofstream& file, std::queue<int>& queueToSerialise)
+{
+	int queue_size = (int)queueToSerialise.size();
+
+	serialiseInt(file, queue_size);
+
+	for (uint32_t i = 0; i < queue_size; ++i) {
+		int elem = std::move(queueToSerialise.front());
+		queueToSerialise.pop();
+		serialiseInt(file, elem);
+		queueToSerialise.push(std::move(elem));
+	}
+}
+
 int utils::deserialiseInt(char* buffer, int i)
 {
 	int value = ((unsigned char)buffer[i + 0] << 24 |
@@ -52,6 +66,20 @@ int utils::deserialiseString(char* buffer, int i, std::string& stringToDeseriali
 	}
 	stringToDeserialise.assign(str_arr, _strLength);
 	delete[] str_arr;
+
+	return i;
+}
+
+int utils::deserialiseQueueInts(char* buffer, int i, std::queue<int>& queueToDeserialise)
+{
+	int queue_size = deserialiseInt(buffer, i);
+	i = advanceFourBytes(i);
+
+	for (uint32_t j = 0; j < queue_size; ++j) {
+		int elem = deserialiseInt(buffer, i);
+		i = advanceFourBytes(i);
+		queueToDeserialise.push(elem);
+	}
 
 	return i;
 }

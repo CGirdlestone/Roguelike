@@ -316,60 +316,41 @@ void EntityFactory::makeUseableComponent(std::string line, GameObject* entity)
 	entity->useable = u;
 }
 
-void EntityFactory::makeHealingComponent(std::string line, GameObject* entity)
-{
-	std::stringstream ss(line);
-	int roll{ 0 };
-
-	ss >> roll;
-
-	Healing* h = new Healing(roll);
-
-	entity->healing = h;
-}
-
-void EntityFactory::makeDamageComponent(std::string line, GameObject* entity)
-{
-	std::stringstream ss(line);
-	int roll{ 0 }, radius{ 0 }, chance{ 0 };
-	std::string damageTypeString;
-	DamageTypes damageType;
-	
-	ss >> radius >> roll >> damageTypeString >> chance;
-
-	damageType = getDamageTypeEnum(damageTypeString);
-	
-	Damage *d = new Damage(radius, roll, damageType, chance);
-	
-	entity->damage = d;	
-}
-
-void EntityFactory::makeAreaDamageComponent(std::string line, GameObject* entity)
-{
-	std::stringstream ss(line);
-	int roll{ 0 }, radius{ 0 }, chance{ 0 }, splashRadius{ 0 };
-	std::string damageTypeString;
-	DamageTypes damageType;
-	
-	ss >> radius >> splashRadius >> roll >> damageTypeString >> chance;
-
-	damageType = getDamageTypeEnum(damageTypeString);
-	
-	AreaDamage *aoe = new AreaDamage(radius, roll, splashRadius, damageType, chance);
-	
-	entity->areaDamage = aoe;	
-}
-
-void EntityFactory::makeStatusComponent(std::string line, GameObject* entity)
-{
-
-}
-
 void EntityFactory::makeConsumableComponent(GameObject* entity)
 {
 	Consumable* c = new Consumable();
 
 	entity->consumable = c;
+}
+
+void EntityFactory::makeStatusContainerComponent(GameObject* entity)
+{
+	StatusContainer* s = new StatusContainer();
+
+	entity->statusContainer = s;
+}
+
+void EntityFactory::makeAnimationComponent(std::string line, GameObject* entity)
+{
+	Animation* a = new Animation();
+
+	std::string anim_frame;
+	std::stringstream ss(line);
+	while (std::getline(ss, anim_frame, ';')) {
+		if (anim_frame.size() == 0) { break; }
+
+		std::stringstream frame_components(anim_frame);
+
+		int sheet{ 0 }, x{ 0 }, y{ 0 };
+
+		frame_components >> x >> y >> sheet;
+
+		a->sprite_x.push(x);
+		a->sprite_y.push(y);
+		a->spriteSheets.push(sheet);
+	}
+
+	entity->animation = a;
 }
 
 int EntityFactory::simulateNormalDistribution(int level){
@@ -436,13 +417,6 @@ void EntityFactory::parseStartingItems(std::string line, GameObject* entity, std
 	}
 }
 
-void EntityFactory::makeStatusContainerComponent(GameObject* entity)
-{
-	StatusContainer* s = new StatusContainer();
-
-	entity->statusContainer = s;
-}
-
 void EntityFactory::makeEntity(std::string entityName, GameObject* entity, std::map<int, GameObject*> *entities)
 {
 	std::vector<std::string> components;
@@ -493,14 +467,8 @@ void EntityFactory::makeEntity(std::string entityName, GameObject* entity, std::
 			makeInventoryComponent(s, entity);
 		} else if (component == "USEABLE"){
 			makeUseableComponent(stats, entity);
-		} else if (component == "HEALING"){
-			makeHealingComponent(stats, entity);
-		} else if (component == "DIRECTDAMAGE"){
-			makeDamageComponent(stats, entity);
-		} else if (component == "AREADAMAGE"){
-			makeAreaDamageComponent(stats, entity);
-		} else if (component == "STATUS"){
-			makeStatusComponent(stats, entity);
+		} else if (component == "ANIMATION"){
+			makeAnimationComponent(stats, entity);
 		} else if (component == "CONSUMABLE"){
 			makeConsumableComponent(entity);
 		} else if (component == "STARTING ITEMS"){
@@ -562,14 +530,8 @@ void EntityFactory::makeEntity(std::string entityName, GameObject* entity, int x
 			makeInventoryComponent(s, entity);
 		} else if (component == "USEABLE"){
 			makeUseableComponent(stats, entity);
-		} else if (component == "HEALING"){
-			makeHealingComponent(stats, entity);
-		} else if (component == "DIRECTDAMAGE"){
-			makeDamageComponent(stats, entity);
-		} else if (component == "AREADAMAGE"){
-			makeAreaDamageComponent(stats, entity);
-		} else if (component == "STATUS"){
-			makeStatusComponent(stats, entity);
+		} else if (component == "ANIMATION") {
+			makeAnimationComponent(stats, entity);
 		} else if (component == "CONSUMABLE"){
 			makeConsumableComponent(entity);
 		} else if (component == "STARTING ITEMS"){
@@ -643,14 +605,8 @@ void EntityFactory::makeEntity(int level, EntityType type, GameObject* entity, i
 			makeInventoryComponent(s, entity);
 		} else if (component == "USEABLE"){
 			makeUseableComponent(stats, entity);
-		} else if (component == "HEALING"){
-			makeHealingComponent(stats, entity);
-		} else if (component == "DIRECTDAMAGE"){
-			makeDamageComponent(stats, entity);
-		} else if (component == "AREADAMAGE"){
-			makeAreaDamageComponent(stats, entity);
-		} else if (component == "STATUS"){
-			makeStatusComponent(stats, entity);
+		} else if (component == "ANIMATION") {
+			makeAnimationComponent(stats, entity);
 		} else if (component == "CONSUMABLE"){
 			makeConsumableComponent(entity);
 		} else if (component == "STARTING ITEMS"){

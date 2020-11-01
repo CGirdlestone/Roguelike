@@ -17,6 +17,7 @@
 #include "MessageLog.h"
 #include "ParticleSystem.h"
 #include "CombatSystem.h"
+#include "AnimationSystem.h"
 #include "Slots.h"
 #include "Pathfind.h"
 
@@ -24,7 +25,7 @@
 class GameScene : public Scene
 {
 public:
-	GameScene(EventManager *eventManager, Renderer *renderer, std::map<int, GameObject*> *entities, Camera* camera, DungeonGenerator* dungeon, MessageLog* messageLog, ParticleSystem* particleSystem, CombatSystem* combatSystem);
+	GameScene(EventManager *eventManager, Renderer *renderer, std::map<int, GameObject*> *entities, Camera* camera, DungeonGenerator* dungeon, MessageLog* messageLog, ParticleSystem* particleSystem, CombatSystem* combatSystem, AnimationSystem* animationSystem);
 	virtual ~GameScene();
 	enum KeyPressSurfaces getEvent(SDL_Event* e);
 	void render();
@@ -55,6 +56,7 @@ private:
 	MessageLog *m_messageLog;
 	ParticleSystem *m_particleSystem;
 	CombatSystem *m_combatSystem;
+	AnimationSystem* m_animationSystem;
 	bool m_playerTurn;
 };
 

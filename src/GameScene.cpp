@@ -3,8 +3,8 @@
 #include "Utils.h"
 
 
-GameScene::GameScene(EventManager *eventManager, Renderer *renderer, std::map<int, GameObject*> *entities, Camera* camera, DungeonGenerator* dungeon, MessageLog* messageLog, ParticleSystem* particleSystem, CombatSystem* combatSystem):
-m_eventManager(eventManager), m_renderer(renderer), m_entities(entities), m_camera(camera), m_dungeon(dungeon), m_messageLog(messageLog), m_particleSystem(particleSystem), m_combatSystem(combatSystem)
+GameScene::GameScene(EventManager *eventManager, Renderer *renderer, std::map<int, GameObject*> *entities, Camera* camera, DungeonGenerator* dungeon, MessageLog* messageLog, ParticleSystem* particleSystem, CombatSystem* combatSystem, AnimationSystem* animationSystem):
+m_eventManager(eventManager), m_renderer(renderer), m_entities(entities), m_camera(camera), m_dungeon(dungeon), m_messageLog(messageLog), m_particleSystem(particleSystem), m_combatSystem(combatSystem), m_animationSystem(animationSystem)
 {
   m_playerTurn = true;
 }
@@ -382,7 +382,7 @@ void GameScene::handleInput(KeyPressSurfaces keyPress)
 		m_eventManager->pushEvent(QuitEvent());
 	} else if (keyPress == SHOOT){
 		if (m_entities->at(0)->body->slots.at(LEFTHAND) != nullptr){
-			if (m_entities->at(0)->body->slots.at(LEFTHAND)->damage != nullptr && m_entities->at(0)->body->slots.at(LEFTHAND)->useable != nullptr){
+			if (m_entities->at(0)->body->slots.at(LEFTHAND)->weapon != nullptr && m_entities->at(0)->body->slots.at(LEFTHAND)->useable != nullptr){
 				m_eventManager->pushEvent(UseItemEvent(0, m_entities->at(0)->body->slots.at(LEFTHAND)->m_uid));
 			} 
 		}
@@ -417,6 +417,7 @@ void GameScene::render()
 void GameScene::update(Uint32 dt)
 {
 	m_particleSystem->ageParticles(dt);
+	m_animationSystem->update(dt);
 	//m_messageLog->ageMessages(dt);
 }
 

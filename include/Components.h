@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <queue>
 
 #include "DamageTypes.h"
 #include "Slots.h"
@@ -236,6 +237,20 @@ struct StatusContainer
 	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
 	std::map<StatusTypes, std::pair<int, int>> statuses;
+};
+
+struct Animation
+{
+	Animation();
+	~Animation();
+	void serialise(std::ofstream& file);
+	int deserialise(char* buffer, int i);
+
+	Uint32 lifetime;
+	Uint32 current_lifetime;
+	std::queue<int> spriteSheets;
+	std::queue<int> sprite_x;
+	std::queue<int> sprite_y;
 };
 
 #endif

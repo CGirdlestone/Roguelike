@@ -23,6 +23,7 @@
 #include "InventorySystem.h"
 #include "PlayerSystem.h"
 #include "ParticleSystem.h"
+#include "AnimationSystem.h"
 #include "GameStateManager.h"
 #include "StartScene.h"
 #include "GameScene.h"
@@ -58,6 +59,7 @@ class Game
     InventorySystem* m_inventorySystem;
 	PlayerSystem* m_playerSystem;
 	ParticleSystem* m_particleSystem;
+    AnimationSystem* m_animationSystem;
     std::vector<Scene*> sceneStack;
     int m_width;
     int m_height;

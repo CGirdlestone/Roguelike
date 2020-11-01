@@ -535,7 +535,7 @@ Useable::Useable(std::string func, int _numUses, bool _ranged, bool _AOE):
 }
 
 Useable::Useable():
-	funcToDo("HEALING"), numUses(0), ranged(false), AOE(false)
+	funcToDo(""), numUses(0), ranged(false), AOE(false)
 {
 
 }
@@ -800,6 +800,41 @@ int StatusContainer::deserialise(char* buffer, int i)
 		statuses.at(static_cast<StatusTypes>(k)).second = utils::deserialiseInt(buffer, i);
 		i = utils::advanceFourBytes(i);
 	}
+
+	return i;
+}
+
+Animation::Animation():
+	lifetime(150), current_lifetime(0)
+{
+
+}
+
+Animation::~Animation()
+{
+
+}
+
+void Animation::serialise(std::ofstream& file)
+{
+	utils::serialiseInt(file, (int)lifetime);
+	utils::serialiseInt(file, (int)current_lifetime);
+	utils::serialiseQueueInts(file, spriteSheets);
+	utils::serialiseQueueInts(file, sprite_x);
+	utils::serialiseQueueInts(file, sprite_y);
+}
+
+int Animation::deserialise(char* buffer, int i)
+{
+	lifetime = (Uint32)utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	current_lifetime = (Uint32)utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	i = utils::deserialiseQueueInts(buffer, i, spriteSheets);
+	i = utils::deserialiseQueueInts(buffer, i, sprite_x);
+	i = utils::deserialiseQueueInts(buffer, i, sprite_y);
 
 	return i;
 }
