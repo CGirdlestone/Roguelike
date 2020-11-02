@@ -14,13 +14,13 @@ class EventManager;
 class CombatSystem : public System
 {
 public:
-  CombatSystem(EventManager* eventManager, std::map<int, GameObject*> *entities);
-  virtual ~CombatSystem();
-  void doAttack(AttackEvent event);
-  void calculateDamage(OnHitEvent event);
+	CombatSystem(EventManager* eventManager, std::map<int, GameObject*> *entities);
+	virtual ~CombatSystem();
+	void doAttack(AttackEvent event);
+	void calculateDamage(OnHitEvent event);
 	void calculateDamage(OnCriticalHitEvent event);
-  void applyDamage(DamageEvent event);
-  void onDead(DeadEvent event);
+	void applyDamage(DamageEvent event);
+	void onDead(DeadEvent event);
 	bool isResistantToDamageType(GameObject* defender, DamageTypes type);
 	bool isWeakToDamageType(GameObject* defender, DamageTypes type); 
 	DamageTypes getDamageType(GameObject* attacker);
@@ -30,16 +30,17 @@ public:
 	int getDefenderDamageModifiers(GameObject* defender);
 	void checkForStatusEffect(SetStatusEvent event);
 	void onTick();
+	void update(Uint32 dt);
 
-  virtual void notify(AttackEvent event);
-  virtual void notify(OnHitEvent event);
-  virtual void notify(OnCriticalHitEvent event);
-  virtual void notify(DamageEvent event);
-  virtual void notify(DeadEvent event);
-  virtual void notify(SetStatusEvent event);
+	virtual void notify(AttackEvent event);
+	virtual void notify(OnHitEvent event);
+	virtual void notify(OnCriticalHitEvent event);
+	virtual void notify(DamageEvent event);
+	virtual void notify(DeadEvent event);
+	virtual void notify(SetStatusEvent event);
 private:
-  EventManager* m_eventManager;
-  std::map<int, GameObject*> *m_entities;
+	EventManager* m_eventManager;
+	std::map<int, GameObject*> *m_entities;
 };
 
 

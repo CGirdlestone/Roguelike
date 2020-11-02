@@ -132,7 +132,7 @@ bool Game::init(int mapWidth, int mapHeight, int width, int height, int tileSize
 	m_moveSystem = new MoveSystem(m_eventManager, &m_actors, m_dungeon);
 	m_playerSystem = new PlayerSystem(m_eventManager, &m_actors);
 	m_particleSystem = new ParticleSystem(m_eventManager, &m_actors);
-	m_animationSystem = new AnimationSystem(m_eventManager, &m_actors);
+	m_animationSystem = new AnimationSystem(m_eventManager, &m_actors, m_particleSystem->particles);
 
 	m_sceneManager = new GameStateManager(m_eventManager, &m_actors);
 	m_startScene = new StartScene(m_eventManager, m_renderer);
@@ -184,7 +184,6 @@ void Game::run()
 		lastTime = currentTime;
 
 		m_sceneManager->update(dt);
-		m_sceneManager->onTick();
 	}
 
 	m_console->closeSDL();

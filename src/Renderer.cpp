@@ -622,14 +622,21 @@ void Renderer::drawTargetingScene(Camera* camera, DungeonGenerator* dungeon, std
 
 void Renderer::drawParticles(Camera* camera, DungeonGenerator* dungeon, std::vector<Particle> &particles)
 {
-	SDL_Color colour;
-	int offsetI;
+	int offsetI{ 0 };
+
 	for (auto p : particles){
-		colour = {static_cast<uint8_t>(p.red), static_cast<uint8_t>(p.green), static_cast<uint8_t>(p.blue)};
-		offsetI = camera->calculateOffset(p.x, p.y);
-		if (p.steps % 2 == 0){
-			m_console->fillBackgroundTile(0, 0, colour, 255, p.size, (offsetI % camera->getWidth() +camera->getXBuffer()) * m_console->getTileSize(), (offsetI / camera->getWidth() + camera->getYBuffer()) * m_console->getTileSize());
-		} 
+		offsetI = camera->calculateOffset((int)p.x, (int)p.y);
+		int x{ offsetI % camera->getWidth() + camera->getXBuffer() };
+		int y{ offsetI / camera->getWidth() + camera->getYBuffer() };
+
+		if (m_console->getDisplayAscii()) {
+			int sprite_x{ p.renderable.chr % m_console->getTileSize() };
+			int sprite_y{ p.renderable.chr / m_console->getTileSize() };
+			m_console->render(p.renderable.chr, x, y, p.renderable.colour, camera->getZoom());
+		}
+		else {
+			m_console->renderParticle(x, y, p.renderable.spriteX, p.renderable.spriteY, p.renderable.sheet, camera->getZoom());
+		}
 	}
 }
 

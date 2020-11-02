@@ -89,6 +89,8 @@ bool Console::init(const char* path)
     loadMedia("./resources/sprites/Demon1.png", true); // 26
     loadMedia("./resources/sprites/Elemental1.png", true); // 27
     loadMedia("./resources/sprites/Undead1.png", true); // 28
+    loadMedia("./resources/sprites/Effect0.png", true); // 29
+    loadMedia("./resources/sprites/Effect1.png", true); // 30
 
     m_fullscreen = 0;
 
@@ -234,6 +236,24 @@ void Console::renderSprite(int x, int y, int spriteX, int spriteY, int sheet, in
 	srcrect.y = spriteY * m_tileSize;
 
 	SDL_RenderCopy(m_renderer, m_spriteSheets.at(sheet), &srcrect, &dstrect);
+}
+
+void Console::renderParticle(int x, int y, int spriteX, int spriteY, int spriteSheet, int scale, bool scale_pos)
+{
+    SDL_Rect dstrect; // rect to draw on the screen
+    dstrect.x = x;
+    dstrect.y = y;
+    dstrect.w = m_tileSize * scale;
+    dstrect.h = m_tileSize * scale;
+
+    SDL_Rect srcrect; // rect to copy from texture
+    srcrect.w = m_tileSize;
+    srcrect.h = m_tileSize;
+
+    srcrect.x = spriteX * m_tileSize;
+    srcrect.y = spriteY * m_tileSize;
+
+    SDL_RenderCopy(m_renderer, m_spriteSheets.at(spriteSheet), &srcrect, &dstrect);
 }
 
 void Console::renderImage(int sheet)

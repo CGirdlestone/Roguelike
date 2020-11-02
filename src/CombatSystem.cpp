@@ -209,14 +209,6 @@ int CombatSystem::getDefenderDamageModifiers(GameObject* defender)
 void CombatSystem::onDead(DeadEvent event)
 {
 	if (event.m_uid != 0) {
-		SDL_Color c = { 0xda, 0x24, 0x24 };
-		m_entities->at(event.m_uid)->renderable->colour = c;
-		m_entities->at(event.m_uid)->renderable->chr = '%';
-
-		m_entities->at(event.m_uid)->renderable->spriteX = 0;
-		m_entities->at(event.m_uid)->renderable->spriteY = 3;
-		m_entities->at(event.m_uid)->renderable->sheet = 20;
-
 		for (int i = 0; i <= static_cast<int>(BLEEDING); ++i) {
 			m_entities->at(event.m_uid)->statusContainer->statuses.at(static_cast<StatusTypes>(i)).first = 0;
 			m_entities->at(event.m_uid)->statusContainer->statuses.at(static_cast<StatusTypes>(i)).second = 0;
@@ -224,7 +216,7 @@ void CombatSystem::onDead(DeadEvent event)
 
 		m_eventManager->pushEvent(ExpGainEvent(0, m_entities->at(event.m_uid)->ai->exp));
 
-		m_entities->at(event.m_uid)->fighter = nullptr;
+		m_entities->at(event.m_uid)->fighter->isAlive = false;
 		m_entities->at(event.m_uid)->ai = nullptr;
 		m_entities->at(event.m_uid)->animation = nullptr;
 	}
@@ -252,6 +244,27 @@ void CombatSystem::onTick()
 			}
 		}
 	}
+}
+
+void CombatSystem::update(Uint32 dt)
+{
+	std::map<int, GameObject*>::iterator it;
+	for (it = m_entities->begin(); it != m_entities->end(); ++it){
+		if (it->second->fighter != nullptr) {
+			if (!it->second->fighter->isAlive) {
+				SDL_Color c = { 0xda, 0x24, 0x24 };
+				it->second->renderable->colour = c;
+				it->second->renderable->chr = '%';
+
+				it->second->renderable->spriteX = 0;
+				it->second->renderable->spriteY = 3;
+				it->second->renderable->sheet = 20;
+
+				it->second->fighter = nullptr;
+			}
+		}
+	}
+
 }
 
 // notify overrides below

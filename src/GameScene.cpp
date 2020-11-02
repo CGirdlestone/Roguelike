@@ -253,6 +253,8 @@ bool GameScene::checkDescend()
 
 enum KeyPressSurfaces GameScene::getEvent(SDL_Event *e)
 {
+	if (m_particleSystem->particles.size() > 0) { return NONE; }; // block input during animations
+
 	while(SDL_PollEvent(e)){
 		if (e->type == SDL_QUIT){
 			return EXITGAME;
@@ -416,9 +418,11 @@ void GameScene::render()
 
 void GameScene::update(Uint32 dt)
 {
-	m_particleSystem->ageParticles(dt);
+	m_particleSystem->update(dt);
 	m_animationSystem->update(dt);
-	//m_messageLog->ageMessages(dt);
+	if (m_particleSystem->particles.size() == 0) {
+		m_combatSystem->update(dt);
+	}
 }
 
 void GameScene::onTick()

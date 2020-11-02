@@ -40,6 +40,7 @@ class Console
 
 		void renderSprite(int x, int y, int spriteX, int spriteY, int spriteSheet, int scale = 1, bool scale_pos = true);
         void renderImage(int spriteSheet);
+        void renderParticle(int x, int y, int spriteX, int spriteY, int spriteSheet, int scale, bool scale_pos = true);
 
         void resetDrawColour();
         const SDL_Color getDrawColour() const { return m_background; };

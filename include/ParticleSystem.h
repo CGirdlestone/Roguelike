@@ -7,6 +7,7 @@
 #include "System.h"
 #include "Events.h"
 #include "Particle.h"
+#include "Camera.h"
 
 class EventManager;
 
@@ -15,12 +16,13 @@ class ParticleSystem : public System
 public:
 	ParticleSystem(EventManager* eventManager, std::map<int, GameObject*> *entities);
 	virtual ~ParticleSystem();
-	void addParticle(int _x, int _y, int _size, int _red, int _green, int _blue);
-	void ageParticles(uint32_t dt);
-	void update(uint32_t dt);
+	void addParticle(int _x, int _y, int _target_x, int _target_y, const std::string& effect);
+	void ageParticle(Uint32 dt, Particle& particle);
+	void moveParticle(Uint32 dt, Particle& particle);
+	void update(Uint32 dt);
 	void purgeParticles(){ particles.clear(); }
 
-  virtual void notify(OnHitEvent event);
+  virtual void notify(UseItemEvent event);
 
 	std::vector<Particle> particles;
 private:
