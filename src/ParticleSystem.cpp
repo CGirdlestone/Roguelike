@@ -20,43 +20,49 @@ ParticleSystem::~ParticleSystem()
   m_entities = nullptr;
 }
 
+int ParticleSystem::getOrientation(int x, int y, int target_x, int target_y)
+{
+	int orientation{ 0 };
+	if (target_x == x) {
+		orientation = 0;
+	}
+	else if (target_y == y) {
+		orientation = 1;
+	}
+	else if ((target_x > x && target_y > y) || (target_x < x && target_y < y)) {
+		orientation = 2;
+	}
+	else {
+		orientation = 3;
+	}
+	return orientation;
+}
+
 
 void ParticleSystem::addParticle(int _x, int _y, int _target_x, int _target_y, const std::string& effect)
 {
 	if (_target_x != -1 && _target_y != -1) {
+		int sprite_x{ getOrientation(_x, _y, _target_x, _target_y) };
 		if (effect == "FIREBALL") {
+			char c{ '*' };
+
 			SDL_Color colour = { 0xda, 0x24, 0x24 };
-			Renderable r = Renderable('*', colour, 0, 21, 29);
+			Renderable r = Renderable(c, colour, sprite_x, 18, 29);
 			Animation a = Animation();
 			a.spriteSheets.push(29);
 			a.spriteSheets.push(30);
-			a.sprite_x.push(0);
-			a.sprite_x.push(0);
-			a.sprite_y.push(21);
-			a.sprite_y.push(21);
+			a.sprite_x.push(sprite_x);
+			a.sprite_x.push(sprite_x);
+			a.sprite_y.push(18);
+			a.sprite_y.push(18);
 			Particle p = Particle((double)_x, (double)_y, _target_x, _target_y, 0.05, 0.05, r, a);
 			particles.push_back(p);
 		}
 		else if (effect == "RANGED") {
-			int sprite_x{ 0 };
-			char c{ '|' };
-			if (_target_x == _x) {
-
-			}
-			else if (_target_y == _y) {
-				sprite_x = 1;
-				c = '-';
-			}
-			else if ((_target_x > _x && _target_y > _y) || (_target_x > _x && _target_y < _y)) {
-				sprite_x = 2;
-				c = '\\';
-			}
-			else {
-				sprite_x = 3;
-				c = '/';
-			}
+			char c[4] = { '|', '-', '\\', '/' };
+			
 			SDL_Color colour = { 0xde, 0x97, 0x51 };
-			Renderable r = Renderable(c, colour, sprite_x, 20, 29);
+			Renderable r = Renderable(c[sprite_x], colour, sprite_x, 20, 29);
 			Animation a = Animation();
 			a.spriteSheets.push(29);
 			a.spriteSheets.push(30);
@@ -80,7 +86,7 @@ void ParticleSystem::addParticle(int _x, int _y, int _target_x, int _target_y, c
 			a.sprite_x.push(4);
 			a.sprite_y.push(21);
 			a.sprite_y.push(21);
-			Particle p = Particle((double)_x, (double)_y, _x, _y-3, 0.05, 0.05, r, a);
+			Particle p = Particle((double)_x, (double)_y, _x, _y-5, 0.05, 0.05, r, a);
 			particles.push_back(p);
 		}
 	}

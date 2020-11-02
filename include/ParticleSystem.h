@@ -20,7 +20,8 @@ public:
 	void ageParticle(Uint32 dt, Particle& particle);
 	void moveParticle(Uint32 dt, Particle& particle);
 	void update(Uint32 dt);
-	void purgeParticles(){ particles.clear(); }
+	void purgeParticles() { particles.clear(); };
+	int getOrientation(int x, int y, int target_x, int target_y);
 
   virtual void notify(UseItemEvent event);
 

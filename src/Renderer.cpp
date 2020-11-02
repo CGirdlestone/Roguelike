@@ -635,7 +635,7 @@ void Renderer::drawParticles(Camera* camera, DungeonGenerator* dungeon, std::vec
 			m_console->render(p.renderable.chr, x, y, p.renderable.colour, camera->getZoom());
 		}
 		else {
-			m_console->renderParticle(x, y, p.renderable.spriteX, p.renderable.spriteY, p.renderable.sheet, camera->getZoom());
+			m_console->renderSprite(x, y, p.renderable.spriteX, p.renderable.spriteY, p.renderable.sheet, camera->getZoom());
 		}
 	}
 }
