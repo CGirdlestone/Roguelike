@@ -184,6 +184,8 @@ void Game::run()
 		lastTime = currentTime;
 
 		m_sceneManager->update(dt);
+
+		SDL_PumpEvents();
 	}
 
 	m_console->closeSDL();

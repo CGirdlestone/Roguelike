@@ -5,8 +5,8 @@
 
 struct Particle
 {
-	Particle(double _x, double _y, int _target_x, int _target_y, double vx, double vy, Renderable& renderable, Animation& anim);
-	Particle(double _x, double _y, Uint32 lifetime, Uint32 currentLife, Renderable& renderable, Animation& anim);
+	Particle(double _x, double _y, int _target_x, int _target_y, double vx, double vy, Renderable& renderable, Animation& anim, const std::string& effect);
+	Particle(double _x, double _y, Uint32 lifetime, Uint32 currentLife, Renderable& renderable, Animation& anim, const std::string& effect);
 	~Particle();
 	double x, y;
 	int target_x, target_y;
@@ -17,6 +17,7 @@ struct Particle
 	Uint32 lifetime;
 	Uint32 currentLife;
 	double ax, ay;
+	std::string effect;
 };
 
 #endif

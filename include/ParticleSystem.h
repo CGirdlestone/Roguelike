@@ -22,6 +22,7 @@ public:
 	void update(Uint32 dt);
 	void purgeParticles() { particles.clear(); };
 	int getOrientation(int x, int y, int target_x, int target_y);
+	void propogateParticleEffect(Particle& particle);
 
   virtual void notify(UseItemEvent event);
 

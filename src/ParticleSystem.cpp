@@ -55,7 +55,7 @@ void ParticleSystem::addParticle(int _x, int _y, int _target_x, int _target_y, c
 			a.sprite_x.push(sprite_x);
 			a.sprite_y.push(18);
 			a.sprite_y.push(18);
-			Particle p = Particle((double)_x, (double)_y, _target_x, _target_y, 0.05, 0.05, r, a);
+			Particle p = Particle((double)_x, (double)_y, _target_x, _target_y, 0.05, 0.05, r, a, effect);
 			particles.push_back(p);
 		}
 		else if (effect == "RANGED") {
@@ -70,9 +70,9 @@ void ParticleSystem::addParticle(int _x, int _y, int _target_x, int _target_y, c
 			a.sprite_x.push(sprite_x);
 			a.sprite_y.push(20);
 			a.sprite_y.push(20);
-			Particle p = Particle((double)_x, (double)_y, _target_x, _target_y, 0.05, 0.05, r, a);
+			Particle p = Particle((double)_x, (double)_y, _target_x, _target_y, 0.05, 0.05, r, a, effect);
 			particles.push_back(p);
-		}
+		} 
 	}
 	else
 	{
@@ -86,10 +86,26 @@ void ParticleSystem::addParticle(int _x, int _y, int _target_x, int _target_y, c
 			a.sprite_x.push(4);
 			a.sprite_y.push(21);
 			a.sprite_y.push(21);
-			Particle p = Particle((double)_x, (double)_y, _x, _y-5, 0.05, 0.05, r, a);
+			Particle p = Particle((double)_x, (double)_y, _x, _y-5, 0.05, 0.05, r, a, effect);
 			particles.push_back(p);
 		}
-	}
+		else if (effect == "EXPLOSION") {
+			char c{ '*' };
+			int sprite_x = 1;
+			SDL_Color colour = { 0xda, 0x24, 0x24 };
+			Renderable r = Renderable(c, colour, sprite_x, 24, 29);
+			Animation a = Animation();
+			a.lifetime = 50;
+			a.spriteSheets.push(29);
+			a.spriteSheets.push(30);
+			a.sprite_x.push(sprite_x);
+			a.sprite_x.push(sprite_x);
+			a.sprite_y.push(24);
+			a.sprite_y.push(24);
+			Particle p = Particle((double)_x, (double)_y, 150, 0, r, a, effect);
+			particles.push_back(p);
+		}
+	}	
 }
 
 void ParticleSystem::update(Uint32 dt)
@@ -111,12 +127,13 @@ void ParticleSystem::update(Uint32 dt)
 
 void ParticleSystem::moveParticle(Uint32 dt, Particle& particle)
 {
-	particle.x += particle.ax / 10;
-	particle.y += particle.ay / 10;
+	particle.x += particle.ax / 3;
+	particle.y += particle.ay / 3;
 
-	if ((int)particle.x >= particle.target_x - 1 && (int)particle.x <= particle.target_x + 1 &&
-		(int)particle.y >= particle.target_y - 1 && (int)particle.y <= particle.target_y + 1) {
+	if ((int)particle.x >= particle.target_x - 0 && (int)particle.x <= particle.target_x + 0 &&
+		(int)particle.y >= particle.target_y - 0 && (int)particle.y <= particle.target_y + 0) {
 		particle.is_alive = false;
+		propogateParticleEffect(particle);
 	}
 }
 
@@ -125,6 +142,21 @@ void ParticleSystem::ageParticle(Uint32 dt, Particle& particle)
 	particle.currentLife += dt;
 	if (particle.currentLife > particle.lifetime) {
 		particle.is_alive = false;
+		propogateParticleEffect(particle);
+	}
+}
+
+void ParticleSystem::propogateParticleEffect(Particle& particle)
+{
+	if (particle.effect == "FIREBALL") {
+		std::string effect = "EXPLOSION";
+		int x{ static_cast<int>(particle.x) };
+		int y{ static_cast<int>(particle.y) };
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				addParticle(x + i - 1, y + j - 1, -1, -1, effect);
+			}
+		}
 	}
 }
 
