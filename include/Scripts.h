@@ -10,8 +10,8 @@ namespace scripts
 {
 	namespace base
 	{
-		int heal(EventManager* event_manager, GameObject* entity, int num_dice, int num_sides);
-		int damage(EventManager* event_manager, GameObject* entity, GameObject* target, int num_dice, int num_sides, DamageTypes type);
+		int heal(EventManager* event_manager, GameObject* entity, std::string& damage_roll );
+		int damage(EventManager* event_manager, GameObject* entity, GameObject* target, std::string& damage_roll, DamageTypes type);
 		bool set_status(EventManager* event_manager, GameObject* entity, GameObject* target, StatusTypes type, int damage, int duration);
 	}
 

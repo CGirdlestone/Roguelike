@@ -2,9 +2,9 @@
 #include "Scripts.h"
 #include "Utils.h"
 
-int scripts::base::heal(EventManager* event_manager, GameObject* entity, int num_dice, int num_sides)
+int scripts::base::heal(EventManager* event_manager, GameObject* entity, std::string& damage_roll)
 {
-	int total = utils::roll(num_dice, num_sides);
+	int total = utils::roll(damage_roll);
 	
 	event_manager->pushEvent(DamageEvent(entity->m_uid, -1 * total));
 
@@ -12,9 +12,9 @@ int scripts::base::heal(EventManager* event_manager, GameObject* entity, int num
 }
 
 
-int scripts::base::damage(EventManager* event_manager, GameObject* entity,GameObject* target, int num_dice, int num_sides, DamageTypes type)
+int scripts::base::damage(EventManager* event_manager, GameObject* entity,GameObject* target, std::string& damage_roll,  DamageTypes type)
 {
-	int damage = utils::roll(num_dice, num_sides);
+	int damage = utils::roll(damage_roll);
 
 	event_manager->pushEvent(DamageEvent(target->m_uid, damage));
 
@@ -32,8 +32,9 @@ bool scripts::base::set_status(EventManager* event_manager, GameObject* entity, 
 
 bool scripts::heal(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
 {
+	std::string roll = "2d8";
 	if (entity->fighter->health < entity->fighter->maxHealth) {
-		int total = base::heal(event_manager, entity, 2, 8);
+		int total = base::heal(event_manager, entity, roll);
 		return true;
 	}
 
@@ -44,8 +45,8 @@ bool scripts::heal(EventManager* event_manager, GameObject* item, GameObject* en
 bool scripts::fireball(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
 {
 	// TO DO get entities around the target and apply damage.
-
-	int total = base::damage(event_manager, entity, target, 4, 8, FIRE);
+	std::string roll = "4d8";
+	int total = base::damage(event_manager, entity, target, roll, FIRE);
 
 	return true;
 }
@@ -53,7 +54,8 @@ bool scripts::fireball(EventManager* event_manager, GameObject* item, GameObject
 
 bool scripts::lightning(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
 {
-	int total = base::damage(event_manager, entity, target, 2, 12, LIGHTNING);
+	std::string roll = "2d12";
+	int total = base::damage(event_manager, entity, target, roll, LIGHTNING);
 
 	return true;
 }
@@ -61,7 +63,8 @@ bool scripts::lightning(EventManager* event_manager, GameObject* item, GameObjec
 
 bool scripts::lifeleech(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
 {
-	int total = base::damage(event_manager, entity, target, 2, 4, NECROTIC);
+	std::string roll = "3d6";
+	int total = base::damage(event_manager, entity, target, roll, NECROTIC);
 
 	int healing = total / 2;
 
@@ -86,7 +89,7 @@ bool scripts::poison(EventManager* event_manager, GameObject* item, GameObject* 
 
 bool scripts::range_attack(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
 {
-	int total = base::damage(event_manager, entity, target, 1, item->weapon->sidedDie, item->weapon->damageType);
+	int total = base::damage(event_manager, entity, target, item->weapon->damage, item->weapon->damageType);
 
 	return true;
 }

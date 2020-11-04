@@ -248,14 +248,14 @@ int Item::deserialise(char* buffer, int i)
 	return i;
 }
 
-AI::AI(int _exp, int _level):
-exp(_exp), level(_level)
+AI::AI(int _exp, int _level, std::string _damage):
+exp(_exp), level(_level), damage(_damage)
 {
 
 }
 
 AI::AI():
-	exp(0), level(0)
+	exp(0), level(0), damage("")
 {
 
 }
@@ -269,6 +269,7 @@ void AI::serialise(std::ofstream& file)
 {
 	utils::serialiseInt(file, exp);
 	utils::serialiseInt(file, level);
+	utils::serialiseString(file, damage);
 }
 
 int AI::deserialise(char* buffer, int i)
@@ -278,6 +279,8 @@ int AI::deserialise(char* buffer, int i)
 
 	level = utils::deserialiseInt(buffer, i);
 	i = utils::advanceFourBytes(i);
+
+	i = utils::deserialiseString(buffer, i, damage);
 
 	return i;
 }
@@ -327,14 +330,14 @@ int Inventory::deserialise(char* buffer, int i)
 }
 
 
-Weapon::Weapon(DamageTypes _damageType, int _sidedDie, bool _twoHanded):
-	damageType(_damageType), sidedDie(_sidedDie), twoHanded(_twoHanded)
+Weapon::Weapon(DamageTypes _damageType, std::string _damage, bool _twoHanded):
+	damageType(_damageType), damage(_damage), twoHanded(_twoHanded)
 {
 
 }
 
 Weapon::Weapon():
-	damageType(NODAMAGETYPE), sidedDie(0), twoHanded(false)
+	damageType(NODAMAGETYPE), damage(""), twoHanded(false)
 {
 
 }
@@ -347,7 +350,7 @@ Weapon::~Weapon()
 void Weapon::serialise(std::ofstream& file)
 {
 	utils::serialiseInt(file, static_cast<int>(damageType));
-	utils::serialiseInt(file, sidedDie);
+	utils::serialiseString(file, damage);
 	utils::serialiseInt(file, static_cast<int>(twoHanded));
 }
 
@@ -356,8 +359,7 @@ int Weapon::deserialise(char* buffer, int i)
 	damageType = static_cast<DamageTypes>(utils::deserialiseInt(buffer, i));
 	i = utils::advanceFourBytes(i);
 
-	sidedDie = utils::deserialiseInt(buffer, i);
-	i = utils::advanceFourBytes(i);
+	damage = utils::deserialiseString(buffer, i, damage);
 
 	twoHanded = utils::deserialiseInt(buffer, i);
 	i = utils::advanceFourBytes(i);

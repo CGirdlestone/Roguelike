@@ -99,3 +99,11 @@ int utils::roll(int num_dice, int num_sides)
 
 	return total;
 }
+
+int utils::roll(std::string& roll)
+{
+	int num_dice = stoi(roll.substr(0, roll.find('d')));
+	int num_sides = stoi(roll.substr(roll.find('d') + 1, roll.length()));
+
+	return utils::roll(num_dice, num_sides);
+}

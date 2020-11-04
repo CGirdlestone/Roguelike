@@ -74,11 +74,12 @@ struct Player
 
 struct AI
 {
-	AI(int _exp, int _level);
+	AI(int _exp, int _level, std::string _damage);
 	AI();
 	~AI();
 	int exp;
 	int level;
+	std::string damage;
 	std::vector<int> path;
 	void serialise(std::ofstream& file);
 	int deserialise(char* buffer, int i);
@@ -110,9 +111,9 @@ struct Inventory
 struct Weapon
 {
 	DamageTypes damageType;
-	int sidedDie;
+	std::string damage;
 	bool twoHanded;
-	Weapon(DamageTypes _damageType, int _sidedDie, bool _twoHanded);
+	Weapon(DamageTypes _damageType, std::string _damage, bool _twoHanded);
 	Weapon();
 	~Weapon();
 	void serialise(std::ofstream& file);

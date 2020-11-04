@@ -14,6 +14,7 @@ namespace utils {
 	int deserialiseQueueInts(char* buffer, int i, std::queue<int>& queueToDeserialise);
 	int advanceFourBytes(int i);
 	int roll(int num_dice, int num_sides);
+	int roll(std::string& _roll);
 }
 
 

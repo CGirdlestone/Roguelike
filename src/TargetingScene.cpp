@@ -131,13 +131,14 @@ int TargetingScene::getTargetUID()
 {
 	int radius{ 10 };
 	
-	std::map<int, GameObject*>::iterator it;
-	for (it = m_entities->begin(); it != m_entities->end(); ++it){
-		if (it->second->position == nullptr){ continue; }
+	std::vector<GameObject*> entities = m_dungeon->getObjectsAtTile(m_x + m_y * m_dungeon->Getm_width());
 
-		if (it->second->position->x == m_x && it->second->position->y == m_y && it->second->m_uid != m_user_uid){
-			if (checkInRange(m_x, m_y, m_entities->at(m_user_uid)->position->x, m_entities->at(m_user_uid)->position->y, radius)){
-				return it->second->m_uid;
+	std::vector<GameObject*>::iterator it;
+
+	for (it = entities.begin(); it != entities.end(); ++it) {
+		if ((*it)->fighter != nullptr) {
+			if (checkInRange(m_x, m_y, m_entities->at(m_user_uid)->position->x, m_entities->at(m_user_uid)->position->y, radius)) {
+				return (*it)->m_uid;
 			}
 		}
 	}

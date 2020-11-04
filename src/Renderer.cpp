@@ -630,8 +630,6 @@ void Renderer::drawParticles(Camera* camera, DungeonGenerator* dungeon, std::vec
 		int y{ offsetI / camera->getWidth() + camera->getYBuffer() };
 
 		if (m_console->getDisplayAscii()) {
-			int sprite_x{ p.renderable.chr % m_console->getTileSize() };
-			int sprite_y{ p.renderable.chr / m_console->getTileSize() };
 			m_console->render(p.renderable.chr, x, y, p.renderable.colour, camera->getZoom());
 		}
 		else {

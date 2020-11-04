@@ -76,35 +76,43 @@ void CombatSystem::checkForStatusEffect(SetStatusEvent event)
 
 void CombatSystem::calculateDamage(OnHitEvent event)
 {
-  int dmg;
+	GameObject* attacker = m_entities->at(event.m_attacker_uid);
+	GameObject* defender = m_entities->at(event.m_defender_uid);
+	int dmg{ 0 }; 
+	if (attacker->body != nullptr) {
+		dmg = attacker->body->slots[RIGHTHAND] != nullptr ? utils::roll(attacker->body->slots[RIGHTHAND]->weapon->damage) : utils::roll(1, 4);
+	}
+	else {
+		if (attacker->ai != nullptr) {
+			dmg = utils::roll(attacker->ai->damage);
+		}
+	}
 
-  dmg = std::rand()%6 + 1 + m_entities->at(event.m_attacker_uid)->fighter->power;
-
-	DamageTypes type = getDamageType(m_entities->at(event.m_attacker_uid));
-	if (isResistantToDamageType(m_entities->at(event.m_defender_uid), type)){
+	DamageTypes type = getDamageType(attacker);
+	if (isResistantToDamageType(defender, type)){
 		dmg = dmg / 2;
 	}
-	if (isWeakToDamageType(m_entities->at(event.m_defender_uid), type)){
+	if (isWeakToDamageType(defender, type)){
 		dmg = dmg * 2;
 	}
 
-	m_eventManager->pushEvent(SetStatusEvent(BLEEDING, 5, 5, event.m_attacker_uid, event.m_defender_uid, 80));	
-
-  DamageEvent damageEvent = DamageEvent(event.m_defender_uid, dmg);
-  m_eventManager->pushEvent(damageEvent);
+	DamageEvent damageEvent = DamageEvent(event.m_defender_uid, dmg);
+	m_eventManager->pushEvent(damageEvent);
 }
 
 void CombatSystem::calculateDamage(OnCriticalHitEvent event)
 {
-	int dmg;
+	GameObject* attacker = m_entities->at(event.m_attacker_uid);
+	GameObject* defender = m_entities->at(event.m_defender_uid);
+	int dmg{ 0 };
 
-	dmg = std::rand()%6 + 1 + m_entities->at(event.m_attacker_uid)->fighter->power;
+	dmg = attacker->body->slots[RIGHTHAND] != nullptr ? utils::roll(attacker->body->slots[RIGHTHAND]->weapon->damage) : utils::roll(1, 4);
 
-	DamageTypes type = getDamageType(m_entities->at(event.m_attacker_uid));
-	if (isResistantToDamageType(m_entities->at(event.m_defender_uid), type)){
+	DamageTypes type = getDamageType(attacker);
+	if (isResistantToDamageType(defender, type)){
 		dmg = dmg / 2;
 	}
-	if (isWeakToDamageType(m_entities->at(event.m_defender_uid), type)){
+	if (isWeakToDamageType(defender, type)){
 		dmg = dmg * 2;
 	}
 

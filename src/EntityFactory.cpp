@@ -200,15 +200,15 @@ void EntityFactory::makeWeaponComponent(std::string line, GameObject* entity)
 	std::stringstream ss(line);
 	
 	std::string damageString;
-	DamageTypes damageType;	
-	int die{ 0 };
+	DamageTypes damageType;
+	std::string damage;
 	int _twoHanded{ 0 };
 
-	ss >> damageString >> die >> _twoHanded;
+	ss >> damageString >> damage >> _twoHanded;
 
 	damageType = getDamageTypeEnum(damageString);
 	
-	Weapon* weapon = new Weapon(damageType, die, static_cast<bool>(_twoHanded));
+	Weapon* weapon = new Weapon(damageType, damage, static_cast<bool>(_twoHanded));
 
 	entity->weapon = weapon;
 }
@@ -250,10 +250,11 @@ void EntityFactory::makeAIComponent(std::string line, GameObject* entity)
 	std::stringstream ss(line);
 
 	int exp{ 0 }, level{ 0 };
+	std::string damage{ "" };
 
-	ss >> exp >> level;
+	ss >> exp >> level >> damage;
 	
-	AI* ai = new AI(exp, level);
+	AI* ai = new AI(exp, level, damage);
 
 	entity->ai = ai;
 }
