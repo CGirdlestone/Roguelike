@@ -32,10 +32,11 @@ void PlayerSystem::checkLevelUp()
 {
 	int expOverflow = m_entities->at(0)->player->exp - m_entities->at(0)->player->next;
 
-	if (expOverflow >= 0){
+	while (expOverflow >= 0){
 		m_entities->at(0)->player->exp = expOverflow;
 		increaseThreshold();
 		increaseLevel();
+		expOverflow = m_entities->at(0)->player->exp - m_entities->at(0)->player->next;
 	} 
 }
 
