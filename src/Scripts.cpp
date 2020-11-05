@@ -12,7 +12,7 @@ int scripts::base::heal(EventManager* event_manager, GameObject* entity, std::st
 }
 
 
-int scripts::base::damage(EventManager* event_manager, GameObject* entity,GameObject* target, std::string& damage_roll,  DamageTypes type)
+int scripts::base::damage(EventManager* event_manager, GameObject* entity, GameObject* target, std::string& damage_roll,  DamageTypes type)
 {
 	int damage = utils::roll(damage_roll);
 
@@ -27,6 +27,26 @@ bool scripts::base::set_status(EventManager* event_manager, GameObject* entity, 
 	target->statusContainer->statuses[type].second = duration;
 
 	return true;
+}
+
+void scripts::base::damage_neighbours(EventManager* event_manager, int x, int y, int damage, DamageTypes type, DungeonGenerator* dungeon)
+{
+	for (int i = -1; i < 2; ++i) {
+		for (int j = -1; j < 2; ++j) {
+			if (i == 0 && j == 0) { continue; }
+
+			int n = (x + i) + (y + j) * dungeon->Getm_width();
+			std::vector<GameObject*> entities = dungeon->getObjectsAtTile(n);
+
+			if (entities.size() > 0) {
+				for (GameObject* entity : entities) {
+					if (entity->fighter != nullptr) {
+						event_manager->pushEvent(DamageEvent(entity->m_uid, damage, type));
+					}
+				}
+			}
+		}
+	}
 }
 
 
@@ -44,9 +64,10 @@ bool scripts::heal(EventManager* event_manager, GameObject* item, GameObject* en
 
 bool scripts::fireball(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target, DungeonGenerator* dungeon)
 {
-	// TO DO get entities around the target and apply damage.
 	std::string roll = "4d8";
 	int total = base::damage(event_manager, entity, target, roll, FIRE);
+
+	base::damage_neighbours(event_manager, target->position->x, target->position->y, total / 2, FIRE, dungeon);
 
 	return true;
 }

@@ -7,6 +7,7 @@
 #include "SceneTypes.h"
 #include "StatusTypes.h"
 #include "GameObject.h"
+#include "DamageTypes.h"
 
 struct Event
 {
@@ -57,10 +58,11 @@ struct OnMissEvent : Event
 
 struct DamageEvent : Event
 {
-	DamageEvent(int uid, int damage);
+	DamageEvent(int uid, int damage, DamageTypes dmg_type = BLUDGEONING);
 	virtual ~DamageEvent();
 	int m_uid;
 	int m_damage;
+	DamageTypes m_dmg_type;
 };
 
 struct DeadEvent : Event

@@ -65,8 +65,8 @@ OnMissEvent::~OnMissEvent()
 
 }
 
-DamageEvent::DamageEvent(int uid, int damage):
-m_uid(uid), m_damage(damage)
+DamageEvent::DamageEvent(int uid, int damage, DamageTypes dmg_type):
+m_uid(uid), m_damage(damage), m_dmg_type(dmg_type)
 {
   m_type = DAMAGE;
 }

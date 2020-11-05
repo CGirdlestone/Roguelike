@@ -13,6 +13,7 @@ namespace scripts
 		int heal(EventManager* event_manager, GameObject* entity, std::string& damage_roll );
 		int damage(EventManager* event_manager, GameObject* entity, GameObject* target, std::string& damage_roll, DamageTypes type);
 		bool set_status(EventManager* event_manager, GameObject* entity, GameObject* target, StatusTypes type, int damage, int duration);
+		void damage_neighbours(EventManager* event_manager, int x, int y, int damage, DamageTypes type, DungeonGenerator* dungeon);
 	}
 
 	bool heal(EventManager* event_manager, GameObject* item, GameObject* entity, GameObject* target = nullptr,  DungeonGenerator* dungeon = nullptr);
