@@ -230,17 +230,7 @@ void Item::serialise(std::ofstream& file)
 
 int Item::deserialise(char* buffer, int i)
 {
-	int descLength = utils::deserialiseInt(buffer, i);
-	i = utils::advanceFourBytes(i);
-
-	char* desc = new char[descLength];
-	for (int k = 0; k < descLength; ++k){
-		desc[k] = static_cast<char>(utils::deserialiseInt(buffer, i));
-		i = utils::advanceFourBytes(i);
-	}
-	description.assign(desc, descLength);
-
-	delete[] desc;
+	i = utils::deserialiseString(buffer, i, description);
 
 	level = utils::deserialiseInt(buffer, i);
 	i = utils::advanceFourBytes(i);
@@ -359,7 +349,7 @@ int Weapon::deserialise(char* buffer, int i)
 	damageType = static_cast<DamageTypes>(utils::deserialiseInt(buffer, i));
 	i = utils::advanceFourBytes(i);
 
-	damage = utils::deserialiseString(buffer, i, damage);
+	i = utils::deserialiseString(buffer, i, damage);
 
 	twoHanded = utils::deserialiseInt(buffer, i);
 	i = utils::advanceFourBytes(i);
