@@ -529,15 +529,27 @@ void Renderer::drawCharacterScene(std::map<int, GameObject*> *actors, int index)
 	std::string health = "Health: " + std::to_string(player->fighter->health) + " / " + std::to_string(player->fighter->maxHealth);
 	drawText(health, x, 2 * yPosition++, false);
 
-	std::string power = "AC: " + std::to_string(player->fighter->armour_class);
-	drawText(power, x, 2 * yPosition++, false);
+	std::string ac = "AC: " + std::to_string(player->fighter->armour_class);
+	drawText(ac, x, 2 * yPosition++, false);
 
-	std::string defence = "Strength: " + std::to_string(player->fighter->strength);
-	drawText(defence, x, 2 * yPosition++, false);
+	std::string strength = "Strength:     " + std::to_string(player->fighter->strength) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->strength)) + ")";
+	drawText(strength, x, 2 * yPosition++, false);
 
-	std::string armour_bonus_str = "Armour Bonus: " + std::to_string(armour_bonus);
-	drawText(armour_bonus_str, x, 2 * yPosition++, false);
-	
+	std::string dexterity = "Dexterity:    " + std::to_string(player->fighter->dexterity) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->dexterity)) + ")";
+	drawText(dexterity, x, 2 * yPosition++, false);
+
+	std::string constitution = "Constitution: " + std::to_string(player->fighter->constitution) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->constitution)) + ")";
+	drawText(constitution, x, 2 * yPosition++, false);
+
+	std::string intelligence = "Intelligence: " + std::to_string(player->fighter->intelligence) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->intelligence)) + ")";
+	drawText(intelligence, x, 2 * yPosition++, false);
+
+	std::string wisdom = "Wisdom:       " + std::to_string(player->fighter->wisdom) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->wisdom)) + ")";
+	drawText(wisdom, x, 2 * yPosition++, false);
+
+	std::string charisma = "Charisma:     " + std::to_string(player->fighter->charisma) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->charisma)) + ")";
+	drawText(charisma, x, 2 * yPosition++, false);
+
 	m_console->update();
 }
 

@@ -32,7 +32,6 @@ public:
 	virtual void notify(OnCriticalHitEvent event);
 	virtual void notify(DamageEvent event);
 	virtual void notify(DeadEvent event);
-	virtual void notify(SetStatusEvent event);
 private:
 	EventManager* m_eventManager;
 	std::map<int, GameObject*> *m_entities;
