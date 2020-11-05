@@ -30,7 +30,7 @@ void CombatSystem::doAttack(AttackEvent event)
 {
 	int roll = utils::roll(1, 20);
 
-	if (roll >= 10 + m_entities->at(event.m_defender_uid)->fighter->defence){
+	if (roll >= m_entities->at(event.m_defender_uid)->fighter->armour_class){
 		OnHitEvent onHit = OnHitEvent(event.m_attacker_uid, event.m_defender_uid);
 		m_eventManager->pushEvent(onHit);
 	

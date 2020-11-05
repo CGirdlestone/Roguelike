@@ -43,10 +43,23 @@ struct Fighter
 {
 	int maxHealth;
 	int health;
-	int power;
-	int defence;
+	int temp_health;
+	int strength;
+	int base_strength;
+	int dexterity;
+	int base_dexterity;
+	int constitution;
+	int base_constitution;
+	int intelligence;
+	int base_intelligence;
+	int wisdom;
+	int base_wisdom;
+	int charisma;
+	int base_charisma;
+	int armour_class;
+	int base_armour_class;
 	bool isAlive;
-	Fighter(int _maxHealth, int _power, int _defence);
+	Fighter(int _maxHealth, int base_str, int base_dex, int base_con, int base_int, int base_wis, int base_cha, int _base_AC);
 	Fighter();
 	~Fighter();
 	void serialise(std::ofstream& file);

@@ -529,10 +529,10 @@ void Renderer::drawCharacterScene(std::map<int, GameObject*> *actors, int index)
 	std::string health = "Health: " + std::to_string(player->fighter->health) + " / " + std::to_string(player->fighter->maxHealth);
 	drawText(health, x, 2 * yPosition++, false);
 
-	std::string power = "Power: " + std::to_string(player->fighter->power);
+	std::string power = "AC: " + std::to_string(player->fighter->armour_class);
 	drawText(power, x, 2 * yPosition++, false);
 
-	std::string defence = "Defence: " + std::to_string(player->fighter->defence);
+	std::string defence = "Strength: " + std::to_string(player->fighter->strength);
 	drawText(defence, x, 2 * yPosition++, false);
 
 	std::string armour_bonus_str = "Armour Bonus: " + std::to_string(armour_bonus);

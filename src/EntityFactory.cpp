@@ -176,11 +176,11 @@ void EntityFactory::makeFighterComponent(std::string line, GameObject* entity)
 {
 	std::stringstream ss(line);
 
-	int maxHealth, power, defence;
+	int maxHealth, strength, dexterity, constitution, intelligence, wisdom, charisma, armour_class;
 
-	ss >> maxHealth >> power >> defence;
+	ss >> maxHealth >> strength >> dexterity >> constitution >> intelligence >> wisdom >> charisma >> armour_class;
 
-	Fighter* f = new Fighter(maxHealth, power, defence);
+	Fighter* f = new Fighter(maxHealth, strength, dexterity, constitution, intelligence, wisdom, charisma, armour_class);
 
 	entity->fighter = f; 
 }

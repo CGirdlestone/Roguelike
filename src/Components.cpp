@@ -103,14 +103,30 @@ int Renderable::deserialise(char* buffer, int i)
 }
 
 
-Fighter::Fighter(int _maxHealth, int _power, int _defence):
-	maxHealth(_maxHealth), health(_maxHealth), power(_power), defence(_defence), isAlive(true)
+Fighter::Fighter(int _maxHealth, int base_str, int base_dex, int base_con, int base_int, int base_wis, int base_cha, int base_AC) :
+	maxHealth(_maxHealth), health(_maxHealth), 
+	strength(base_str), base_strength(base_str), 
+	dexterity(base_dex), base_dexterity(base_dex),
+	constitution(base_con), base_constitution(base_con),
+	intelligence(base_int), base_intelligence(base_int),
+	wisdom(base_wis), base_wisdom(base_wis),
+	charisma(base_cha), base_charisma(base_cha),
+	armour_class(base_AC), base_armour_class(base_AC),
+	isAlive(true)
 {
 
 }
 
 Fighter::Fighter():
-	maxHealth(0), health(0), power(0), defence(0), isAlive(true)
+	maxHealth(0), health(0),
+	strength(0), base_strength(0),
+	dexterity(0), base_dexterity(0),
+	constitution(0), base_constitution(0),
+	intelligence(0), base_intelligence(0),
+	wisdom(0), base_wisdom(0),
+	charisma(0), base_charisma(0),
+	armour_class(0), base_armour_class(0), 
+	isAlive(true)
 {
 
 }
@@ -126,8 +142,20 @@ void Fighter::serialise(std::ofstream& file)
 
 	utils::serialiseInt(file, health);
 	utils::serialiseInt(file, maxHealth);
-	utils::serialiseInt(file, power);
-	utils::serialiseInt(file, defence);
+	utils::serialiseInt(file, strength);
+	utils::serialiseInt(file, base_strength);
+	utils::serialiseInt(file, dexterity);
+	utils::serialiseInt(file, base_dexterity);
+	utils::serialiseInt(file, constitution);
+	utils::serialiseInt(file, base_constitution);
+	utils::serialiseInt(file, intelligence);
+	utils::serialiseInt(file, base_intelligence);
+	utils::serialiseInt(file, wisdom);
+	utils::serialiseInt(file, base_wisdom);
+	utils::serialiseInt(file, charisma);
+	utils::serialiseInt(file, base_charisma);
+	utils::serialiseInt(file, armour_class);
+	utils::serialiseInt(file, base_armour_class);
 	utils::serialiseInt(file, _isAlive);
 }
 
@@ -139,10 +167,46 @@ int Fighter::deserialise(char* buffer, int i)
 	maxHealth = utils::deserialiseInt(buffer, i);
 	i = utils::advanceFourBytes(i);
 
-	power = utils::deserialiseInt(buffer, i);
+	strength = utils::deserialiseInt(buffer, i);
 	i = utils::advanceFourBytes(i);
 
-	defence = utils::deserialiseInt(buffer, i);
+	base_strength = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	dexterity = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	base_dexterity = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	constitution = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	base_constitution = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	intelligence = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	base_intelligence = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	wisdom = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	base_wisdom = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	charisma = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	base_charisma = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	armour_class = utils::deserialiseInt(buffer, i);
+	i = utils::advanceFourBytes(i);
+
+	base_armour_class = utils::deserialiseInt(buffer, i);
 	i = utils::advanceFourBytes(i);
 
 	isAlive = utils::deserialiseInt(buffer, i) == 1 ? true : false;
