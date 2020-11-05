@@ -107,3 +107,9 @@ int utils::roll(std::string& roll)
 
 	return utils::roll(num_dice, num_sides);
 }
+
+int utils::getAttributeMod(int attrib)
+{
+	 return (attrib - 10) / 2; 
+}
+

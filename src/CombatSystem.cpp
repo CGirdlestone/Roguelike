@@ -28,20 +28,21 @@ CombatSystem::~CombatSystem()
 
 void CombatSystem::doAttack(AttackEvent event)
 {
-	int roll = utils::roll(1, 20);
+	GameObject* attacker = m_entities->at(event.m_attacker_uid);
+	GameObject* defender = m_entities->at(event.m_defender_uid);
 
-	if (roll >= m_entities->at(event.m_defender_uid)->fighter->armour_class){
+	if (utils::roll(1, 20) + utils::getAttributeMod(attacker->fighter->strength) >= defender->fighter->armour_class ){
 		OnHitEvent onHit = OnHitEvent(event.m_attacker_uid, event.m_defender_uid);
 		m_eventManager->pushEvent(onHit);
 	
 
-		if (m_entities->at(event.m_defender_uid)->fighter != nullptr) {
-			if (m_entities->at(event.m_defender_uid)->fighter->isAlive) {
+		if (defender->fighter != nullptr) {
+			if (defender->fighter->isAlive) {
 				// check if the attacking entity has a melee weapon with a useable component
 				// if it does, send a use item event.
-				if (m_entities->at(event.m_attacker_uid)->body != nullptr) {
+				if (attacker->body != nullptr) {
 					if (m_entities->at(event.m_attacker_uid)->body->slots[RIGHTHAND] != nullptr) {
-						GameObject* item = m_entities->at(event.m_attacker_uid)->body->slots[RIGHTHAND];
+						GameObject* item = attacker->body->slots[RIGHTHAND];
 						if (item->useable != nullptr) {
 							if (item->useable->ranged) {
 								m_eventManager->pushEvent(UseItemEvent(event.m_attacker_uid, item->m_uid, event.m_defender_uid));
@@ -61,42 +62,24 @@ void CombatSystem::doAttack(AttackEvent event)
 	}
 }
 
-void CombatSystem::checkForStatusEffect(SetStatusEvent event)
-{
-	int baseChance = 2;
-	int _chance;
-	_chance = event.m_chance != -1 ? event.m_chance : baseChance;
-
-	if (rand()%100+1 < _chance){
-		m_eventManager->pushEvent(MessageEvent("Status effect applied"));
-		m_entities->at(event.m_defender_uid)->statusContainer->statuses.at(event.m_status).first = rand()%event.m_damage+1;
-		m_entities->at(event.m_defender_uid)->statusContainer->statuses.at(event.m_status).second = rand()%event.m_duration+1;
-	}
-}
-
 void CombatSystem::calculateDamage(OnHitEvent event)
 {
 	GameObject* attacker = m_entities->at(event.m_attacker_uid);
 	GameObject* defender = m_entities->at(event.m_defender_uid);
-	int dmg{ 0 }; 
+	int dmg{ utils::getAttributeMod(attacker->fighter->strength) };
+	
 	if (attacker->body != nullptr) {
-		dmg = attacker->body->slots[RIGHTHAND] != nullptr ? utils::roll(attacker->body->slots[RIGHTHAND]->weapon->damage) : utils::roll(1, 4);
+		dmg += attacker->body->slots[RIGHTHAND] != nullptr ? utils::roll(attacker->body->slots[RIGHTHAND]->weapon->damage) : utils::roll(1, 4);
 	}
 	else {
 		if (attacker->ai != nullptr) {
-			dmg = utils::roll(attacker->ai->damage);
+			dmg += utils::roll(attacker->ai->damage);
 		}
 	}
 
 	DamageTypes type = getDamageType(attacker);
-	if (isResistantToDamageType(defender, type)){
-		dmg = dmg / 2;
-	}
-	if (isWeakToDamageType(defender, type)){
-		dmg = dmg * 2;
-	}
 
-	DamageEvent damageEvent = DamageEvent(event.m_defender_uid, dmg);
+	DamageEvent damageEvent = DamageEvent(event.m_defender_uid, dmg, type);
 	m_eventManager->pushEvent(damageEvent);
 }
 
@@ -104,35 +87,49 @@ void CombatSystem::calculateDamage(OnCriticalHitEvent event)
 {
 	GameObject* attacker = m_entities->at(event.m_attacker_uid);
 	GameObject* defender = m_entities->at(event.m_defender_uid);
-	int dmg{ 0 };
+	int dmg{ utils::getAttributeMod(attacker->fighter->strength) };
 
-	dmg = attacker->body->slots[RIGHTHAND] != nullptr ? utils::roll(attacker->body->slots[RIGHTHAND]->weapon->damage) : utils::roll(1, 4);
+	if (attacker->body != nullptr) {
+		for (int i = 0; i < 2; ++i) {
+			dmg += attacker->body->slots[RIGHTHAND] != nullptr ? utils::roll(attacker->body->slots[RIGHTHAND]->weapon->damage) : utils::roll(1, 4);
+
+		}
+	}
+	else {
+		if (attacker->ai != nullptr) {
+			for (int i = 0; i < 2; ++i) {
+				dmg += utils::roll(attacker->ai->damage);
+			}
+		}
+	}
 
 	DamageTypes type = getDamageType(attacker);
-	if (isResistantToDamageType(defender, type)){
-		dmg = dmg / 2;
-	}
-	if (isWeakToDamageType(defender, type)){
-		dmg = dmg * 2;
-	}
 
-	m_eventManager->pushEvent(SetStatusEvent(BLEEDING, 5, 5, event.m_attacker_uid, event.m_defender_uid, 5));	
-
-	DamageEvent damageEvent = DamageEvent(event.m_defender_uid, dmg*2);
+	DamageEvent damageEvent = DamageEvent(event.m_defender_uid, dmg, type);
 	m_eventManager->pushEvent(damageEvent);
 }
 
 void CombatSystem::applyDamage(DamageEvent event)
 {
-	if (m_entities->at(event.m_uid)->fighter != nullptr){
-		m_entities->at(event.m_uid)->fighter->health -= event.m_damage;
+	GameObject* entity = m_entities->at(event.m_uid);
+	int dmg{ event.m_damage };
+	if (entity->fighter != nullptr){
 
-		if (m_entities->at(event.m_uid)->fighter->health <= 0){
-			m_entities->at(event.m_uid)->fighter->isAlive = false;
+		if (isResistantToDamageType(entity, event.m_dmg_type)) {
+			dmg = dmg / 2;
+		}
+		if (isWeakToDamageType(entity, event.m_dmg_type)) {
+			dmg = dmg * 2;
+		}
+
+		entity->fighter->health -= event.m_damage;
+
+		if (entity->fighter->health <= 0){
+			entity->fighter->isAlive = false;
 			DeadEvent deadEvent = DeadEvent(event.m_uid);
 			m_eventManager->pushEvent(deadEvent);
-		} else if (m_entities->at(event.m_uid)->fighter->health > m_entities->at(event.m_uid)->fighter->maxHealth){
-			m_entities->at(event.m_uid)->fighter->health = m_entities->at(event.m_uid)->fighter->maxHealth;
+		} else if (entity->fighter->health > entity->fighter->maxHealth){
+			entity->fighter->health = entity->fighter->maxHealth;
 		}
 	}
 }
@@ -185,35 +182,6 @@ bool CombatSystem::isWeakToDamageType(GameObject* defender, DamageTypes type)
 	}	
 }
 
-int CombatSystem::getAttackerHitModifiers(GameObject* attacker)
-{
-	int attackerHitBonus = 0;
-
-	return attackerHitBonus;
-}
-
-
-int CombatSystem::getDefenderHitModifiers(GameObject* defender)
-{
-	int defenderBonus = 0;
-
-	return defenderBonus;
-}
-
-int CombatSystem::getAttackerDamageModifiers(GameObject* attacker)
-{
-	int attackerDamageBonus = 0;
-
-	return attackerDamageBonus;
-}
-
-int CombatSystem::getDefenderDamageModifiers(GameObject* defender)
-{
-	int defenderBonus = 0;
-
-	return defenderBonus;
-}
-
 void CombatSystem::onDead(DeadEvent event)
 {
 	if (event.m_uid != 0) {
@@ -228,7 +196,6 @@ void CombatSystem::onDead(DeadEvent event)
 		m_entities->at(event.m_uid)->ai = nullptr;
 		m_entities->at(event.m_uid)->animation = nullptr;
 	}
-
 }
 
 void CombatSystem::onTick()
@@ -302,7 +269,3 @@ void CombatSystem::notify(DeadEvent event)
   onDead(event);
 }
 
-void CombatSystem::notify(SetStatusEvent event)
-{
-  checkForStatusEffect(event);
-}

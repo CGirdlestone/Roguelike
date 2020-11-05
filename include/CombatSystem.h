@@ -24,11 +24,6 @@ public:
 	bool isResistantToDamageType(GameObject* defender, DamageTypes type);
 	bool isWeakToDamageType(GameObject* defender, DamageTypes type); 
 	DamageTypes getDamageType(GameObject* attacker);
-	int getAttackerHitModifiers(GameObject* attacker);
-	int getDefenderHitModifiers(GameObject* defender);
-	int getAttackerDamageModifiers(GameObject* attacker);
-	int getDefenderDamageModifiers(GameObject* defender);
-	void checkForStatusEffect(SetStatusEvent event);
 	void onTick();
 	void update(Uint32 dt);
 

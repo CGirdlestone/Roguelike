@@ -15,6 +15,8 @@ namespace utils {
 	int advanceFourBytes(int i);
 	int roll(int num_dice, int num_sides);
 	int roll(std::string& _roll);
+
+	int getAttributeMod(int attrib);
 }
 
 
