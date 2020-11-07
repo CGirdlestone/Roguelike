@@ -79,7 +79,7 @@ void CombatSystem::calculateDamage(OnHitEvent event)
 
 	DamageTypes type = getDamageType(attacker);
 
-	DamageEvent damageEvent = DamageEvent(event.m_defender_uid, dmg, type);
+	DamageEvent damageEvent = DamageEvent(event.m_defender_uid, (dmg < 1 ? 1 : dmg), type);
 	m_eventManager->pushEvent(damageEvent);
 }
 
@@ -105,7 +105,7 @@ void CombatSystem::calculateDamage(OnCriticalHitEvent event)
 
 	DamageTypes type = getDamageType(attacker);
 
-	DamageEvent damageEvent = DamageEvent(event.m_defender_uid, dmg, type);
+	DamageEvent damageEvent = DamageEvent(event.m_defender_uid, (dmg < 1 ? 1 : dmg), type);
 	m_eventManager->pushEvent(damageEvent);
 }
 
@@ -155,11 +155,12 @@ bool CombatSystem::isResistantToDamageType(GameObject* defender, DamageTypes typ
 			return false;
 		}
 	} else {
-		if (defender->body->slots.at(BODY)->armour->resistance == type){
-			return true;
-		} else {
-			return false;
+		if (defender->body->slots.at(BODY) != nullptr) {
+			if (defender->body->slots.at(BODY)->armour->resistance == type) {
+				return true;
+			}
 		}
+		return false;
 	}	
 }
 
@@ -174,12 +175,13 @@ bool CombatSystem::isWeakToDamageType(GameObject* defender, DamageTypes type)
 			return false;
 		}
 	} else {
-		if (defender->body->slots.at(BODY)->armour->weakness == type){
-			return true;
-		} else {
-			return false;
+		if (defender->body->slots.at(BODY) != nullptr) {
+			if (defender->body->slots.at(BODY)->armour->weakness == type) {
+				return true;
+			}
 		}
-	}	
+		return false;
+	}
 }
 
 void CombatSystem::onDead(DeadEvent event)

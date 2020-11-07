@@ -77,17 +77,21 @@ void ParticleSystem::addParticle(int _x, int _y, int _target_x, int _target_y, c
 	else
 	{
 		if (effect == "HEALING") {
-			SDL_Color colour = { 0xda, 0x24, 0x24 };
-			Renderable r = Renderable('+', colour, 4, 21, 29);
+			SDL_Color colour = { 0xff, 0xff, 0xff };
+			Renderable r = Renderable('+', colour, 6, 22, 29);
 			Animation a = Animation();
 			a.spriteSheets.push(29);
 			a.spriteSheets.push(30);
-			a.sprite_x.push(4);
-			a.sprite_x.push(4);
-			a.sprite_y.push(21);
-			a.sprite_y.push(21);
-			Particle p = Particle((double)_x, (double)_y, _x, _y-5, 0.05, 0.05, r, a, effect);
-			particles.push_back(p);
+			a.sprite_x.push(6);
+			a.sprite_x.push(6);
+			a.sprite_y.push(22);
+			a.sprite_y.push(22);
+			for (int i = 0; i < 12; ++i) {
+				int px{ _x + (std::rand() % 10) - 5 };
+				int py{ _y + (std::rand() % 10) - 5 };
+				Particle p = Particle((double)px, (double)py, _x, _y, 0.1, 0.1, r, a, effect);
+				particles.push_back(p);
+			}
 		}
 		else if (effect == "EXPLOSION") {
 			char c{ '*' };
@@ -127,8 +131,8 @@ void ParticleSystem::update(Uint32 dt)
 
 void ParticleSystem::moveParticle(Uint32 dt, Particle& particle)
 {
-	particle.x += particle.ax / 3;
-	particle.y += particle.ay / 3;
+	particle.x += particle.ax * particle.vx;
+	particle.y += particle.ay * particle.vy;
 
 	if ((int)particle.x >= particle.target_x - 0 && (int)particle.x <= particle.target_x + 0 &&
 		(int)particle.y >= particle.target_y - 0 && (int)particle.y <= particle.target_y + 0) {
@@ -178,7 +182,7 @@ void ParticleSystem::notify(UseItemEvent event)
 		}
 	}
 	else {
-		addParticle(x, y, -1, -1, "HEALING");
+		addParticle(x, y, -1, -1, effect);
 	}
 }
 
