@@ -210,4 +210,12 @@ struct LevelUpEvent : Event
 	~LevelUpEvent();
 };
 
+struct PassAttributeInfoEvent : Event
+{
+	PassAttributeInfoEvent(std::vector<int> attributes, std::string name);
+	virtual ~PassAttributeInfoEvent();
+	std::vector<int> m_attributes;
+	std::string m_name;
+};
+
 #endif

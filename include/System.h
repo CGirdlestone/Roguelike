@@ -34,6 +34,7 @@ public:
 	virtual void notify(SaveEvent event) {};
 	virtual void notify(ExpGainEvent event) {};
 	virtual void notify(LevelUpEvent event) {};
+	virtual void notify(PassAttributeInfoEvent event) {};
 };
 
 #endif

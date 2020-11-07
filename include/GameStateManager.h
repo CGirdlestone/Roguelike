@@ -10,6 +10,7 @@
 #include "Scene.h"
 #include "GameScene.h"
 #include "StartScene.h"
+#include "CharacterSelectionScene.h"
 #include "InventoryScene.h"
 #include "CharacterScene.h"
 #include "TargetingScene.h"
@@ -35,6 +36,7 @@ public:
 	void notify(RestartEvent event);
 	void pushScene(SceneTypes scene);
 	void notify(SaveEvent event);
+	void notify(PassAttributeInfoEvent event);
 	void popScene(int i);
 	void render();
 	void processInput(SDL_Event *e);
@@ -42,6 +44,7 @@ public:
 	void onTick();
 	bool playing;
 	StartScene *m_startScene;
+	CharacterSelectionScene *m_characterSelectionScene;
 	GameScene *m_gameScene;
 	InventoryScene *m_inventoryScene;
 	CharacterScene *m_characterScene;

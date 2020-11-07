@@ -60,7 +60,7 @@ void StartScene::handleInput(KeyPressSurfaces keyPress)
 		if ((m_options == 2 && m_i == 1) || (m_options == 3 && m_i == 2)){
     	    m_eventManager->pushEvent(QuitEvent());
 		} else if ((m_options == 2 && m_i == 0) || (m_options == 3 && m_i == 1)){
-    	    PushScene transition = PushScene(GAMESCENE);
+    	    PushScene transition = PushScene(CHARACTERCREATION);
     	    m_eventManager->pushEvent(transition);
 		} else if (m_options == 3 && m_i == 0){
 			m_eventManager->pushEvent(LoadEvent());

@@ -278,3 +278,14 @@ LevelUpEvent::~LevelUpEvent()
 {
 
 }
+
+PassAttributeInfoEvent::PassAttributeInfoEvent(std::vector<int> attributes, std::string name):
+	m_attributes(attributes), m_name(name)
+{
+	m_type = PASSATTRIBUTEINFO;
+}
+
+PassAttributeInfoEvent::~PassAttributeInfoEvent()
+{
+
+}

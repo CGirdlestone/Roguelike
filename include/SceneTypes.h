@@ -12,6 +12,7 @@ enum SceneTypes
 	PAUSEMENU,
 	GAMEOVERSCENE,
 	HELPMENU,
+	CHARACTERCREATION,
 };
 
 extern SceneTypes SceneType;

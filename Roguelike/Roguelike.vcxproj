@@ -22,6 +22,7 @@
     <ClInclude Include="..\include\AnimationSystem.h" />
     <ClInclude Include="..\include\Camera.h" />
     <ClInclude Include="..\include\CharacterScene.h" />
+    <ClInclude Include="..\include\CharacterSelectionScene.h" />
     <ClInclude Include="..\include\CombatSystem.h" />
     <ClInclude Include="..\include\Components.h" />
     <ClInclude Include="..\include\Console.h" />
@@ -67,6 +68,7 @@
     <ClCompile Include="..\src\AnimationSystem.cpp" />
     <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\CharacterScene.cpp" />
+    <ClCompile Include="..\src\CharacterSelectionScene.cpp" />
     <ClCompile Include="..\src\CombatSystem.cpp" />
     <ClCompile Include="..\src\Components.cpp" />
     <ClCompile Include="..\src\Console.cpp" />

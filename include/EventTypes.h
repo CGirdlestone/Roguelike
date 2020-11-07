@@ -29,6 +29,7 @@ enum EventTypes
 	SAVEGAME,
 	EXPGAIN,
 	LEVELUP,
+	PASSATTRIBUTEINFO,
 };
 extern EventTypes EventType;
 

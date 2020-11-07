@@ -693,6 +693,41 @@ void Renderer::drawGameOver(int i, std::vector<std::string> &deathMessages, int 
 	m_console->update();
 }
 
+void Renderer::drawCharacterCreation(const std::vector<int>& attributes, const std::vector<std::string>& attribute_names, std::string player_name, bool text_input, int name_index, int name_size_limit, int attribute_index, int attribute_roll)
+{
+	m_console->flush();
+
+	if (player_name.size() < name_size_limit && text_input) {
+		player_name += '_';
+	}
+
+	drawBox(0, 0, m_console->Getm_width(), m_console->Getm_height());
+	
+	int y_position{ 1 };
+
+	std::string name_text = "Name: " + player_name;
+	drawText(name_text, 2, 2 * y_position++, m_textColour);
+
+	std::string current_attribute = "Attribute: " + std::to_string(attribute_roll);
+	drawText(current_attribute, 2, 2 * y_position++, m_textColour);
+
+	for (Uint32 i = 0; i < attributes.size(); ++i) {
+		std::string attribute_string = attribute_names[i] + ": " + std::to_string(attributes[i]);
+		if (attribute_index == i && !text_input) {
+			drawText(attribute_string, 2, 2 * y_position++, m_highlightColour);
+		}
+		else {
+			drawText(attribute_string, 2, 2 * y_position++, m_textColour);
+		}
+	}
+
+	std::string done = "Finish";
+	drawText(done, 2, 2 * y_position++, attribute_index > 5 ? true : false);
+
+	m_console->update();
+
+}
+
 void Renderer::drawBox(int x, int y, int width, int height)
 {
 	int top_left = 218;

@@ -26,6 +26,7 @@
 #include "AnimationSystem.h"
 #include "GameStateManager.h"
 #include "StartScene.h"
+#include "CharacterSelectionScene.h"
 #include "GameScene.h"
 #include "InventoryScene.h"
 #include "CharacterScene.h"
@@ -69,6 +70,7 @@ class Game
     std::map<int, GameObject*> m_actors;
     GameStateManager *m_sceneManager;
     StartScene *m_startScene;
+    CharacterSelectionScene *m_characterSelectionScene;
     GameScene *m_gameScene;
 	InventoryScene *m_inventoryScene;
 	CharacterScene *m_characterScene;

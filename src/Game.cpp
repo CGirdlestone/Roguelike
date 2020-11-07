@@ -17,6 +17,7 @@ Game::Game()
 	m_particleSystem = nullptr;
 	m_animationSystem = nullptr;
 	m_startScene = nullptr;
+	m_characterSelectionScene = nullptr;
 	m_gameScene = nullptr;
 	m_inventoryScene = nullptr;
 	m_characterScene = nullptr;
@@ -72,6 +73,9 @@ Game::~Game()
 
 	delete m_startScene;
 	m_startScene = nullptr;
+
+	delete m_characterSelectionScene;
+	m_characterSelectionScene = nullptr;
 
 	delete m_gameScene;
 	m_gameScene = nullptr;
@@ -136,6 +140,7 @@ bool Game::init(int mapWidth, int mapHeight, int width, int height, int tileSize
 
 	m_sceneManager = new GameStateManager(m_eventManager, &m_actors);
 	m_startScene = new StartScene(m_eventManager, m_renderer);
+	m_characterSelectionScene = new CharacterSelectionScene(m_eventManager, m_renderer);
 	m_gameScene = new GameScene(m_eventManager, m_renderer, &m_actors, m_camera, m_dungeon, m_messageLog, m_particleSystem, m_combatSystem, m_animationSystem);
 	m_inventoryScene = new InventoryScene(m_eventManager, m_renderer, &m_actors);
 	m_characterScene = new CharacterScene(m_eventManager, m_renderer, &m_actors);
@@ -145,6 +150,7 @@ bool Game::init(int mapWidth, int mapHeight, int width, int height, int tileSize
 
 	m_sceneManager->m_startScene = m_startScene;
 	m_sceneManager->m_gameScene = m_gameScene;
+	m_sceneManager->m_characterSelectionScene = m_characterSelectionScene;
 	m_sceneManager->m_inventoryScene = m_inventoryScene;
 	m_sceneManager->m_characterScene = m_characterScene;
 	m_sceneManager->m_targetingScene = m_targetingScene;

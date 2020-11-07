@@ -25,9 +25,11 @@ m_eventManager(eventManager), m_entities(entities)
 	m_eventManager->registerSystem(LOADGAME, this);
 	m_eventManager->registerSystem(RESTART, this);
 	m_eventManager->registerSystem(SAVEGAME, this);
+	m_eventManager->registerSystem(PASSATTRIBUTEINFO, this);
 
 	m_startScene = nullptr;
 	m_gameScene = nullptr;
+	m_characterSelectionScene = nullptr;
 	m_inventoryScene = nullptr;
 	m_characterScene = nullptr;
 	m_targetingScene = nullptr;
@@ -42,6 +44,7 @@ GameStateManager::~GameStateManager()
 	m_eventManager = nullptr;
 	m_entities = nullptr;
 	m_startScene = nullptr;
+	m_characterSelectionScene = nullptr;
 	m_gameScene = nullptr;
 	m_inventoryScene = nullptr;
 	m_characterScene = nullptr;
@@ -54,7 +57,11 @@ void GameStateManager::notify(PushScene event)
 {
 	if (event.m_scene == STARTMENU){
 		m_sceneStack.push_back(m_startScene);
-	} else if (event.m_scene == GAMESCENE){
+	}
+	else if (event.m_scene == CHARACTERCREATION){
+		m_sceneStack.push_back(m_characterSelectionScene);
+	}
+	else if (event.m_scene == GAMESCENE) {
 		m_sceneStack.push_back(m_gameScene);
 		m_gameScene->newGame();
 	} else if (event.m_scene == INVENTORY){
@@ -124,6 +131,11 @@ void GameStateManager::notify(RestartEvent event)
 	}
 	m_startScene->reset();
 	m_gameScene->startOver();
+}
+
+void GameStateManager::notify(PassAttributeInfoEvent event)
+{
+
 }
 
 void GameStateManager::processInput(SDL_Event *e)
