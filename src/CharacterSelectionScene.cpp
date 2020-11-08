@@ -76,9 +76,9 @@ enum KeyPressSurfaces CharacterSelectionScene::getEvent(SDL_Event* e)
 					}
 					else {
 						// selected a name and attributes so pass name and attributes in event.
-						PushScene transition = PushScene(GAMESCENE);
-						m_eventManager->pushEvent(transition);
 						m_eventManager->pushEvent(PassAttributeInfoEvent(player_attributes, player_name));
+						m_eventManager->pushEvent(PushScene(GAMESCENE));
+						
 					}
 				}
 				break;

@@ -27,10 +27,22 @@ void GameScene::startOver()
 	m_particleSystem->purgeParticles();
 }
 
+void GameScene::setPlayerAttribs()
+{
+	m_entities->at(0)->fighter->strength = m_attributes[0];
+	m_entities->at(0)->fighter->dexterity = m_attributes[1];
+	m_entities->at(0)->fighter->constitution = m_attributes[2];
+	m_entities->at(0)->fighter->intelligence = m_attributes[3];
+	m_entities->at(0)->fighter->wisdom = m_attributes[4];
+	m_entities->at(0)->fighter->charisma = m_attributes[5];
+	m_entities->at(0)->m_name = m_player_name;
+}
+
 void GameScene::newGame()
 {
 	m_dungeon->createMap(75, 5, 2, 6);
 	m_dungeon->createPlayer(m_entities);
+	setPlayerAttribs();
 	m_dungeon->createMobs(m_entities);
 	m_dungeon->createItems(m_entities);
 	m_dungeon->placeStairs(m_entities);

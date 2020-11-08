@@ -46,6 +46,10 @@ public:
 	void mapUIDsToGameObjects();
 	void saveGame();
 	void loadGame();
+	void setPlayerAttribs();
+
+	std::vector<int> m_attributes;
+	std::string m_player_name;
 
 private:
 	EventManager *m_eventManager;
@@ -58,6 +62,7 @@ private:
 	CombatSystem *m_combatSystem;
 	AnimationSystem* m_animationSystem;
 	bool m_playerTurn;
+
 };
 
 #endif

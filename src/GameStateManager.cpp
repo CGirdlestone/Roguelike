@@ -1,6 +1,7 @@
 
 #include <vector>
 #include <map>
+#include <iostream>
 
 #include "GameStateManager.h"
 #include "EventManager.h"
@@ -71,7 +72,7 @@ void GameStateManager::notify(PushScene event)
 		m_sceneStack.push_back(m_characterScene);
 		m_characterScene->resetIndex();
 	} else if (event.m_scene == TARGETING){
-		if (static_cast<int>(m_sceneStack.size()) == 1){
+		if (static_cast<int>(m_sceneStack.size()) == 2){
 			m_sceneStack.push_back(m_gameScene);
 		}
 		m_sceneStack.push_back(m_targetingScene);
@@ -115,6 +116,7 @@ void GameStateManager::notify(PlayerTurnOverEvent event)
 
 void GameStateManager::notify(LoadEvent event)
 {
+	m_sceneStack.push_back(m_characterSelectionScene);
 	m_sceneStack.push_back(m_gameScene);
 	m_gameScene->loadGame();
 }
@@ -135,7 +137,8 @@ void GameStateManager::notify(RestartEvent event)
 
 void GameStateManager::notify(PassAttributeInfoEvent event)
 {
-
+	m_gameScene->m_player_name = event.m_name;
+	m_gameScene->m_attributes.swap(event.m_attributes);
 }
 
 void GameStateManager::processInput(SDL_Event *e)
