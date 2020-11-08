@@ -532,22 +532,40 @@ void Renderer::drawCharacterScene(std::map<int, GameObject*> *actors, int index)
 	std::string ac = "AC: " + std::to_string(player->fighter->armour_class);
 	drawText(ac, x, 2 * yPosition++, false);
 
-	std::string strength = "Strength:     " + std::to_string(player->fighter->strength) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->strength)) + ")";
+	int mod = utils::getAttributeMod(player->fighter->strength);
+	std::string attrib_mod = (mod < 0 ? std::to_string(mod).substr(1, std::to_string(mod).length()) : std::to_string(mod));
+	std::string attrib = (player->fighter->strength < 10 ?  (mod < 0 ? "  (-" : "  (+") : (mod < 0 ? " (-" : " (+" ));
+	std::string strength = "Strength:     " + std::to_string(player->fighter->strength) + attrib + attrib_mod + ")";
 	drawText(strength, x, 2 * yPosition++, false);
 
-	std::string dexterity = "Dexterity:    " + std::to_string(player->fighter->dexterity) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->dexterity)) + ")";
+	mod = utils::getAttributeMod(player->fighter->dexterity);
+	attrib_mod = (mod < 0 ? std::to_string(mod).substr(1, std::to_string(mod).length()) : std::to_string(mod));
+	attrib = (player->fighter->dexterity < 10 ? (mod < 0 ? "  (-" : "  (+") : (mod < 0 ? " (-" : " (+"));
+	std::string dexterity = "Dexterity:    " + std::to_string(player->fighter->dexterity) + attrib + attrib_mod + ")";
 	drawText(dexterity, x, 2 * yPosition++, false);
 
-	std::string constitution = "Constitution: " + std::to_string(player->fighter->constitution) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->constitution)) + ")";
+	mod = utils::getAttributeMod(player->fighter->constitution);
+	attrib_mod = (mod < 0 ? std::to_string(mod).substr(1, std::to_string(mod).length()) : std::to_string(mod));
+	attrib = (player->fighter->constitution < 10 ? (mod < 0 ? "  (-" : "  (+") : (mod < 0 ? " (-" : " (+"));
+	std::string constitution = "Constitution: " + std::to_string(player->fighter->constitution) + attrib + attrib_mod + ")";
 	drawText(constitution, x, 2 * yPosition++, false);
 
-	std::string intelligence = "Intelligence: " + std::to_string(player->fighter->intelligence) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->intelligence)) + ")";
+	mod = utils::getAttributeMod(player->fighter->intelligence);
+	attrib_mod = (mod < 0 ? std::to_string(mod).substr(1, std::to_string(mod).length()) : std::to_string(mod));
+	attrib = (player->fighter->intelligence < 10 ? (mod < 0 ? "  (-" : "  (+") : (mod < 0 ? " (-" : " (+"));
+	std::string intelligence = "Intelligence: " + std::to_string(player->fighter->intelligence) + attrib + attrib_mod + ")";
 	drawText(intelligence, x, 2 * yPosition++, false);
 
-	std::string wisdom = "Wisdom:       " + std::to_string(player->fighter->wisdom) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->wisdom)) + ")";
+	mod = utils::getAttributeMod(player->fighter->wisdom);
+	attrib_mod = (mod < 0 ? std::to_string(mod).substr(1, std::to_string(mod).length()) : std::to_string(mod));
+	attrib = (player->fighter->wisdom < 10 ? (mod < 0 ? "  (-" : "  (+") : (mod < 0 ? " (-" : " (+"));
+	std::string wisdom = "Wisdom:       " + std::to_string(player->fighter->wisdom) + attrib + attrib_mod + ")";
 	drawText(wisdom, x, 2 * yPosition++, false);
 
-	std::string charisma = "Charisma:     " + std::to_string(player->fighter->charisma) + " (+" + std::to_string(utils::getAttributeMod(player->fighter->charisma)) + ")";
+	mod = utils::getAttributeMod(player->fighter->charisma);
+	attrib_mod = (mod < 0 ? std::to_string(mod).substr(1, std::to_string(mod).length()) : std::to_string(mod));
+	attrib = (player->fighter->charisma < 10 ? (mod < 0 ? "  (-" : "  (+") : (mod < 0 ? " (-" : " (+"));
+	std::string charisma = "Charisma:     " + std::to_string(player->fighter->charisma) + attrib + attrib_mod + ")";
 	drawText(charisma, x, 2 * yPosition++, false);
 
 	m_console->update();
@@ -693,7 +711,7 @@ void Renderer::drawGameOver(int i, std::vector<std::string> &deathMessages, int 
 	m_console->update();
 }
 
-void Renderer::drawCharacterCreation(const std::vector<int>& attributes, const std::vector<std::string>& attribute_names, std::string player_name, bool text_input, int name_index, int name_size_limit, int attribute_index, int attribute_roll)
+void Renderer::drawCharacterCreation(const std::vector<int>& attributes, const std::vector<std::string>& attribute_names, std::string player_name, bool text_input, int name_index, int name_size_limit, int attribute_index, const std::vector<int>& attribute_rolls, int current_attribute)
 {
 	m_console->flush();
 
@@ -708,9 +726,20 @@ void Renderer::drawCharacterCreation(const std::vector<int>& attributes, const s
 	std::string name_text = "Name: " + player_name;
 	drawText(name_text, 2, 2 * y_position++, m_textColour);
 
-	std::string current_attribute = "Attribute: " + std::to_string(attribute_roll);
-	drawText(current_attribute, 2, 2 * y_position++, m_textColour);
+	std::string attribute_roll_strings = "Attribute: ";
+	drawText(attribute_roll_strings, 2, 2 * y_position, m_textColour);
 
+	int x{ 2 + (int)attribute_roll_strings.size() };
+	if (!text_input && !attribute_rolls.empty()) {
+		for (int i = 0; i < attribute_rolls.size(); ++i) {
+			std::string score = std::to_string(attribute_rolls[i]);
+			drawText(score, x, 2 * y_position, i == current_attribute ? true : false);
+			x += (int)score.size() + 1;
+		}
+	}
+
+	y_position++;
+	
 	for (Uint32 i = 0; i < attributes.size(); ++i) {
 		std::string attribute_string = attribute_names[i] + ": " + std::to_string(attributes[i]);
 		if (attribute_index == i && !text_input) {

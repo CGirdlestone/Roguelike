@@ -34,7 +34,7 @@ public:
 	void drawPauseMenu(int i, Camera* camera, DungeonGenerator* dungeon, std::map<int, GameObject*> *actors, MessageLog* messageLog);
 	void drawGameOver(int i, std::vector<std::string> &deathMessages, int totalLines);
 	void drawParticles(Camera* camera, DungeonGenerator* dungeon, std::vector<Particle> &particles);
-	void drawCharacterCreation(const std::vector<int>& attributes, const std::vector<std::string>& attributes_names, std::string player_name, bool text_input, int name_index, int name_size_limit, int attribute_index, int attribute_roll);
+	void drawCharacterCreation(const std::vector<int>& attributes, const std::vector<std::string>& attributes_names, std::string player_name, bool text_input, int name_index, int name_size_limit, int attribute_index, const std::vector<int>& attribute_rolls, int current_attribute);
 
 	void drawObject(GameObject* entity, int x, int y, int scale = 1);
 	void drawTile(char* c, int x, int y, bool inView, int scale = 1);

@@ -16,6 +16,8 @@ public:
 	CharacterSelectionScene(EventManager* eventManager, Renderer* renderer);
 	virtual ~CharacterSelectionScene();
 
+	enum State {TEXT, ATTRIBUTES, CLASS, RACE, DONE};
+
 	enum KeyPressSurfaces getEvent(SDL_Event* e);
 	void render();
 	void handleInput(KeyPressSurfaces keyPress);
@@ -23,8 +25,9 @@ public:
 	void update(Uint32 dt);
 	void onTick();
 	void reset();
-	void setNextAttributeRoll();
+	void setNextAttributeRolls();
 	void backspace();
+	void randomCharacter();
 
 private:
 	EventManager* m_eventManager{ nullptr };
@@ -40,9 +43,11 @@ private:
 	bool attribute_selection{ false };
 	std::vector<int> player_attributes{ 0, 0, 0, 0, 0, 0 };
 	int player_attribute_index{ 0 };
-	int current_attribute_roll{ 0 };
+	std::vector<int> attribute_rolls;
+	int attribute_index{ 0 };
 
 	bool attributes_selected{ false };
+	CharacterSelectionScene::State _state{ TEXT };
 };
 
 #endif // !CHARACTER_SELECTION_H
